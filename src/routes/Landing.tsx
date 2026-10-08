@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React from 'react';
+import { Link } from 'react-router-dom';
 import {
   Layers,
   Search,
@@ -10,15 +10,11 @@ import {
   ArrowRight,
 } from 'lucide-react';
 import { Button } from '../components/ui/Button';
-import { StampBadge } from '../components/ui/StampBadge';
 import { LandingNav } from '../components/landing/LandingNav';
+import { HeroSection } from '../components/landing/HeroSection';
 
 export const Landing: React.FC = () => {
-  const navigate = useNavigate();
-  const [isHovered, setIsHovered] = useState(false);
-
-  const handleScrollTo = (e: React.MouseEvent, id: string) => {
-    e.preventDefault();
+  const handleScrollTo = (id: string) => {
     const el = document.querySelector(id);
     if (el) {
       el.scrollIntoView({ behavior: 'smooth' });
@@ -31,94 +27,9 @@ export const Landing: React.FC = () => {
       <LandingNav />
 
       {/* Hero Section */}
-      <section className="relative pt-24 md:pt-32 pb-24 px-6 max-w-7xl mx-auto flex flex-col items-center text-center">
-        {/* Left Rotating Stamp Badge */}
-        <div className="hidden lg:block absolute left-8 top-20 z-10">
-          <StampBadge text="private & honest · local first · works offline · " size={120} />
-        </div>
-
-        {/* Right Floating Orange Tab */}
-        <div className="hidden lg:flex absolute right-0 top-36 z-10">
-          <Link
-            to="/app"
-            className="w-16 h-28 bg-orange rounded-l-full flex items-center justify-center text-forest hover:bg-orange-deep hover:w-20 transition-all shadow-glow cursor-pointer group"
-            title="Open MDstash"
-          >
-            <div className="flex flex-col items-center gap-1">
-              <img src="/logo.svg" alt="MDstash" className="w-8 h-8 group-hover:scale-110 transition-transform" />
-              <ArrowRight className="w-4 h-4" />
-            </div>
-          </Link>
-        </div>
-
-        {/* Hero Headlines & Floating Center Stash Can */}
-        <div className="relative w-full max-w-5xl my-6 flex flex-col items-center">
-          {/* Main Massive Chunky Headline in Sentence Case */}
-          <h1 className="font-display text-6xl sm:text-7xl md:text-8xl lg:text-9xl tracking-tight leading-[0.92] text-cream select-none text-shadow-stamp">
-            Your markdown, stashed. <br />
-            Zero cloud, zero fuss.
-          </h1>
-
-          {/* Floating Logo Object */}
-          <div
-            className="my-6 relative z-10 transition-transform duration-300 ease-out cursor-pointer"
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
-            onClick={() => navigate('/app')}
-            style={{
-              transform: isHovered
-                ? 'scale(1.08) translateY(-8px) rotate(-1deg)'
-                : 'scale(1) translateY(0px)',
-            }}
-          >
-            <div className="relative group">
-              <div className="absolute inset-0 rounded-full bg-orange/25 blur-2xl group-hover:bg-orange/45 transition-all" />
-              <img
-                src="/logo.svg"
-                alt="MDstash crate"
-                className="relative w-44 sm:w-56 md:w-64 h-auto drop-shadow-2xl mx-auto"
-              />
-              <span className="inline-block mt-2 px-3 py-1 rounded-full bg-forest-dark/90 border border-line text-[11px] font-mono text-cream-dim group-hover:text-orange transition-colors">
-                Click to open stash
-              </span>
-            </div>
-          </div>
-
-          {/* Subline */}
-          <p className="font-display text-xl sm:text-2xl md:text-3xl text-cream-dim max-w-2xl mt-4">
-            Pure, local, and ready to drop anywhere.
-          </p>
-          <p className="text-sm sm:text-base text-cream-dim/90 max-w-xl mt-2 leading-relaxed">
-            Drag files in, organize into collections, and copy or drop them back into your IDE or AI chats. Nothing ever leaves your device.
-          </p>
-
-          {/* CTAs */}
-          <div className="flex flex-wrap items-center justify-center gap-4 mt-8">
-            <Link to="/app">
-              <Button size="lg" variant="primary" icon={<ArrowRight className="w-5 h-5" />}>
-                Open the app
-              </Button>
-            </Link>
-            <a href="#how-it-works" onClick={(e) => handleScrollTo(e, '#how-it-works')}>
-              <Button size="lg" variant="secondary">
-                See how it works
-              </Button>
-            </a>
-          </div>
-        </div>
-
-        {/* Bottom Hero Indicators */}
-        <div className="w-full flex items-center justify-between pt-12 border-t border-line mt-12 text-xs font-mono text-cream-dim">
-          <div className="flex items-center gap-2">
-            <span className="text-orange text-sm font-bold">#</span>
-            <span>Zero cloud · zero servers</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <span>Works offline · stored in your browser</span>
-            <span className="text-orange text-sm font-bold">#</span>
-          </div>
-        </div>
-      </section>
+      <div className="pt-16 md:pt-20">
+        <HeroSection onScrollNext={() => handleScrollTo('#how-it-works')} />
+      </div>
 
       {/* How It Works (3 Steps) */}
       <section id="how-it-works" className="py-20 border-t border-line bg-forest/30">

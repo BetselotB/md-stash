@@ -133,6 +133,21 @@ html.lenis body {
   animation: bob 4.5s ease-in-out 1s infinite;
 }
 
+/* Drop into crate animation */
+@keyframes dropIntoCrate {
+  0% {
+    transform: translate(-50%, -70px) scale(0.9);
+    opacity: 0;
+  }
+  30% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, 35px) scale(0.65);
+    opacity: 0.15;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .animate-spin-slow,
   .animate-bob,
