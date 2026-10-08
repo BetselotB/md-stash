@@ -13,8 +13,8 @@ export default defineConfig({
         name: 'MDstash — Local Markdown Organizer',
         short_name: 'MDstash',
         description: 'Your markdown files, stashed, sorted, and ready to drop anywhere. Nothing leaves your device.',
-        theme_color: '#6B7B6E',
-        background_color: '#6B7B6E',
+        theme_color: '#F2A33A',
+        background_color: '#8A9A78',
         display: 'standalone',
         orientation: 'portrait-primary',
         icons: [

@@ -47,10 +47,10 @@ export const FileDetail: React.FC = () => {
   if (!file) {
     return (
       <div className="max-w-2xl mx-auto py-16 text-center space-y-4">
-        <div className="w-16 h-16 rounded-2xl bg-forest border border-line flex items-center justify-center text-pink mx-auto">
+        <div className="w-16 h-16 rounded-2xl bg-forest border border-line flex items-center justify-center text-orange mx-auto">
           <FileQuestion className="w-8 h-8" />
         </div>
-        <h2 className="font-display text-3xl uppercase tracking-wider text-cream">
+        <h2 className="font-display text-3xl tracking-normal text-cream">
           File Not Found
         </h2>
         <p className="text-xs text-cream-dim max-w-sm mx-auto">
@@ -163,11 +163,11 @@ export const FileDetail: React.FC = () => {
                 type="button"
                 onClick={handleTogglePin}
                 className={`p-1.5 rounded-lg border border-line hover:bg-cream-faint transition-colors cursor-pointer ${
-                  file.pinned ? 'text-pink border-pink' : 'text-cream-dim'
+                  file.pinned ? 'text-orange border-orange' : 'text-cream-dim'
                 }`}
                 title={file.pinned ? 'Unpin' : 'Pin to top'}
               >
-                <Pin className={`w-4 h-4 ${file.pinned ? 'fill-pink' : ''}`} />
+                <Pin className={`w-4 h-4 ${file.pinned ? 'fill-orange' : ''}`} />
               </button>
             </div>
 
@@ -196,7 +196,7 @@ export const FileDetail: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setShowCopyMenu(!showCopyMenu)}
-                  className="bg-pink text-forest hover:bg-pink-deep px-2 rounded-r-full border-l border-forest/20 flex items-center justify-center cursor-pointer -ml-2"
+                  className="bg-orange text-forest hover:bg-orange-deep px-2 rounded-r-full border-l border-forest/20 flex items-center justify-center cursor-pointer -ml-2"
                   aria-label="More copy options"
                 >
                   <ChevronDown className="w-3.5 h-3.5" />
@@ -208,21 +208,21 @@ export const FileDetail: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => handleCopy('prompt')}
-                    className="w-full text-left px-3 py-2 text-cream hover:bg-forest-light hover:text-pink transition-colors"
+                    className="w-full text-left px-3 py-2 text-cream hover:bg-forest-light hover:text-orange transition-colors"
                   >
                     Prompt-ready (with header)
                   </button>
                   <button
                     type="button"
                     onClick={() => handleCopy('codeblock')}
-                    className="w-full text-left px-3 py-2 text-cream hover:bg-forest-light hover:text-pink transition-colors"
+                    className="w-full text-left px-3 py-2 text-cream hover:bg-forest-light hover:text-orange transition-colors"
                   >
                     Fenced Code Block
                   </button>
                   <button
                     type="button"
                     onClick={() => handleCopy('raw')}
-                    className="w-full text-left px-3 py-2 text-cream hover:bg-forest-light hover:text-pink transition-colors"
+                    className="w-full text-left px-3 py-2 text-cream hover:bg-forest-light hover:text-orange transition-colors"
                   >
                     Raw Content
                   </button>
@@ -244,10 +244,10 @@ export const FileDetail: React.FC = () => {
             <div
               draggable
               onDragStart={handleDragStart}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-forest-dark border border-line text-xs font-bold text-cream-dim hover:text-cream cursor-grab active:cursor-grabbing hover:border-pink transition-colors"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-forest-dark border border-line text-xs font-bold text-cream-dim hover:text-cream cursor-grab active:cursor-grabbing hover:border-orange transition-colors"
               title="Drag file out to Desktop or IDE"
             >
-              <GripVertical className="w-3.5 h-3.5 text-pink" />
+              <GripVertical className="w-3.5 h-3.5 text-orange" />
               <span>Drag Me</span>
             </div>
 
@@ -291,7 +291,7 @@ export const FileDetail: React.FC = () => {
               onClick={() => setActiveTab('preview')}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors cursor-pointer ${
                 activeTab === 'preview'
-                  ? 'bg-pink text-forest shadow-sm'
+                  ? 'bg-orange text-forest shadow-sm'
                   : 'text-cream-dim hover:text-cream'
               }`}
             >
@@ -303,7 +303,7 @@ export const FileDetail: React.FC = () => {
               onClick={() => setActiveTab('raw')}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors cursor-pointer ${
                 activeTab === 'raw'
-                  ? 'bg-pink text-forest shadow-sm'
+                  ? 'bg-orange text-forest shadow-sm'
                   : 'text-cream-dim hover:text-cream'
               }`}
             >
@@ -314,7 +314,7 @@ export const FileDetail: React.FC = () => {
 
           {file.tags.length > 0 && (
             <div className="flex items-center gap-1.5 text-xs">
-              <span className="text-cream-dim/60 font-semibold uppercase text-[10px]">Tags:</span>
+              <span className="text-cream-dim/60 font-semibold  text-[10px]">Tags:</span>
               {file.tags.map((t) => (
                 <span
                   key={t}
@@ -336,10 +336,10 @@ export const FileDetail: React.FC = () => {
                 rehypePlugins={[rehypeSanitize]}
                 components={{
                   h1: ({ node, ...props }) => (
-                    <h1 className="font-display text-3xl tracking-wide uppercase text-cream pb-2 border-b border-line" {...props} />
+                    <h1 className="font-display text-3xl tracking-wide  text-cream pb-2 border-b border-line" {...props} />
                   ),
                   h2: ({ node, ...props }) => (
-                    <h2 className="font-display text-2xl tracking-wide uppercase text-cream pt-2" {...props} />
+                    <h2 className="font-display text-2xl tracking-wide  text-cream pt-2" {...props} />
                   ),
                   h3: ({ node, ...props }) => (
                     <h3 className="font-bold text-lg text-cream" {...props} />
@@ -347,7 +347,7 @@ export const FileDetail: React.FC = () => {
                   code: ({ node, className, children, ...props }) => {
                     return (
                       <code
-                        className="bg-forest-dark px-1.5 py-0.5 rounded border border-line text-pink font-mono text-xs"
+                        className="bg-forest-dark px-1.5 py-0.5 rounded border border-line text-orange font-mono text-xs"
                         {...props}
                       >
                         {children}
@@ -358,7 +358,7 @@ export const FileDetail: React.FC = () => {
                     <pre className="p-4 rounded-xl bg-forest-dark border border-line font-mono text-xs overflow-x-auto text-cream my-3" {...props} />
                   ),
                   blockquote: ({ node, ...props }) => (
-                    <blockquote className="border-l-4 border-pink pl-4 italic text-cream-dim my-3" {...props} />
+                    <blockquote className="border-l-4 border-orange pl-4 italic text-cream-dim my-3" {...props} />
                   ),
                   table: ({ node, ...props }) => (
                     <div className="overflow-x-auto my-3">
@@ -366,13 +366,13 @@ export const FileDetail: React.FC = () => {
                     </div>
                   ),
                   th: ({ node, ...props }) => (
-                    <th className="border border-line bg-forest-dark px-3 py-2 font-bold text-cream text-xs uppercase" {...props} />
+                    <th className="border border-line bg-forest-dark px-3 py-2 font-bold text-cream text-xs " {...props} />
                   ),
                   td: ({ node, ...props }) => (
                     <td className="border border-line px-3 py-2 text-cream text-xs" {...props} />
                   ),
                   a: ({ node, ...props }) => (
-                    <a className="text-pink hover:underline" target="_blank" rel="noopener noreferrer" {...props} />
+                    <a className="text-orange hover:underline" target="_blank" rel="noopener noreferrer" {...props} />
                   ),
                 }}
               >
@@ -380,7 +380,7 @@ export const FileDetail: React.FC = () => {
               </ReactMarkdown>
             </div>
           ) : (
-            <pre className="font-mono text-xs text-cream leading-relaxed whitespace-pre-wrap selection:bg-pink selection:text-forest">
+            <pre className="font-mono text-xs text-cream leading-relaxed whitespace-pre-wrap selection:bg-orange selection:text-forest">
               {file.content}
             </pre>
           )}

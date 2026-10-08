@@ -1,0 +1,17 @@
+/* Self-hosted core fonts */
+@import '@fontsource/nunito/400.css';
+@import '@fontsource/nunito/600.css';
+@import '@fontsource/nunito/700.css';
+@import '@fontsource/jetbrains-mono/400.css';
+@import '@fontsource/jetbrains-mono/500.css';
+
+/* Candidate display fonts */
+@import '@fontsource/passion-one/400.css';
+@import '@fontsource/passion-one/700.css';
+@import '@fontsource/passion-one/900.css';
+@import '@fontsource/londrina-solid/400.css';
+@import '@fontsource/londrina-solid/900.css';
+@import '@fontsource/alumni-sans/700.css';
+@import '@fontsource/alumni-sans/900.css';
+@import '@fontsource/bowlby-one/400.css';
+@import '@fontsource/anton/400.css';

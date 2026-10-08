@@ -110,7 +110,7 @@ export const Settings: React.FC = () => {
   return (
     <div className="max-w-4xl mx-auto space-y-8 pb-12">
       <div>
-        <h1 className="font-display text-4xl uppercase tracking-wider text-cream">
+        <h1 className="font-display text-4xl tracking-normal text-cream">
           Settings & Storage
         </h1>
         <p className="text-xs text-cream-dim mt-1">
@@ -121,7 +121,7 @@ export const Settings: React.FC = () => {
       {/* Storage & Persistence Section */}
       <section className="p-6 bg-forest rounded-2xl border border-line space-y-5">
         <div className="flex items-center gap-3">
-          <div className="p-2.5 rounded-xl bg-forest-dark border border-line text-pink">
+          <div className="p-2.5 rounded-xl bg-forest-dark border border-line text-orange">
             <HardDrive className="w-5 h-5" />
           </div>
           <div>
@@ -174,7 +174,7 @@ export const Settings: React.FC = () => {
               <button
                 type="button"
                 onClick={handleRequestPersist}
-                className="mt-2 text-xs text-pink hover:underline font-bold text-left cursor-pointer"
+                className="mt-2 text-xs text-orange hover:underline font-bold text-left cursor-pointer"
               >
                 Request Persistence →
               </button>
@@ -186,7 +186,7 @@ export const Settings: React.FC = () => {
       {/* Export / Import Section */}
       <section className="p-6 bg-forest rounded-2xl border border-line space-y-5">
         <div className="flex items-center gap-3">
-          <div className="p-2.5 rounded-xl bg-forest-dark border border-line text-pink">
+          <div className="p-2.5 rounded-xl bg-forest-dark border border-line text-orange">
             <FolderArchive className="w-5 h-5" />
           </div>
           <div>
@@ -251,7 +251,7 @@ export const Settings: React.FC = () => {
       <section className="p-6 bg-forest-dark/40 rounded-2xl border border-line text-xs text-cream-dim leading-relaxed space-y-2">
         <div className="font-bold text-cream text-sm flex items-center gap-2">
           <span>MDstash v1.0.0</span>
-          <span className="text-[10px] px-2 py-0.5 rounded-full bg-pink/20 text-pink font-mono">
+          <span className="text-[10px] px-2 py-0.5 rounded-full bg-orange/20 text-orange font-mono">
             Local-First
           </span>
         </div>

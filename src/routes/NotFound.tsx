@@ -8,15 +8,15 @@ export const NotFound: React.FC = () => {
   return (
     <div className="min-h-screen bg-sage text-cream flex flex-col items-center justify-center p-6 text-center select-none">
       <div className="max-w-md w-full p-8 bg-forest border border-line rounded-3xl shadow-card space-y-6">
-        <div className="w-16 h-16 rounded-2xl bg-forest-dark border border-line flex items-center justify-center text-pink mx-auto">
+        <div className="w-16 h-16 rounded-2xl bg-forest-dark border border-line flex items-center justify-center text-orange mx-auto">
           <FileQuestion className="w-8 h-8" />
         </div>
 
         <div>
-          <span className="font-mono text-xs text-pink uppercase tracking-widest font-bold">
+          <span className="font-mono text-xs text-orange tracking-normalst font-bold">
             ERROR 404
           </span>
-          <h1 className="font-display text-4xl uppercase tracking-wider text-cream mt-1">
+          <h1 className="font-display text-4xl tracking-normal text-cream mt-1">
             Page Not Stashed
           </h1>
           <p className="text-xs text-cream-dim mt-2 leading-relaxed">

@@ -78,7 +78,7 @@ export const Topbar: React.FC<TopbarProps> = ({ onNewFile, onToggleMobileMenu })
         </div>
 
         {activeTag && (
-          <span className="shrink-0 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs bg-pink/20 text-pink border border-pink/40">
+          <span className="shrink-0 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs bg-orange/20 text-orange border border-orange/40">
             <span>#{activeTag}</span>
             <button
               onClick={() => setActiveTag(null)}
@@ -99,7 +99,7 @@ export const Topbar: React.FC<TopbarProps> = ({ onNewFile, onToggleMobileMenu })
             onClick={() => setViewMode('grid')}
             className={`p-1.5 rounded-md transition-colors cursor-pointer ${
               viewMode === 'grid'
-                ? 'bg-pink text-forest shadow-sm'
+                ? 'bg-orange text-forest shadow-sm'
                 : 'text-cream-dim hover:text-cream'
             }`}
             title="Grid view"
@@ -111,7 +111,7 @@ export const Topbar: React.FC<TopbarProps> = ({ onNewFile, onToggleMobileMenu })
             onClick={() => setViewMode('list')}
             className={`p-1.5 rounded-md transition-colors cursor-pointer ${
               viewMode === 'list'
-                ? 'bg-pink text-forest shadow-sm'
+                ? 'bg-orange text-forest shadow-sm'
                 : 'text-cream-dim hover:text-cream'
             }`}
             title="List view"

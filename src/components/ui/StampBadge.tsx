@@ -9,13 +9,13 @@ interface StampBadgeProps {
 }
 
 export const StampBadge: React.FC<StampBadgeProps> = ({
-  text = 'LOCAL FIRST · PRIVATE & HONEST · 100% OFFLINE · ',
+  text = 'private & honest · local first · works offline · ',
   className = '',
   size = 110,
   icon = <ArrowDown className="w-5 h-5 text-cream" />,
 }) => {
-  const radius = 38;
-  const circumference = 2 * Math.PI * radius;
+  const radius = 37;
+  const circumference = +(2 * Math.PI * radius).toFixed(1); // ~232.5
 
   return (
     <div
@@ -35,17 +35,17 @@ export const StampBadge: React.FC<StampBadgeProps> = ({
         <defs>
           <path
             id="textCircle"
-            d="M 50, 50 m -37, 0 a 37,37 0 1,1 74,0 a 37,37 0 1,1 -74,0"
+            d={`M 50, 50 m -${radius}, 0 a ${radius},${radius} 0 1,1 ${radius * 2},0 a ${radius},${radius} 0 1,1 -${radius * 2},0`}
           />
         </defs>
         <text
           fill="var(--cream)"
-          fontSize="9"
-          letterSpacing="2.2"
-          fontWeight="bold"
-          className="uppercase select-none opacity-85"
+          fontSize="8.2"
+          letterSpacing="1.2"
+          fontWeight="600"
+          className="select-none opacity-90 font-mono"
         >
-          <textPath href="#textCircle" startOffset="0%">
+          <textPath href="#textCircle" startOffset="0%" textLength={circumference} lengthAdjust="spacing">
             {text}
           </textPath>
         </text>

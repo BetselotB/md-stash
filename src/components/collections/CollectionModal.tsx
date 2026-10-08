@@ -14,10 +14,10 @@ interface CollectionModalProps {
 }
 
 const PRESET_COLORS = [
-  '#C99AB5', // Pink
-  '#B5839F', // Pink Deep
-  '#6B7B6E', // Sage
-  '#8EA392', // Light Sage
+  '#F2A33A', // Orange
+  '#D98821', // Orange Deep
+  '#8A9A78', // Sunny Sage
+  '#76866A', // Sage Deep
   '#E6AF2E', // Retro Gold
   '#3D84A8', // Slate Ocean
   '#D76F6F', // Retro Terra
@@ -97,7 +97,7 @@ export const CollectionModal: React.FC<CollectionModalProps> = ({
     >
       <form onSubmit={handleSubmit} className="flex flex-col gap-5">
         <div>
-          <label className="block text-xs font-semibold uppercase text-cream-dim mb-1">
+          <label className="block text-xs font-semibold text-cream-dim mb-1">
             Collection Name
           </label>
           <Input
@@ -110,7 +110,7 @@ export const CollectionModal: React.FC<CollectionModalProps> = ({
         </div>
 
         <div>
-          <label className="block text-xs font-semibold uppercase text-cream-dim mb-2">
+          <label className="block text-xs font-semibold text-cream-dim mb-2">
             Badge Color
           </label>
           <div className="flex items-center gap-3 flex-wrap">
@@ -130,7 +130,7 @@ export const CollectionModal: React.FC<CollectionModalProps> = ({
         </div>
 
         <div>
-          <label className="block text-xs font-semibold uppercase text-cream-dim mb-2">
+          <label className="block text-xs font-semibold text-cream-dim mb-2">
             Icon
           </label>
           <div className="grid grid-cols-7 gap-2">
@@ -144,7 +144,7 @@ export const CollectionModal: React.FC<CollectionModalProps> = ({
                   onClick={() => setIcon(item.key)}
                   className={`p-2.5 rounded-xl border flex items-center justify-center transition-colors cursor-pointer ${
                     isSelected
-                      ? 'border-pink bg-pink/20 text-pink'
+                      ? 'border-orange bg-orange/20 text-orange'
                       : 'border-line bg-forest hover:bg-forest-light text-cream-dim'
                   }`}
                   aria-label={item.label}

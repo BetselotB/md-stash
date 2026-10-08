@@ -15,7 +15,7 @@ describe('Zip export & import round-trip tests', () => {
     // 1. Create original collection and files
     const col = await collectionsRepo.create({
       name: 'Agent Guidelines',
-      color: '#C99AB5',
+      color: '#F2A33A',
       icon: 'sparkles',
       order: 0,
     });
@@ -69,7 +69,7 @@ describe('Zip export & import round-trip tests', () => {
     expect(restoredCols.length).toBe(1);
     expect(restoredCols[0].id).toBe(col.id);
     expect(restoredCols[0].name).toBe('Agent Guidelines');
-    expect(restoredCols[0].color).toBe('#C99AB5');
+    expect(restoredCols[0].color).toBe('#F2A33A');
 
     const restoredFiles = await filesRepo.getAll();
     expect(restoredFiles.length).toBe(2);

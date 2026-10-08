@@ -69,7 +69,7 @@ export const EditFileModal: React.FC<EditFileModalProps> = ({
       <form onSubmit={handleSave} className="flex flex-col gap-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-xs font-semibold uppercase text-cream-dim mb-1">
+            <label className="block text-xs font-semibold text-cream-dim mb-1">
               Title
             </label>
             <Input
@@ -81,7 +81,7 @@ export const EditFileModal: React.FC<EditFileModalProps> = ({
           </div>
 
           <div>
-            <label className="block text-xs font-semibold uppercase text-cream-dim mb-1">
+            <label className="block text-xs font-semibold text-cream-dim mb-1">
               Filename
             </label>
             <Input
@@ -94,7 +94,7 @@ export const EditFileModal: React.FC<EditFileModalProps> = ({
         </div>
 
         <div>
-          <label className="block text-xs font-semibold uppercase text-cream-dim mb-1">
+          <label className="block text-xs font-semibold text-cream-dim mb-1">
             Tags (comma separated)
           </label>
           <Input
@@ -105,14 +105,14 @@ export const EditFileModal: React.FC<EditFileModalProps> = ({
         </div>
 
         <div>
-          <label className="block text-xs font-semibold uppercase text-cream-dim mb-1">
+          <label className="block text-xs font-semibold text-cream-dim mb-1">
             Content
           </label>
           <textarea
             value={content}
             onChange={(e) => setContent(e.target.value)}
             rows={14}
-            className="w-full bg-forest-dark text-cream font-mono text-xs border border-line rounded-lg p-3 focus:outline-none focus:border-pink focus:ring-1 focus:ring-pink resize-y"
+            className="w-full bg-forest-dark text-cream font-mono text-xs border border-line rounded-lg p-3 focus:outline-none focus:border-orange focus:ring-1 focus:ring-orange resize-y"
             required
           />
         </div>

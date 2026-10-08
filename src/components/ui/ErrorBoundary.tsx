@@ -38,12 +38,12 @@ export class ErrorBoundary extends Component<Props, State> {
       return (
         <div className="min-h-screen bg-sage text-cream flex items-center justify-center p-6 text-center">
           <div className="max-w-md w-full p-8 bg-forest border border-line rounded-3xl shadow-card space-y-5">
-            <div className="w-14 h-14 rounded-2xl bg-forest-dark border border-line text-pink flex items-center justify-center mx-auto">
+            <div className="w-14 h-14 rounded-2xl bg-forest-dark border border-line text-orange flex items-center justify-center mx-auto">
               <AlertTriangle className="w-7 h-7" />
             </div>
 
             <div>
-              <h2 className="font-display text-3xl uppercase tracking-wider text-cream">
+              <h2 className="font-display text-3xl tracking-normal text-cream">
                 {isQuotaError ? 'Storage Quota Exceeded' : 'Something went wrong'}
               </h2>
               <p className="text-xs text-cream-dim mt-2 leading-relaxed">

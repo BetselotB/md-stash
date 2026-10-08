@@ -52,11 +52,11 @@ export const VersionHistoryModal: React.FC<VersionHistoryModalProps> = ({
             onClick={() => setSelectedVersion(null)}
             className={`p-3 rounded-xl border text-left transition-colors cursor-pointer ${
               selectedVersion === null
-                ? 'border-pink bg-pink/20 text-cream'
+                ? 'border-orange bg-orange/20 text-cream'
                 : 'border-line bg-forest hover:bg-forest-light text-cream-dim'
             }`}
           >
-            <div className="flex items-center justify-between text-xs font-bold text-pink mb-1">
+            <div className="flex items-center justify-between text-xs font-bold text-orange mb-1">
               <span>Current Working Copy</span>
               <span className="w-2 h-2 rounded-full bg-emerald-400" />
             </div>
@@ -77,12 +77,12 @@ export const VersionHistoryModal: React.FC<VersionHistoryModalProps> = ({
                 onClick={() => setSelectedVersion(v)}
                 className={`p-3 rounded-xl border text-left transition-colors cursor-pointer ${
                   selectedVersion?.id === v.id
-                    ? 'border-pink bg-pink/20 text-cream'
+                    ? 'border-orange bg-orange/20 text-cream'
                     : 'border-line bg-forest hover:bg-forest-light text-cream-dim'
                 }`}
               >
                 <div className="flex items-center gap-1.5 text-xs font-semibold text-cream mb-1">
-                  <Clock className="w-3.5 h-3.5 text-pink" />
+                  <Clock className="w-3.5 h-3.5 text-orange" />
                   <span>Snapshot #{versions.length - idx}</span>
                 </div>
                 <div className="text-[11px] text-cream-dim">

@@ -7,6 +7,7 @@ import { CollectionView } from './routes/CollectionView';
 import { FileDetail } from './routes/FileDetail';
 import { Settings } from './routes/Settings';
 import { Privacy } from './routes/Privacy';
+import { DevFonts } from './routes/DevFonts';
 import { NotFound } from './routes/NotFound';
 import { ErrorBoundary } from './components/ui/ErrorBoundary';
 
@@ -20,6 +21,9 @@ export const App: React.FC = () => {
 
           {/* Public Privacy Policy */}
           <Route path="/privacy" element={<Privacy />} />
+
+          {/* Dev Font Comparison Route */}
+          <Route path="/dev/fonts" element={<DevFonts />} />
 
           {/* Main Local-first Application */}
           <Route path="/app" element={<Shell />}>

@@ -46,19 +46,19 @@ export const BundleTray: React.FC = () => {
       data-lenis-prevent
       className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 max-w-2xl w-[94%] animate-slideUp"
     >
-      <div className="flex flex-col bg-forest border-2 border-pink rounded-2xl shadow-glow text-cream overflow-hidden">
+      <div className="flex flex-col bg-forest border-2 border-orange rounded-2xl shadow-glow text-cream overflow-hidden">
         {/* Main Bar */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3 px-5 py-3.5">
           <div className="flex items-center gap-3 w-full sm:w-auto">
-            <div className="w-9 h-9 rounded-xl bg-pink/20 border border-pink flex items-center justify-center text-pink shrink-0">
+            <div className="w-9 h-9 rounded-xl bg-orange/20 border border-orange flex items-center justify-center text-orange shrink-0">
               <Layers className="w-5 h-5" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="font-display text-xl uppercase tracking-wider text-cream">
+                <span className="font-display text-xl tracking-normal text-cream">
                   Bundle Selected
                 </span>
-                <span className="text-xs px-2 py-0.5 rounded-full bg-pink text-forest font-extrabold">
+                <span className="text-xs px-2 py-0.5 rounded-full bg-orange text-forest font-extrabold">
                   {selectedFiles.length} files
                 </span>
               </div>
@@ -75,7 +75,7 @@ export const BundleTray: React.FC = () => {
               onClick={() => setIsReordering(!isReordering)}
               className={`p-2 rounded-full border text-xs transition-colors cursor-pointer ${
                 isReordering
-                  ? 'border-pink bg-pink text-forest font-bold'
+                  ? 'border-orange bg-orange text-forest font-bold'
                   : 'border-line text-cream-dim hover:text-cream hover:bg-forest-dark'
               }`}
               title="Reorder bundle files"
@@ -88,7 +88,7 @@ export const BundleTray: React.FC = () => {
             <select
               value={copyMode}
               onChange={(e) => setCopyMode(e.target.value as CopyMode)}
-              className="bg-forest-dark border border-line text-xs rounded-full px-3 py-2 text-cream focus:outline-none focus:border-pink cursor-pointer"
+              className="bg-forest-dark border border-line text-xs rounded-full px-3 py-2 text-cream focus:outline-none focus:border-orange cursor-pointer"
               title="Bundle format"
             >
               <option value="prompt">Prompt-ready (### File)</option>
@@ -122,7 +122,7 @@ export const BundleTray: React.FC = () => {
         {/* Expandable Reorder List */}
         {isReordering && (
           <div className="px-5 py-3 border-t border-line/60 bg-forest-dark/70 space-y-2 max-h-48 overflow-y-auto">
-            <div className="text-[11px] font-semibold uppercase text-cream-dim tracking-wider">
+            <div className="text-[11px] font-semibold text-cream-dim tracking-normal">
               Order of files in bundle output:
             </div>
             {selectedFiles.map((f, idx) => (
@@ -131,7 +131,7 @@ export const BundleTray: React.FC = () => {
                 className="flex items-center justify-between px-3 py-1.5 rounded-xl bg-forest border border-line text-xs"
               >
                 <div className="flex items-center gap-2 truncate">
-                  <span className="font-mono text-pink font-bold">{idx + 1}.</span>
+                  <span className="font-mono text-orange font-bold">{idx + 1}.</span>
                   <span className="font-bold text-cream truncate">{f.title}</span>
                   <span className="font-mono text-cream-dim text-[11px] truncate">({f.filename})</span>
                 </div>

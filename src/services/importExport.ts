@@ -129,7 +129,7 @@ export const importExportService = {
         if (!folderToColId.has(folder)) {
           const newCol = await collectionsRepo.create({
             name: folder,
-            color: '#C99AB5',
+            color: '#F2A33A',
             icon: 'folder',
             order: 99,
           });

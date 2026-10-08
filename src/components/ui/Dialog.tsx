@@ -52,7 +52,7 @@ export const Dialog: React.FC<DialogProps> = ({
       >
         <div className="flex items-center justify-between px-6 py-4 border-b border-line">
           <div>
-            <h3 className="font-display text-2xl tracking-wide uppercase text-cream">
+            <h3 className="font-display text-2xl tracking-normal text-cream">
               {title}
             </h3>
             {description && (

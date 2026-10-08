@@ -2,7 +2,7 @@ import React from 'react';
 
 interface BadgeProps {
   children: React.ReactNode;
-  variant?: 'pink' | 'sage' | 'forest' | 'cream';
+  variant?: 'orange' | 'sage' | 'forest' | 'cream';
   size?: 'xs' | 'sm' | 'md';
   dotColor?: string;
   onRemove?: () => void;
@@ -26,7 +26,7 @@ export const Badge: React.FC<BadgeProps> = ({
   const variantStyles = {
     forest: 'bg-forest text-cream border border-line',
     sage: 'bg-sage-deep text-cream border border-line',
-    pink: 'bg-pink/20 text-pink border border-pink/40',
+    orange: 'bg-orange/20 text-orange border border-orange/40',
     cream: 'bg-cream text-forest font-bold',
   };
 

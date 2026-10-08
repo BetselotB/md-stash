@@ -1,12 +1,26 @@
 :root {
-  --sage: #6B7B6E;
-  --sage-deep: #5A6A5D;
+  /* Core brand palette */
+  --sage: #8A9A78;
+  --sage-deep: #76866A;
+  --cream: #F6F1DC;
+  --cream-dim: #E3DDC2;
+  --orange: #F2A33A;
+  --orange-deep: #D98821;
   --forest: #2F3A33;
   --forest-dark: #232B26;
-  --cream: #FAF8EE;
-  --cream-dim: #E8E5D5;
-  --pink: #C99AB5;
-  --pink-deep: #B5839F;
-  --line: rgba(245, 242, 227, 0.28);
-  --line-light: rgba(245, 242, 227, 0.15);
+  --ink: #26332A;
+
+  /* Borders & Rules */
+  --line: rgba(246, 241, 220, 0.28);
+  --line-light: rgba(246, 241, 220, 0.15);
+  --line-ink: rgba(38, 51, 42, 0.18);
+
+  /* Display Font Candidates:
+     - 'Passion One': Chunky retro condensed with tight leading, organic hand-cut feel & real lowercase glyphs (matches Brew District aesthetic best)
+     - 'Londrina Solid': Organic hand-crafted poster style
+     - 'Alumni Sans': Ultra-condensed tall sans
+     - 'Bowlby One': Heavy block 20th century
+     - 'Anton': Wood-type condensed
+  */
+  --font-display: 'Passion One', 'Londrina Solid', sans-serif;
 }

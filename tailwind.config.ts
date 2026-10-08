@@ -17,24 +17,36 @@ export default {
         cream: {
           DEFAULT: 'var(--cream)',
           dim: 'var(--cream-dim)',
-          faint: 'rgba(245, 242, 227, 0.1)',
+          faint: 'rgba(246, 241, 220, 0.1)',
         },
+        orange: {
+          DEFAULT: 'var(--orange)',
+          deep: 'var(--orange-deep)',
+          light: '#F5B85D',
+        },
+        ink: {
+          DEFAULT: 'var(--ink)',
+        },
+        // Legacy fallback mapping to ensure no breakage during migration
         pink: {
-          DEFAULT: 'var(--pink)',
-          deep: 'var(--pink-deep)',
-          light: '#DEB5CC',
+          DEFAULT: 'var(--orange)',
+          deep: 'var(--orange-deep)',
+          light: '#F5B85D',
         },
-        line: 'var(--line)',
+        line: {
+          DEFAULT: 'var(--line)',
+          ink: 'var(--line-ink)',
+        },
       },
       fontFamily: {
-        display: ['"Bebas Neue"', '"Anton"', 'sans-serif'],
-        sans: ['"Nunito"', '"Inter"', 'system-ui', '-apple-system', 'sans-serif'],
+        display: ['var(--font-display)', 'sans-serif'],
+        sans: ['"Nunito"', 'system-ui', '-apple-system', 'sans-serif'],
         mono: ['"JetBrains Mono"', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace'],
       },
       boxShadow: {
         stamp: '0 2px 0 0 rgba(0,0,0,0.15)',
         card: '0 8px 24px -4px rgba(25, 32, 28, 0.35)',
-        glow: '0 0 20px -3px rgba(201, 154, 181, 0.3)',
+        glow: '0 0 24px -2px rgba(242, 163, 58, 0.35)',
       },
     },
   },

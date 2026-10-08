@@ -12,7 +12,7 @@ export async function seedInitialDataIfNeeded(): Promise<void> {
   // 1. Create collections
   const aiCollection = await collectionsRepo.create({
     name: 'AI Context',
-    color: '#C99AB5',
+    color: '#F2A33A',
     icon: 'sparkles',
     order: 0,
   });

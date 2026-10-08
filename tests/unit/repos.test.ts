@@ -14,7 +14,7 @@ describe('Dexie repositories CRUD tests', () => {
   it('can create, retrieve, update, and delete collections', async () => {
     const col = await collectionsRepo.create({
       name: 'Prompts',
-      color: '#C99AB5',
+      color: '#F2A33A',
       icon: 'sparkles',
       order: 0,
     });

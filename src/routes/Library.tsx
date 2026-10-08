@@ -80,9 +80,9 @@ export const Library: React.FC = () => {
     <div className="max-w-7xl mx-auto space-y-8 animate-fadeIn">
       {/* Backup Nudge Banner (after 5+ files) */}
       {!backupNudgeDismissed && allFiles.length >= 5 && (
-        <div className="flex items-center justify-between gap-4 p-4 rounded-2xl bg-forest border border-pink/40 shadow-sm text-xs">
+        <div className="flex items-center justify-between gap-4 p-4 rounded-2xl bg-forest border border-orange/40 shadow-sm text-xs">
           <div className="flex items-center gap-3">
-            <div className="p-2 rounded-xl bg-pink/20 text-pink shrink-0">
+            <div className="p-2 rounded-xl bg-orange/20 text-orange shrink-0">
               <HardDrive className="w-4 h-4" />
             </div>
             <div>
@@ -110,7 +110,7 @@ export const Library: React.FC = () => {
       {/* View Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="font-display text-4xl uppercase tracking-wider text-cream">
+          <h1 className="font-display text-4xl tracking-normal text-cream">
             {filterType === 'pinned'
               ? 'Pinned Favorites'
               : activeTag
@@ -128,10 +128,10 @@ export const Library: React.FC = () => {
       {/* Empty State */}
       {filteredFiles.length === 0 && (
         <div className="py-20 flex flex-col items-center justify-center text-center p-8 bg-forest/40 border border-dashed border-line rounded-3xl">
-          <div className="w-16 h-16 rounded-full bg-forest flex items-center justify-center text-pink mb-4 border border-line">
+          <div className="w-16 h-16 rounded-full bg-forest flex items-center justify-center text-orange mb-4 border border-line">
             <FileQuestion className="w-8 h-8" />
           </div>
-          <h2 className="font-display text-2xl uppercase tracking-wider text-cream mb-1">
+          <h2 className="font-display text-2xl tracking-normal text-cream mb-1">
             {searchQuery || activeTag ? 'No matching files found' : 'Your stash is empty'}
           </h2>
           <p className="text-xs text-cream-dim max-w-sm mb-6">
@@ -145,8 +145,8 @@ export const Library: React.FC = () => {
       {/* Pinned Section */}
       {showSeparatedPinned && topPinnedFiles.length > 0 && (
         <div className="space-y-3">
-          <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-pink">
-            <Pin className="w-3.5 h-3.5 fill-pink" />
+          <div className="flex items-center gap-2 text-xs font-bold tracking-normal text-orange">
+            <Pin className="w-3.5 h-3.5 fill-orange" />
             <span>Pinned to Top ({topPinnedFiles.length})</span>
           </div>
           <div
@@ -173,7 +173,7 @@ export const Library: React.FC = () => {
       {remainingFiles.length > 0 && (
         <div className="space-y-3">
           {showSeparatedPinned && topPinnedFiles.length > 0 && (
-            <div className="text-xs font-bold uppercase tracking-wider text-cream-dim/70">
+            <div className="text-xs font-bold tracking-normal text-cream-dim/70">
               Files ({remainingFiles.length})
             </div>
           )}

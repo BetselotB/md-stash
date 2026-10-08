@@ -32,10 +32,10 @@ export const CollectionView: React.FC = () => {
   if (!isKnown && !isStillLoading) {
     return (
       <div className="max-w-2xl mx-auto py-16 text-center space-y-4">
-        <div className="w-16 h-16 rounded-2xl bg-forest border border-line flex items-center justify-center text-pink mx-auto">
+        <div className="w-16 h-16 rounded-2xl bg-forest border border-line flex items-center justify-center text-orange mx-auto">
           <FileQuestion className="w-8 h-8" />
         </div>
-        <h2 className="font-display text-3xl uppercase tracking-wider text-cream">
+        <h2 className="font-display text-3xl tracking-normal text-cream">
           Collection Not Found
         </h2>
         <p className="text-xs text-cream-dim max-w-sm mx-auto">
@@ -84,14 +84,14 @@ export const CollectionView: React.FC = () => {
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h1 className="font-display text-4xl uppercase tracking-wider text-cream">
+              <h1 className="font-display text-4xl tracking-normal text-cream">
                 {isUnsorted ? 'Unsorted Files' : collection?.name || 'Collection'}
               </h1>
               {!isUnsorted && collection && (
                 <button
                   type="button"
                   onClick={() => setIsEditModalOpen(true)}
-                  className="p-1.5 rounded-lg text-cream-dim hover:text-pink hover:bg-forest transition-colors cursor-pointer"
+                  className="p-1.5 rounded-lg text-cream-dim hover:text-orange hover:bg-forest transition-colors cursor-pointer"
                   title="Edit collection"
                 >
                   <Edit2 className="w-4 h-4" />
@@ -108,10 +108,10 @@ export const CollectionView: React.FC = () => {
       {/* Empty State */}
       {filteredFiles.length === 0 && (
         <div className="py-20 flex flex-col items-center justify-center text-center p-8 bg-forest/40 border border-dashed border-line rounded-3xl">
-          <div className="w-16 h-16 rounded-full bg-forest flex items-center justify-center text-pink mb-4 border border-line">
+          <div className="w-16 h-16 rounded-full bg-forest flex items-center justify-center text-orange mb-4 border border-line">
             <FileQuestion className="w-8 h-8" />
           </div>
-          <h2 className="font-display text-2xl uppercase tracking-wider text-cream mb-1">
+          <h2 className="font-display text-2xl tracking-normal text-cream mb-1">
             No files in this collection
           </h2>
           <p className="text-xs text-cream-dim max-w-sm mb-6">

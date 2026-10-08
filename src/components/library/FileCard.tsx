@@ -66,7 +66,7 @@ export const FileCard: React.FC<FileCardProps> = ({
         onClick={() => onOpen(file)}
         className={`group flex items-center justify-between px-4 py-3 bg-forest rounded-xl border transition-all duration-150 cursor-pointer ${
           isSelected
-            ? 'border-pink bg-forest-light/60 shadow-glow'
+            ? 'border-orange bg-forest-light/60 shadow-glow'
             : 'border-line hover:border-cream/40 hover:bg-forest-light/40'
         }`}
       >
@@ -80,8 +80,8 @@ export const FileCard: React.FC<FileCardProps> = ({
             }}
             className={`w-5 h-5 rounded border flex items-center justify-center shrink-0 transition-colors ${
               isSelected
-                ? 'bg-pink border-pink text-forest'
-                : 'border-line hover:border-pink bg-forest-dark'
+                ? 'bg-orange border-orange text-forest'
+                : 'border-line hover:border-orange bg-forest-dark'
             }`}
             aria-label="Select file for bundle"
           >
@@ -141,7 +141,7 @@ export const FileCard: React.FC<FileCardProps> = ({
           <button
             type="button"
             onClick={handleQuickCopy}
-            className="p-1.5 text-cream-dim hover:text-pink rounded-lg hover:bg-cream-faint transition-colors"
+            className="p-1.5 text-cream-dim hover:text-orange rounded-lg hover:bg-cream-faint transition-colors"
             title="Copy Prompt-ready"
           >
             <Copy className="w-4 h-4" />
@@ -151,11 +151,11 @@ export const FileCard: React.FC<FileCardProps> = ({
             type="button"
             onClick={handleTogglePin}
             className={`p-1.5 rounded-lg hover:bg-cream-faint transition-colors ${
-              file.pinned ? 'text-pink' : 'text-cream-dim hover:text-cream'
+              file.pinned ? 'text-orange' : 'text-cream-dim hover:text-cream'
             }`}
             title={file.pinned ? 'Unpin' : 'Pin to top'}
           >
-            <Pin className={`w-4 h-4 ${file.pinned ? 'fill-pink' : ''}`} />
+            <Pin className={`w-4 h-4 ${file.pinned ? 'fill-orange' : ''}`} />
           </button>
 
           <button
@@ -177,7 +177,7 @@ export const FileCard: React.FC<FileCardProps> = ({
       onClick={() => onOpen(file)}
       className={`group relative flex flex-col justify-between p-4 bg-forest rounded-2xl border transition-all duration-200 cursor-pointer hover:-translate-y-0.5 hover:shadow-card ${
         isSelected
-          ? 'border-pink bg-forest-light/60 shadow-glow ring-1 ring-pink'
+          ? 'border-orange bg-forest-light/60 shadow-glow ring-1 ring-orange'
           : 'border-line hover:border-cream/40 hover:bg-forest-light/30'
       }`}
     >
@@ -194,8 +194,8 @@ export const FileCard: React.FC<FileCardProps> = ({
               }}
               className={`w-4 h-4 rounded border flex items-center justify-center transition-colors ${
                 isSelected
-                  ? 'bg-pink border-pink text-forest'
-                  : 'border-line hover:border-pink bg-forest-dark'
+                  ? 'bg-orange border-orange text-forest'
+                  : 'border-line hover:border-orange bg-forest-dark'
               }`}
               aria-label="Select file"
             >
@@ -228,12 +228,12 @@ export const FileCard: React.FC<FileCardProps> = ({
               onClick={handleTogglePin}
               className={`p-1 rounded-md transition-colors ${
                 file.pinned
-                  ? 'text-pink bg-pink/20'
+                  ? 'text-orange bg-orange/20'
                   : 'text-cream-dim/60 hover:text-cream hover:bg-cream-faint'
               }`}
               title={file.pinned ? 'Unpin' : 'Pin to top'}
             >
-              <Pin className={`w-3.5 h-3.5 ${file.pinned ? 'fill-pink' : ''}`} />
+              <Pin className={`w-3.5 h-3.5 ${file.pinned ? 'fill-orange' : ''}`} />
             </button>
 
             {/* Drag Handle */}
@@ -252,7 +252,7 @@ export const FileCard: React.FC<FileCardProps> = ({
         {/* Title & icon */}
         <div className="flex items-start gap-2.5 mb-2">
           <FileText className="w-4 h-4 text-cream-dim mt-1 shrink-0" />
-          <h3 className="font-bold text-cream text-base tracking-tight line-clamp-2 leading-snug group-hover:text-pink transition-colors">
+          <h3 className="font-bold text-cream text-base tracking-tight line-clamp-2 leading-snug group-hover:text-orange transition-colors">
             {file.title}
           </h3>
         </div>
@@ -291,7 +291,7 @@ export const FileCard: React.FC<FileCardProps> = ({
           <button
             type="button"
             onClick={handleQuickCopy}
-            className="p-1 text-cream-dim hover:text-pink rounded transition-colors"
+            className="p-1 text-cream-dim hover:text-orange rounded transition-colors"
             title="Copy prompt-ready"
           >
             <Copy className="w-3.5 h-3.5" />

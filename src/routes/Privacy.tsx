@@ -29,7 +29,7 @@ export const Privacy: React.FC = () => {
         </Link>
 
         <div>
-          <h1 className="font-display text-5xl sm:text-6xl uppercase tracking-wider text-cream mb-2">
+          <h1 className="font-display text-5xl sm:text-6xl tracking-normal text-cream mb-2">
             Plain-Language Privacy
           </h1>
           <p className="text-cream-dim text-sm">
@@ -38,9 +38,9 @@ export const Privacy: React.FC = () => {
         </div>
 
         <div className="p-6 rounded-2xl bg-forest border border-line space-y-4">
-          <div className="flex items-center gap-3 text-pink">
+          <div className="flex items-center gap-3 text-orange">
             <Shield className="w-6 h-6" />
-            <h2 className="font-display text-2xl uppercase tracking-wide text-cream">
+            <h2 className="font-display text-2xl tracking-normal text-cream">
               The Fundamental Promise
             </h2>
           </div>
@@ -52,7 +52,7 @@ export const Privacy: React.FC = () => {
         <div className="space-y-6 text-sm text-cream-dim leading-relaxed">
           <div className="space-y-2">
             <h3 className="font-bold text-lg text-cream flex items-center gap-2">
-              <HardDrive className="w-5 h-5 text-pink" />
+              <HardDrive className="w-5 h-5 text-orange" />
               1. Where does your data go?
             </h3>
             <p>
@@ -62,7 +62,7 @@ export const Privacy: React.FC = () => {
 
           <div className="space-y-2">
             <h3 className="font-bold text-lg text-cream flex items-center gap-2">
-              <EyeOff className="w-5 h-5 text-pink" />
+              <EyeOff className="w-5 h-5 text-orange" />
               2. Do we track your activity?
             </h3>
             <p>
@@ -72,7 +72,7 @@ export const Privacy: React.FC = () => {
 
           <div className="space-y-2">
             <h3 className="font-bold text-lg text-cream flex items-center gap-2">
-              <Lock className="w-5 h-5 text-pink" />
+              <Lock className="w-5 h-5 text-orange" />
               3. Who can read your notes?
             </h3>
             <p>
@@ -83,7 +83,7 @@ export const Privacy: React.FC = () => {
 
         <div className="pt-8 border-t border-line flex justify-between items-center text-xs text-cream-dim">
           <span>Crafted with care. Free & open.</span>
-          <Link to="/app" className="text-pink font-bold hover:underline">
+          <Link to="/app" className="text-orange font-bold hover:underline">
             Launch MDstash App →
           </Link>
         </div>

@@ -33,8 +33,8 @@ export const Logo: React.FC<LogoProps> = ({
         className={`${iconSizes[size]} object-contain drop-shadow-sm transition-transform duration-200 hover:scale-105`}
       />
       {showText && (
-        <span className={`tracking-wider uppercase text-cream ${textSizes[size]}`}>
-          MD<span className="text-pink">stash</span>
+        <span className={`tracking-normal text-cream ${textSizes[size]}`}>
+          MD<span className="text-orange">stash</span>
         </span>
       )}
     </div>
