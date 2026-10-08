@@ -68,15 +68,24 @@ export async function getFilesFromDataTransfer(
   return files;
 }
 
+export interface ImportOptions {
+  collectionId?: string | null;
+  onConflict?: 'skip' | 'overwrite' | 'keepBoth';
+}
+
 /**
  * Saves a list of imported files into IndexedDB, deduping where appropriate.
  */
 export async function importFilesList(
   files: File[],
-  collectionId: string | null = null
-): Promise<{ added: number; skipped: number }> {
+  options: string | null | ImportOptions = null
+): Promise<{ added: number; skipped: number; updated: number }> {
+  const collectionId = typeof options === 'string' || options === null ? options : options.collectionId || null;
+  const onConflict = typeof options === 'object' && options !== null ? options.onConflict || 'skip' : 'skip';
+
   let added = 0;
   let skipped = 0;
+  let updated = 0;
 
   for (const file of files) {
     if (!file.name.match(/\.(md|markdown|txt)$/i)) {
@@ -84,10 +93,43 @@ export async function importFilesList(
     }
 
     const content = await file.text();
-    const existing = await filesRepo.findDuplicate(file.name, content);
-    if (existing) {
+    const exactDuplicate = await filesRepo.findDuplicate(file.name, content);
+    if (exactDuplicate) {
       skipped++;
       continue;
+    }
+
+    const sameNameFile = await filesRepo.findByFilename(file.name);
+    if (sameNameFile) {
+      if (onConflict === 'overwrite') {
+        await filesRepo.update(sameNameFile.id, {
+          content,
+          size: file.size || content.length,
+          title: extractTitle(content, file.name),
+        });
+        updated++;
+        continue;
+      } else if (onConflict === 'keepBoth') {
+        const dotIndex = file.name.lastIndexOf('.');
+        const baseName = dotIndex !== -1 ? file.name.slice(0, dotIndex) : file.name;
+        const ext = dotIndex !== -1 ? file.name.slice(dotIndex) : '.md';
+        const uniqueName = `${baseName}-${Date.now().toString().slice(-4)}${ext}`;
+
+        await filesRepo.create({
+          title: extractTitle(content, uniqueName),
+          filename: uniqueName,
+          content,
+          collectionId,
+          tags: [],
+          pinned: false,
+          size: file.size || content.length,
+        });
+        added++;
+        continue;
+      } else {
+        skipped++;
+        continue;
+      }
     }
 
     await filesRepo.create({
@@ -102,5 +144,5 @@ export async function importFilesList(
     added++;
   }
 
-  return { added, skipped };
+  return { added, skipped, updated };
 }

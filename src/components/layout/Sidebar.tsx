@@ -3,6 +3,7 @@ import { NavLink, useNavigate, useParams } from 'react-router-dom';
 import { Logo } from '../ui/Logo';
 import { useCollections, useFiles, usePinnedFiles, useAllTags } from '../../hooks/useDb';
 import { filesRepo } from '../../db/files.repo';
+import { collectionsRepo } from '../../db/collections.repo';
 import { persistenceService } from '../../services/persistence';
 import { useUIStore } from '../../store/uiStore';
 import { Collection } from '../../domain/types';
@@ -167,7 +168,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   No collections yet.
                 </p>
               ) : (
-                collections.map((col) => {
+                collections.map((col, idx) => {
                   const IconComp = ICON_MAP[col.icon] || Folder;
                   const count = allFiles.filter((f) => f.collectionId === col.id).length;
                   const isCurrent = activeCollectionId === col.id;
@@ -193,25 +194,52 @@ export const Sidebar: React.FC<SidebarProps> = ({
                         <span className="truncate">{col.name}</span>
                       </div>
 
-                      <div className="flex items-center gap-1.5 shrink-0">
-                        <span className="text-[11px] font-mono opacity-70 group-hover:hidden">
-                          {count}
-                        </span>
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            onEditCollection(col);
-                          }}
-                          className="hidden group-hover:inline-block p-1 text-cream-dim hover:text-pink rounded transition-colors"
-                          title="Edit collection"
-                        >
-                          <Edit2 className="w-3 h-3" />
-                        </button>
+                        <div className="hidden group-hover:flex items-center gap-0.5">
+                          <button
+                            type="button"
+                            disabled={idx === 0}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              const newCols = [...collections];
+                              const [removed] = newCols.splice(idx, 1);
+                              newCols.splice(idx - 1, 0, removed);
+                              collectionsRepo.reorder(newCols.map((c) => c.id));
+                            }}
+                            className="p-1 text-cream-dim hover:text-cream disabled:opacity-20 transition-colors"
+                            title="Move up"
+                          >
+                            <span className="text-[10px]">▲</span>
+                          </button>
+                          <button
+                            type="button"
+                            disabled={idx === collections.length - 1}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              const newCols = [...collections];
+                              const [removed] = newCols.splice(idx, 1);
+                              newCols.splice(idx + 1, 0, removed);
+                              collectionsRepo.reorder(newCols.map((c) => c.id));
+                            }}
+                            className="p-1 text-cream-dim hover:text-cream disabled:opacity-20 transition-colors"
+                            title="Move down"
+                          >
+                            <span className="text-[10px]">▼</span>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onEditCollection(col);
+                            }}
+                            className="p-1 text-cream-dim hover:text-pink rounded transition-colors"
+                            title="Edit collection"
+                          >
+                            <Edit2 className="w-3 h-3" />
+                          </button>
+                        </div>
                       </div>
-                    </div>
-                  );
-                })
+                    );
+                  })
               )}
             </div>
           </div>

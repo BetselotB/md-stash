@@ -80,6 +80,11 @@ export const filesRepo = {
     return existing.find((f) => hashContent(f.content) === targetHash);
   },
 
+  async findByFilename(filename: string): Promise<StashFile | undefined> {
+    const matches = await db.files.where('filename').equals(filename).toArray();
+    return matches[0];
+  },
+
   async clearAll(): Promise<void> {
     await db.files.clear();
   },

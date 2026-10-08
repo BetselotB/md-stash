@@ -11,7 +11,7 @@ export class MDstashDatabase extends Dexie {
     super('MDstashDB');
 
     this.version(1).stores({
-      files: 'id, collectionId, *tags, pinned, updatedAt, title',
+      files: 'id, collectionId, filename, *tags, pinned, updatedAt, title',
       collections: 'id, order',
       versions: 'id, fileId, createdAt',
       settings: 'key',

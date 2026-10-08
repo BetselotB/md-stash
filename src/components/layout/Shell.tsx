@@ -84,11 +84,16 @@ export const Shell: React.FC = () => {
   // Global paste handler (Ctrl+V creates quick-add)
   useEffect(() => {
     const handlePaste = (e: ClipboardEvent) => {
+      const target = e.target as HTMLElement | null;
       const activeEl = document.activeElement;
       const isInput =
         activeEl instanceof HTMLInputElement ||
         activeEl instanceof HTMLTextAreaElement ||
-        (activeEl as HTMLElement)?.isContentEditable;
+        (activeEl as HTMLElement)?.isContentEditable ||
+        Boolean(activeEl?.closest?.('input, textarea, [contenteditable="true"]')) ||
+        target instanceof HTMLInputElement ||
+        target instanceof HTMLTextAreaElement ||
+        Boolean(target?.closest?.('input, textarea, [contenteditable="true"]'));
 
       if (!isInput && e.clipboardData) {
         const text = e.clipboardData.getData('text/plain');

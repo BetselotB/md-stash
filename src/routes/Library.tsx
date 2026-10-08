@@ -1,24 +1,26 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useNavigate, Link } from 'react-router-dom';
 import { useFiles, usePinnedFiles, useCollections } from '../hooks/useDb';
 import { useUIStore } from '../store/uiStore';
 import { searchService } from '../services/search';
 import { FileCard } from '../components/library/FileCard';
-import { FileDetailModal } from '../components/file/FileDetailModal';
-import { StashFile } from '../domain/types';
-import { Pin, FileQuestion, Sparkles, Plus, Upload } from 'lucide-react';
+import { importExportService } from '../services/importExport';
+import { Pin, FileQuestion, HardDrive, Download, X } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 
 export const Library: React.FC = () => {
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const filterType = searchParams.get('filter');
 
   const allFiles = useFiles();
   const pinnedFiles = usePinnedFiles();
   const collections = useCollections();
 
-  const { searchQuery, activeTag, viewMode } = useUIStore();
-  const [selectedFile, setSelectedFile] = useState<StashFile | null>(null);
+  const { searchQuery, activeTag, viewMode, showToast } = useUIStore();
+  const [backupNudgeDismissed, setBackupNudgeDismissed] = useState(() => {
+    return localStorage.getItem('mdstash_backup_nudge_dismissed') === 'true';
+  });
 
   // Keep MiniSearch index synchronized
   useEffect(() => {
@@ -59,8 +61,52 @@ export const Library: React.FC = () => {
     return showSeparatedPinned ? filteredFiles.filter((f) => !f.pinned) : filteredFiles;
   }, [filteredFiles, showSeparatedPinned]);
 
+  const handleDismissNudge = () => {
+    setBackupNudgeDismissed(true);
+    localStorage.setItem('mdstash_backup_nudge_dismissed', 'true');
+  };
+
+  const handleQuickBackup = async () => {
+    try {
+      await importExportService.exportZip(allFiles, collections);
+      showToast('Exported backup zip!', 'success');
+      handleDismissNudge();
+    } catch {
+      showToast('Failed to export backup', 'error');
+    }
+  };
+
   return (
-    <div className="max-w-7xl mx-auto space-y-8">
+    <div className="max-w-7xl mx-auto space-y-8 animate-fadeIn">
+      {/* Backup Nudge Banner (after 5+ files) */}
+      {!backupNudgeDismissed && allFiles.length >= 5 && (
+        <div className="flex items-center justify-between gap-4 p-4 rounded-2xl bg-forest border border-pink/40 shadow-sm text-xs">
+          <div className="flex items-center gap-3">
+            <div className="p-2 rounded-xl bg-pink/20 text-pink shrink-0">
+              <HardDrive className="w-4 h-4" />
+            </div>
+            <div>
+              <span className="font-bold text-cream">Back up your stash: </span>
+              <span className="text-cream-dim">
+                You have {allFiles.length} files saved locally in your browser. Download a `.zip` archive anytime to keep an external copy.
+              </span>
+            </div>
+          </div>
+          <div className="flex items-center gap-2 shrink-0">
+            <Button size="sm" variant="primary" onClick={handleQuickBackup} icon={<Download className="w-3.5 h-3.5" />}>
+              Export Zip
+            </Button>
+            <button
+              onClick={handleDismissNudge}
+              className="p-1 rounded-lg text-cream-dim hover:text-cream transition-colors cursor-pointer"
+              aria-label="Dismiss banner"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* View Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -115,7 +161,7 @@ export const Library: React.FC = () => {
                 key={file.id}
                 file={file}
                 collection={file.collectionId ? collectionMap.get(file.collectionId) : undefined}
-                onOpen={(f) => setSelectedFile(f)}
+                onOpen={(f) => navigate(`/app/f/${f.id}`)}
                 viewMode={viewMode}
               />
             ))}
@@ -143,23 +189,12 @@ export const Library: React.FC = () => {
                 key={file.id}
                 file={file}
                 collection={file.collectionId ? collectionMap.get(file.collectionId) : undefined}
-                onOpen={(f) => setSelectedFile(f)}
+                onOpen={(f) => navigate(`/app/f/${f.id}`)}
                 viewMode={viewMode}
               />
             ))}
           </div>
         </div>
-      )}
-
-      {/* File Detail Modal */}
-      {selectedFile && (
-        <FileDetailModal
-          file={selectedFile}
-          collection={
-            selectedFile.collectionId ? collectionMap.get(selectedFile.collectionId) : undefined
-          }
-          onClose={() => setSelectedFile(null)}
-        />
       )}
     </div>
   );

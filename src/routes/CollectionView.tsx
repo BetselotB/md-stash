@@ -1,13 +1,12 @@
 import React, { useState, useMemo } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useFiles, useCollection, useCollections } from '../hooks/useDb';
 import { useUIStore } from '../store/uiStore';
 import { searchService } from '../services/search';
 import { FileCard } from '../components/library/FileCard';
-import { FileDetailModal } from '../components/file/FileDetailModal';
 import { CollectionModal } from '../components/collections/CollectionModal';
 import { StashFile, Collection } from '../domain/types';
-import { Folder, Inbox, Edit2, FileQuestion } from 'lucide-react';
+import { Folder, Inbox, Edit2, FileQuestion, ArrowLeft } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 
 export const CollectionView: React.FC = () => {
@@ -20,12 +19,41 @@ export const CollectionView: React.FC = () => {
   const files = useFiles(isUnsorted ? null : collectionId);
 
   const { searchQuery, activeTag, viewMode } = useUIStore();
-  const [selectedFile, setSelectedFile] = useState<StashFile | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   const collectionMap = useMemo(() => {
     return new Map(collections.map((c) => [c.id, c]));
   }, [collections]);
+
+  // Check if collection exists once collections are loaded
+  const isKnown = isUnsorted || (collectionId && collections.some((c) => c.id === collectionId));
+  const isStillLoading = !isUnsorted && collections.length === 0;
+
+  if (!isKnown && !isStillLoading) {
+    return (
+      <div className="max-w-2xl mx-auto py-16 text-center space-y-4">
+        <div className="w-16 h-16 rounded-2xl bg-forest border border-line flex items-center justify-center text-pink mx-auto">
+          <FileQuestion className="w-8 h-8" />
+        </div>
+        <h2 className="font-display text-3xl uppercase tracking-wider text-cream">
+          Collection Not Found
+        </h2>
+        <p className="text-xs text-cream-dim max-w-sm mx-auto">
+          The requested collection does not exist in your stash or has been removed.
+        </p>
+        <div className="pt-2">
+          <Button
+            variant="primary"
+            size="sm"
+            onClick={() => navigate('/app')}
+            icon={<ArrowLeft className="w-4 h-4" />}
+          >
+            Return to All Files
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   const filteredFiles = useMemo(() => {
     let list = files;
@@ -40,7 +68,7 @@ export const CollectionView: React.FC = () => {
   }, [files, activeTag, searchQuery]);
 
   return (
-    <div className="max-w-7xl mx-auto space-y-8">
+    <div className="max-w-7xl mx-auto space-y-8 animate-fadeIn">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
@@ -106,22 +134,11 @@ export const CollectionView: React.FC = () => {
               key={file.id}
               file={file}
               collection={file.collectionId ? collectionMap.get(file.collectionId) : undefined}
-              onOpen={(f) => setSelectedFile(f)}
+              onOpen={(f) => navigate(`/app/f/${f.id}`)}
               viewMode={viewMode}
             />
           ))}
         </div>
-      )}
-
-      {/* File Detail Modal */}
-      {selectedFile && (
-        <FileDetailModal
-          file={selectedFile}
-          collection={
-            selectedFile.collectionId ? collectionMap.get(selectedFile.collectionId) : undefined
-          }
-          onClose={() => setSelectedFile(null)}
-        />
       )}
 
       {/* Edit Collection Modal */}

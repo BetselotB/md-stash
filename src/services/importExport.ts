@@ -12,11 +12,10 @@ export interface ExportManifest {
 }
 
 export const importExportService = {
-  async exportZip(files: StashFile[], collections: Collection[]): Promise<void> {
+  createZipBuffer(files: StashFile[], collections: Collection[]): Uint8Array {
     const collectionMap = new Map(collections.map((c) => [c.id, c.name]));
     const zipData: Record<string, Uint8Array> = {};
 
-    // Build manifest
     const manifest: ExportManifest = {
       version: 1,
       exportedAt: Date.now(),
@@ -25,7 +24,6 @@ export const importExportService = {
     };
     zipData['manifest.json'] = strToU8(JSON.stringify(manifest, null, 2));
 
-    // Add each markdown file inside its collection folder
     for (const file of files) {
       const collectionName = file.collectionId ? collectionMap.get(file.collectionId) : null;
       const sanitizedFolder = collectionName
@@ -37,8 +35,12 @@ export const importExportService = {
       zipData[filePath] = strToU8(file.content);
     }
 
-    const zipped = zipSync(zipData);
-    const blob = new Blob([zipped], { type: 'application/zip' });
+    return zipSync(zipData);
+  },
+
+  async exportZip(files: StashFile[], collections: Collection[]): Promise<void> {
+    const zipped = this.createZipBuffer(files, collections);
+    const blob = new Blob([zipped as any], { type: 'application/zip' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     const dateStr = new Date().toISOString().split('T')[0];
@@ -50,9 +52,8 @@ export const importExportService = {
     URL.revokeObjectURL(url);
   },
 
-  async importZip(file: File): Promise<{ filesCount: number; collectionsCount: number }> {
-    const arrayBuffer = await file.arrayBuffer();
-    const unzipped = unzipSync(new Uint8Array(arrayBuffer));
+  async importZipBuffer(buffer: Uint8Array): Promise<{ filesCount: number; collectionsCount: number }> {
+    const unzipped = unzipSync(buffer);
 
     let importedFiles = 0;
     let importedCollections = 0;
@@ -63,7 +64,7 @@ export const importExportService = {
         const manifestStr = strFromU8(unzipped['manifest.json']);
         const manifest: ExportManifest = JSON.parse(manifestStr);
 
-        // Import collections
+        // Import collections preserving IDs
         for (const col of manifest.collections) {
           const existing = await collectionsRepo.getById(col.id);
           if (!existing) {
@@ -71,8 +72,6 @@ export const importExportService = {
             importedCollections++;
           }
         }
-
-        const metaMap = new Map(manifest.files.map((f) => [f.id, f]));
 
         // Import files
         for (const [path, u8] of Object.entries(unzipped)) {
@@ -82,13 +81,20 @@ export const importExportService = {
           const content = strFromU8(u8);
           const parts = path.split('/');
           const filename = parts[parts.length - 1];
+          const folderName = parts.length > 1 ? parts[0] : null;
 
-          // Match by filename and parent collection
-          const matchedMeta = manifest.files.find((m) => m.filename === filename);
+          const targetCol = folderName && folderName !== 'Unsorted'
+            ? manifest.collections.find((c) => c.name.replace(/[/\\?%*:|"<>]/g, '_') === folderName)
+            : null;
+
+          const matchedMeta = manifest.files.find((m) =>
+            m.filename === filename && (targetCol ? m.collectionId === targetCol.id : m.collectionId === null)
+          ) || manifest.files.find((m) => m.filename === filename);
 
           const existing = await filesRepo.findDuplicate(filename, content);
           if (!existing) {
             await filesRepo.create({
+              id: matchedMeta?.id,
               title: matchedMeta ? matchedMeta.title : extractTitle(content, filename),
               filename,
               content,
@@ -149,5 +155,10 @@ export const importExportService = {
     }
 
     return { filesCount: importedFiles, collectionsCount: importedCollections };
+  },
+
+  async importZip(file: File): Promise<{ filesCount: number; collectionsCount: number }> {
+    const arrayBuffer = await file.arrayBuffer();
+    return await this.importZipBuffer(new Uint8Array(arrayBuffer));
   },
 };
