@@ -5,6 +5,7 @@ import { LandingNav } from '../components/landing/LandingNav';
 import { HeroSection } from '../components/landing/HeroSection';
 import { HowItWorksStory } from '../components/landing/HowItWorksStory';
 import { FeatureCrateLabels } from '../components/landing/FeatureCrateLabels';
+import { InteractivePlayground } from '../components/landing/InteractivePlayground';
 import { useLandingScroll } from '../hooks/useLandingScroll';
 
 export const Landing: React.FC = () => {
@@ -58,6 +59,9 @@ export const Landing: React.FC = () => {
 
         {/* Feature Crate Labels Lineup */}
         <FeatureCrateLabels />
+
+        {/* Live Interactive Playground */}
+        <InteractivePlayground />
 
         {/* Use Cases Section */}
         <section className="py-20 border-t border-line-ink/40">
