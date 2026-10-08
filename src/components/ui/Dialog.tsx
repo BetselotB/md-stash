@@ -46,6 +46,7 @@ export const Dialog: React.FC<DialogProps> = ({
       onClick={onClose}
     >
       <div
+        data-lenis-prevent
         className={`w-full ${maxWidthClasses[maxWidth]} bg-forest border border-line rounded-2xl shadow-card overflow-hidden transition-all`}
         onClick={(e) => e.stopPropagation()}
       >

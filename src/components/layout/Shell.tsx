@@ -120,7 +120,7 @@ export const Shell: React.FC = () => {
   };
 
   return (
-    <div className="flex h-screen w-screen overflow-hidden bg-sage text-cream">
+    <div data-lenis-prevent className="flex h-screen w-screen overflow-hidden bg-sage text-cream">
       {/* Sidebar */}
       <Sidebar
         onNewCollection={handleNewCollection}

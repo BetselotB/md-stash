@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import Lenis from 'lenis';
 import { Button } from '../components/ui/Button';
 import { StampBadge } from '../components/ui/StampBadge';
 import {
@@ -21,6 +22,44 @@ import {
 export const Landing: React.FC = () => {
   const navigate = useNavigate();
   const [isHovered, setIsHovered] = useState(false);
+  const lenisRef = useRef<Lenis | null>(null);
+
+  useEffect(() => {
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReduced) return;
+
+    const lenis = new Lenis({
+      duration: 1.1,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      orientation: 'vertical',
+      gestureOrientation: 'vertical',
+      smoothWheel: true,
+    });
+    lenisRef.current = lenis;
+
+    let rafId: number;
+    function raf(time: number) {
+      lenis.raf(time);
+      rafId = requestAnimationFrame(raf);
+    }
+    rafId = requestAnimationFrame(raf);
+
+    return () => {
+      cancelAnimationFrame(rafId);
+      lenis.destroy();
+      lenisRef.current = null;
+    };
+  }, []);
+
+  const handleScrollTo = (e: React.MouseEvent<HTMLAnchorElement>, targetId: string) => {
+    e.preventDefault();
+    if (lenisRef.current) {
+      lenisRef.current.scrollTo(targetId, { offset: -20 });
+    } else {
+      const el = document.querySelector(targetId);
+      el?.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   return (
     <div className="min-h-screen bg-sage text-cream selection:bg-pink selection:text-forest overflow-x-hidden relative">
@@ -31,10 +70,18 @@ export const Landing: React.FC = () => {
           <Link to="/" className="text-cream hover:text-pink transition-colors">
             Home
           </Link>
-          <a href="#how-it-works" className="hidden sm:inline-block hover:text-pink transition-colors">
+          <a
+            href="#how-it-works"
+            onClick={(e) => handleScrollTo(e, '#how-it-works')}
+            className="hidden sm:inline-block hover:text-pink transition-colors"
+          >
             How It Works
           </a>
-          <a href="#features" className="hidden md:inline-block hover:text-pink transition-colors">
+          <a
+            href="#features"
+            onClick={(e) => handleScrollTo(e, '#features')}
+            className="hidden md:inline-block hover:text-pink transition-colors"
+          >
             Features
           </a>
           <Link to="/privacy" className="hidden md:inline-block hover:text-pink transition-colors">
@@ -136,7 +183,7 @@ export const Landing: React.FC = () => {
                 Open the App
               </Button>
             </Link>
-            <a href="#how-it-works">
+            <a href="#how-it-works" onClick={(e) => handleScrollTo(e, '#how-it-works')}>
               <Button size="lg" variant="secondary">
                 See How It Works
               </Button>
