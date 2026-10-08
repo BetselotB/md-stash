@@ -6,6 +6,7 @@ import { HeroSection } from '../components/landing/HeroSection';
 import { HowItWorksStory } from '../components/landing/HowItWorksStory';
 import { FeatureCrateLabels } from '../components/landing/FeatureCrateLabels';
 import { InteractivePlayground } from '../components/landing/InteractivePlayground';
+import { PrivacyProofPanel } from '../components/landing/PrivacyProofPanel';
 import { useLandingScroll } from '../hooks/useLandingScroll';
 
 export const Landing: React.FC = () => {
@@ -62,6 +63,9 @@ export const Landing: React.FC = () => {
 
         {/* Live Interactive Playground */}
         <InteractivePlayground />
+
+        {/* Privacy Proof Panel */}
+        <PrivacyProofPanel />
 
         {/* Use Cases Section */}
         <section className="py-20 border-t border-line-ink/40">
