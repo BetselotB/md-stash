@@ -13,13 +13,15 @@ import {
   Settings as SettingsIcon,
   X,
   FileCode,
+  Menu,
 } from 'lucide-react';
 
 interface TopbarProps {
   onNewFile: () => void;
+  onToggleMobileMenu?: () => void;
 }
 
-export const Topbar: React.FC<TopbarProps> = ({ onNewFile }) => {
+export const Topbar: React.FC<TopbarProps> = ({ onNewFile, onToggleMobileMenu }) => {
   const {
     searchQuery,
     setSearchQuery,
@@ -42,7 +44,19 @@ export const Topbar: React.FC<TopbarProps> = ({ onNewFile }) => {
   };
 
   return (
-    <header className="h-16 px-6 border-b border-line bg-forest/80 backdrop-blur-md flex items-center justify-between gap-4 sticky top-0 z-30">
+    <header className="h-16 px-4 sm:px-6 border-b border-line bg-forest/80 backdrop-blur-md flex items-center justify-between gap-3 sm:gap-4 sticky top-0 z-30">
+      {/* Mobile hamburger menu */}
+      {onToggleMobileMenu && (
+        <button
+          type="button"
+          onClick={onToggleMobileMenu}
+          className="md:hidden p-2 rounded-lg text-cream-dim hover:text-cream border border-line bg-forest cursor-pointer shrink-0"
+          aria-label="Toggle navigation menu"
+        >
+          <Menu className="w-4 h-4" />
+        </button>
+      )}
+
       {/* Search Bar */}
       <div className="flex-1 max-w-md relative flex items-center gap-2">
         <div className="w-full relative">

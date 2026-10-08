@@ -31,6 +31,17 @@ export default defineConfig({
       }
     })
   ],
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom', 'react-router-dom'],
+          markdown: ['react-markdown', 'remark-gfm', 'rehype-sanitize'],
+          db: ['dexie', 'dexie-react-hooks', 'minisearch', 'fflate'],
+        },
+      },
+    },
+  },
   test: {
     globals: true,
     environment: 'jsdom',

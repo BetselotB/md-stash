@@ -119,19 +119,26 @@ export const Shell: React.FC = () => {
     setIsCollectionModalOpen(true);
   };
 
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
   return (
     <div data-lenis-prevent className="flex h-screen w-screen overflow-hidden bg-sage text-cream">
       {/* Sidebar */}
       <Sidebar
         onNewCollection={handleNewCollection}
         onEditCollection={handleEditCollection}
+        isMobileOpen={isMobileMenuOpen}
+        onCloseMobile={() => setIsMobileMenuOpen(false)}
       />
 
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col h-full overflow-hidden">
-        <Topbar onNewFile={() => { setPastedText(null); setIsQuickAddOpen(true); }} />
+        <Topbar
+          onNewFile={() => { setPastedText(null); setIsQuickAddOpen(true); }}
+          onToggleMobileMenu={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+        />
 
-        <main className="flex-1 overflow-y-auto p-6 relative">
+        <main className="flex-1 overflow-y-auto p-4 sm:p-6 relative">
           <Outlet />
         </main>
       </div>
