@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { StampBadge } from '../components/ui/StampBadge';
+import { LandingNav } from '../components/landing/LandingNav';
 
 export const Landing: React.FC = () => {
   const navigate = useNavigate();
@@ -26,57 +27,11 @@ export const Landing: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-sage text-cream selection:bg-orange selection:text-forest overflow-x-hidden relative bg-sun-glow">
-      {/* Top Header / Navigation */}
-      <header className="relative z-20 border-b border-line px-6 py-4 flex items-center justify-between max-w-7xl mx-auto">
-        {/* Left Nav items */}
-        <div className="flex items-center gap-6 text-xs font-bold text-cream-dim">
-          <Link to="/" className="text-cream hover:text-orange transition-colors">
-            Home
-          </Link>
-          <a
-            href="#how-it-works"
-            onClick={(e) => handleScrollTo(e, '#how-it-works')}
-            className="hidden sm:inline-block hover:text-orange transition-colors"
-          >
-            How it works
-          </a>
-          <a
-            href="#features"
-            onClick={(e) => handleScrollTo(e, '#features')}
-            className="hidden md:inline-block hover:text-orange transition-colors"
-          >
-            Features
-          </a>
-          <Link to="/privacy" className="hidden md:inline-block hover:text-orange transition-colors">
-            Privacy
-          </Link>
-        </div>
-
-        {/* Center Framed Badge */}
-        <div className="border border-line px-4 py-1.5 rounded-sm flex flex-col items-center justify-center bg-forest-dark/40 shadow-stamp">
-          <span className="font-display text-lg text-cream leading-tight">
-            MD<span className="text-orange">stash</span>
-          </span>
-          <span className="text-[9px] text-cream-dim font-mono">
-            Local · Est. 2026
-          </span>
-        </div>
-
-        {/* Right Nav CTA */}
-        <div className="flex items-center gap-4">
-          <span className="hidden lg:inline-block font-mono text-[11px] text-cream-dim">
-            Zero cloud · 100% local
-          </span>
-          <Link to="/app">
-            <Button size="sm" variant="primary">
-              Open MDstash
-            </Button>
-          </Link>
-        </div>
-      </header>
+      {/* Fixed Reference-style Navigation */}
+      <LandingNav />
 
       {/* Hero Section */}
-      <section className="relative pt-12 pb-24 px-6 max-w-7xl mx-auto flex flex-col items-center text-center">
+      <section className="relative pt-24 md:pt-32 pb-24 px-6 max-w-7xl mx-auto flex flex-col items-center text-center">
         {/* Left Rotating Stamp Badge */}
         <div className="hidden lg:block absolute left-8 top-20 z-10">
           <StampBadge text="private & honest · local first · works offline · " size={120} />
