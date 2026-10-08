@@ -7,6 +7,7 @@ import { HowItWorksStory } from '../components/landing/HowItWorksStory';
 import { FeatureCrateLabels } from '../components/landing/FeatureCrateLabels';
 import { InteractivePlayground } from '../components/landing/InteractivePlayground';
 import { PrivacyProofPanel } from '../components/landing/PrivacyProofPanel';
+import { MarqueeUseCases } from '../components/landing/MarqueeUseCases';
 import { useLandingScroll } from '../hooks/useLandingScroll';
 
 export const Landing: React.FC = () => {
@@ -67,30 +68,8 @@ export const Landing: React.FC = () => {
         {/* Privacy Proof Panel */}
         <PrivacyProofPanel />
 
-        {/* Use Cases Section */}
-        <section className="py-20 border-t border-line-ink/40">
-          <div className="max-w-5xl mx-auto px-6">
-            <div className="text-center mb-12">
-              <h2 className="font-display text-4xl text-ink">
-                Perfect for repeated context
-              </h2>
-              <p className="text-xs text-ink/75 mt-2 font-sans">
-                Stop digging through old repos to find your favorite prompt files.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
-              {['CLAUDE.md', 'AGENTS.md', '.cursorrules', 'System prompts', 'API cheatsheets', 'README starters', 'Code snippets', 'Meeting notes'].map((item) => (
-                <div
-                  key={item}
-                  className="p-4 rounded-xl bg-cream-dim/60 border border-line-ink font-mono text-xs text-ink font-bold hover:border-orange hover:bg-cream transition-colors shadow-sm"
-                >
-                  {item}
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
+        {/* Dual Marquee Use Cases */}
+        <MarqueeUseCases />
 
         {/* Reverse Arch: Cream Transitioning into Sage */}
         <div className="curtain-arch-reverse overflow-hidden w-full leading-none -mb-1 pointer-events-none">
@@ -108,29 +87,40 @@ export const Landing: React.FC = () => {
       {/* ================= 3. FINAL CTA BACK ON SUNNY SAGE ================= */}
       <section
         ref={finalCtaRef}
-        className="py-24 bg-sage text-cream border-t border-line text-center px-6 relative z-10"
+        className="py-24 sm:py-32 bg-sage text-cream border-t border-line text-center px-6 relative z-10"
       >
-        <div className="max-w-3xl mx-auto space-y-6">
-          <h2 className="font-display text-5xl sm:text-6xl text-cream">
-            Stash your first file. <br />
-            Drop it anywhere.
+        <div className="max-w-3xl mx-auto space-y-8">
+          {/* Crate logo mark */}
+          <Link to="/app" className="inline-block group" aria-label="Open MDstash app">
+            <img
+              src="/logo.svg"
+              alt="MDstash crate"
+              className="w-24 h-24 mx-auto filter drop-shadow-md group-hover:scale-105 group-hover:-rotate-2 transition-transform duration-300"
+            />
+          </Link>
+
+          <h2 className="font-display text-5xl sm:text-7xl text-cream tracking-tight leading-none">
+            Stash your first file.
           </h2>
-          <p className="text-sm text-cream-dim max-w-md mx-auto font-sans">
-            Ready to organize your markdown files locally? No signup required.
+
+          <p className="text-base text-cream-dim max-w-md mx-auto font-sans leading-relaxed">
+            Pure, local markdown stash. Ready in seconds, works completely offline.
           </p>
+
           <div>
-            <Link to="/app">
-              <Button size="lg" variant="primary">
-                Open MDstash now
-              </Button>
+            <Link
+              to="/app"
+              className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full bg-orange hover:bg-orange-deep text-forest font-bold text-base shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-0.5 focus:outline-none focus:ring-4 focus:ring-cream/40"
+            >
+              Open MDstash
             </Link>
           </div>
         </div>
       </section>
 
       {/* ================= 4. FOOTER IN FOREST ================= */}
-      <footer className="border-t border-line py-10 px-6 bg-forest text-xs text-cream-dim relative z-10">
-        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+      <footer className="border-t border-line pt-12 pb-0 px-6 bg-forest text-xs text-cream-dim relative z-10 overflow-hidden">
+        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 pb-8 border-b border-cream/10">
           <div className="flex items-center gap-2">
             <span className="font-display text-xl text-cream">
               MD<span className="text-orange">stash</span>
@@ -150,7 +140,23 @@ export const Landing: React.FC = () => {
             >
               GitHub
             </a>
+            <button
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+              className="hover:text-cream transition-colors cursor-pointer"
+            >
+              Back to top ↑
+            </button>
           </div>
+        </div>
+
+        {/* Giant wordmark cropped at bottom edge */}
+        <div
+          className="w-full text-center select-none pointer-events-none overflow-hidden -mb-8 sm:-mb-14 md:-mb-20 pt-6"
+          aria-hidden="true"
+        >
+          <span className="font-display text-[19vw] leading-none text-cream/5 tracking-tighter block whitespace-nowrap">
+            MDstash
+          </span>
         </div>
       </footer>
     </div>
