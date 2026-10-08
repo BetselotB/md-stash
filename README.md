@@ -24,8 +24,8 @@ MDstash is a craft-inspired, local-first organizer for Markdown files and AI pro
 - 📜 **Version History Snapshots:** Non-destructive snapshots captured on each save, capped per file, with instant restore.
 - 💾 **Full Zip Export & Import Round-Trip:** Export your entire stash as a `.zip` archive containing real `.md` files organized by collection folders + a portable `manifest.json`.
 - 🔒 **Zero Cloud & Absolute Privacy:** Pure IndexedDB storage with persistent storage request support (`navigator.storage.persist`). Zero analytics, zero cookies, zero external network requests.
-- 📱 **Responsive & Accessible:** Off-canvas mobile navigation drawer, visible pink focus rings, Escape key modal dismissal, and Lenis smooth scrolling on the landing page (with `prefers-reduced-motion` detection).
-- ⚡ **Offline PWA:** Installable desktop web app powered by Service Worker precaching.
+- 📱 **Responsive & Accessible:** Off-canvas mobile navigation drawer, visible orange focus rings, Escape key modal dismissal, and Lenis smooth scrolling on the landing page (with `prefers-reduced-motion` detection).
+- 📦 **Offline PWA:** Installable desktop web app powered by Service Worker precaching.
 
 ---
 
@@ -41,16 +41,16 @@ The drag handle on file cards and file detail views sets both `text/plain` and C
 ## 🎨 Design System
 
 Inspired by the Brew District craft aesthetic:
-- **Palette:** Sage `#6B7B6E`, Forest `#2F3A33`, Cream `#FAF8EE`, and Dusty Pink `#C99AB5` accent.
-- **Typography:** Chunky condensed display typography, friendly rounded UI sans, and crisp monospace for code.
-- **Craft Signature:** Rotating SVG text stamp badge, subtle analog grain texture overlay, and smooth Lenis scrolling.
+- **Palette:** Sunny Sage `#8A9A78`, Warm Cream `#F6F1DC`, Craft Orange `#F2A33A`, Deep Forest `#2F3A33`, and Ink `#26332A`.
+- **Typography:** Self-hosted Passion One display headline (with sentence-case craft glyphs), friendly rounded Nunito UI sans, and crisp JetBrains Mono for code.
+- **Craft Signature:** Seamless rotating circular badge, warm sun-glow radial hero gradient, analog grain overlay, fluid Lenis + ScrollTrigger cream curtain transition, and pinned scroll-story.
 
 ---
 
 ## 🧪 Testing & Verification
 
 ```bash
-# Run Vitest test suite (18 unit and integration tests)
+# Run Vitest test suite (51 unit and integration tests across 16 test suites)
 npm test
 
 # Run ESLint (zero warnings or errors)

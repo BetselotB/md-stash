@@ -75,8 +75,8 @@ export const DevFonts: React.FC = () => {
 
         {/* Live Controls */}
         <section className="p-6 rounded-2xl bg-forest border border-cream/20 space-y-4">
-          <label className="block text-xs font-mono text-orange font-bold uppercase tracking-wider">
-            Edit Headline Text (Sentence Case)
+          <label className="block text-xs font-mono text-orange font-bold tracking-wider">
+            Edit headline text (sentence case)
           </label>
           <input
             type="text"
@@ -108,7 +108,7 @@ export const DevFonts: React.FC = () => {
                   <div className="flex items-center gap-3">
                     <h2 className="text-xl font-bold text-cream">{c.name}</h2>
                     {c.recommended && (
-                      <span className="px-3 py-0.5 rounded-full bg-orange text-forest text-xs font-bold uppercase tracking-wider">
+                      <span className="px-3 py-0.5 rounded-full bg-orange text-forest text-xs font-bold tracking-wider">
                         Recommended
                       </span>
                     )}

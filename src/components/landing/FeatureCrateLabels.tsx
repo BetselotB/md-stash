@@ -96,7 +96,7 @@ export const FeatureCrateLabels: React.FC = () => {
             <div className="absolute top-0 right-0 w-16 h-16 bg-orange/10 rounded-bl-full pointer-events-none" />
             <div>
               <div className="flex items-center justify-between mb-4">
-                <span className="text-[10px] font-mono font-bold tracking-wider text-orange uppercase bg-orange/10 px-2 py-0.5 rounded border border-orange/20">
+                <span className="text-[10px] font-mono font-bold tracking-wider text-orange bg-orange/10 px-2 py-0.5 rounded border border-orange/20">
                   Label No. 01
                 </span>
                 <Layers className="w-5 h-5 text-ink/60" />
@@ -159,7 +159,7 @@ export const FeatureCrateLabels: React.FC = () => {
           <div className="min-w-[320px] sm:min-w-[360px] max-w-[360px] snap-center rounded-2xl bg-cream-dim/70 border-2 border-line-ink p-6 flex flex-col justify-between shadow-sm hover:shadow-md transition-shadow relative overflow-hidden">
             <div>
               <div className="flex items-center justify-between mb-4">
-                <span className="text-[10px] font-mono font-bold tracking-wider text-orange uppercase bg-orange/10 px-2 py-0.5 rounded border border-orange/20">
+                <span className="text-[10px] font-mono font-bold tracking-wider text-orange bg-orange/10 px-2 py-0.5 rounded border border-orange/20">
                   Label No. 02
                 </span>
                 <Copy className="w-5 h-5 text-ink/60" />
@@ -213,7 +213,7 @@ export const FeatureCrateLabels: React.FC = () => {
           <div className="min-w-[320px] sm:min-w-[360px] max-w-[360px] snap-center rounded-2xl bg-cream-dim/70 border-2 border-line-ink p-6 flex flex-col justify-between shadow-sm hover:shadow-md transition-shadow relative overflow-hidden">
             <div>
               <div className="flex items-center justify-between mb-4">
-                <span className="text-[10px] font-mono font-bold tracking-wider text-orange uppercase bg-orange/10 px-2 py-0.5 rounded border border-orange/20">
+                <span className="text-[10px] font-mono font-bold tracking-wider text-orange bg-orange/10 px-2 py-0.5 rounded border border-orange/20">
                   Label No. 03
                 </span>
                 <Search className="w-5 h-5 text-ink/60" />
@@ -279,7 +279,7 @@ export const FeatureCrateLabels: React.FC = () => {
           <div className="min-w-[320px] sm:min-w-[360px] max-w-[360px] snap-center rounded-2xl bg-cream-dim/70 border-2 border-line-ink p-6 flex flex-col justify-between shadow-sm hover:shadow-md transition-shadow relative overflow-hidden">
             <div>
               <div className="flex items-center justify-between mb-4">
-                <span className="text-[10px] font-mono font-bold tracking-wider text-orange uppercase bg-orange/10 px-2 py-0.5 rounded border border-orange/20">
+                <span className="text-[10px] font-mono font-bold tracking-wider text-orange bg-orange/10 px-2 py-0.5 rounded border border-orange/20">
                   Label No. 04
                 </span>
                 <History className="w-5 h-5 text-ink/60" />
@@ -329,7 +329,7 @@ export const FeatureCrateLabels: React.FC = () => {
           <div className="min-w-[320px] sm:min-w-[360px] max-w-[360px] snap-center rounded-2xl bg-cream-dim/70 border-2 border-line-ink p-6 flex flex-col justify-between shadow-sm hover:shadow-md transition-shadow relative overflow-hidden">
             <div>
               <div className="flex items-center justify-between mb-4">
-                <span className="text-[10px] font-mono font-bold tracking-wider text-orange uppercase bg-orange/10 px-2 py-0.5 rounded border border-orange/20">
+                <span className="text-[10px] font-mono font-bold tracking-wider text-orange bg-orange/10 px-2 py-0.5 rounded border border-orange/20">
                   Label No. 05
                 </span>
                 <WifiOff className="w-5 h-5 text-ink/60" />

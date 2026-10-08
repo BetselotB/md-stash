@@ -155,7 +155,7 @@ ${file.content}`;
             {/* Step 1: Pick File */}
             <div>
               <div className="flex items-center justify-between mb-3">
-                <span className="text-xs font-mono font-bold text-ink uppercase tracking-wider">
+                <span className="text-xs font-mono font-bold text-ink tracking-wider">
                   1. Choose Sample File
                 </span>
                 <span className="text-[10px] font-mono text-ink/60">3 preset files</span>
@@ -189,7 +189,7 @@ ${file.content}`;
             {/* Step 2: Toggle Copy Mode & Working Actions */}
             <div>
               <div className="flex items-center justify-between mb-3">
-                <span className="text-xs font-mono font-bold text-ink uppercase tracking-wider">
+                <span className="text-xs font-mono font-bold text-ink tracking-wider">
                   2. Output Format
                 </span>
                 <div className="flex rounded-lg bg-cream border border-line-ink/60 p-0.5">

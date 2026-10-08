@@ -30,13 +30,21 @@ export const Landing: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-sage text-cream selection:bg-orange selection:text-forest overflow-x-hidden relative">
+      {/* Skip to Main Content Link for A11y */}
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-orange focus:text-forest focus:font-bold focus:rounded-xl focus:shadow-lg focus:outline-none focus:ring-2 focus:ring-forest"
+      >
+        Skip to main content
+      </a>
+
       {/* Fixed Reference-style Navigation with Dynamic Theme Flipping */}
       <LandingNav theme={navTheme} onNavigateSection={handleScrollTo} />
 
       {/* ================= 1. HERO ON SUNNY SAGE ================= */}
-      <div ref={heroRef} className="pt-16 md:pt-20 bg-sun-glow will-change-transform">
+      <main id="main-content" ref={heroRef} className="pt-16 md:pt-20 bg-sun-glow will-change-transform">
         <HeroSection onScrollNext={() => handleScrollTo('#cream-curtain')} />
-      </div>
+      </main>
 
       {/* ================= 2. THE CREAM CURTAIN ================= */}
       <div

@@ -103,13 +103,13 @@ export const PrivacyProofPanel: React.FC = () => {
               {/* Big Vintage Stamp */}
               <div className="w-full max-w-sm rounded-2xl border-4 border-forest bg-cream p-5 text-center shadow-md relative transform rotate-1 hover:rotate-0 transition-transform">
                 <div className="border-2 border-dashed border-forest/60 p-4 rounded-xl">
-                  <div className="text-[10px] font-mono font-bold tracking-widest text-orange uppercase">
-                    Audit Verification Stamp
+                  <div className="text-[10px] font-mono font-bold tracking-widest text-orange">
+                    Audit verification stamp
                   </div>
                   <div className="font-display text-4xl text-forest my-2 tracking-tight">
                     0 requests
                   </div>
-                  <div className="font-mono text-xs font-bold text-forest uppercase tracking-wider">
+                  <div className="font-mono text-xs font-bold text-forest tracking-wider">
                     with your files
                   </div>
                   <div className="text-[10px] text-ink/60 font-sans mt-2">
