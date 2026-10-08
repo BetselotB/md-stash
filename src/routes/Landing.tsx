@@ -11,6 +11,7 @@ import {
 import { Button } from '../components/ui/Button';
 import { LandingNav } from '../components/landing/LandingNav';
 import { HeroSection } from '../components/landing/HeroSection';
+import { HowItWorksStory } from '../components/landing/HowItWorksStory';
 import { useLandingScroll } from '../hooks/useLandingScroll';
 
 export const Landing: React.FC = () => {
@@ -59,60 +60,8 @@ export const Landing: React.FC = () => {
           </svg>
         </div>
 
-        {/* How It Works (3 Steps) */}
-        <section id="how-it-works" className="py-20 border-t border-line-ink/40">
-          <div className="max-w-6xl mx-auto px-6">
-            <div className="text-center mb-16">
-              <span className="text-xs font-mono text-orange font-bold">
-                Effortless three-step workflow
-              </span>
-              <h2 className="font-display text-4xl sm:text-5xl text-ink mt-2">
-                How MDstash works
-              </h2>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {/* Step 1 */}
-              <div className="p-8 rounded-3xl bg-cream-dim/60 border border-line-ink flex flex-col items-start text-left relative overflow-hidden group hover:border-orange transition-all">
-                <div className="w-12 h-12 rounded-2xl bg-orange/20 border border-orange text-orange flex items-center justify-center mb-6 font-display text-2xl font-bold">
-                  1
-                </div>
-                <h3 className="font-display text-2xl text-ink mb-2">
-                  Drag in files or folders
-                </h3>
-                <p className="text-sm text-ink/80 leading-relaxed font-sans">
-                  Drop any <code>.md</code>, <code>.markdown</code>, or whole directories right into the browser window, or paste clipboard text anytime.
-                </p>
-              </div>
-
-              {/* Step 2 */}
-              <div className="p-8 rounded-3xl bg-cream-dim/60 border border-line-ink flex flex-col items-start text-left relative overflow-hidden group hover:border-orange transition-all">
-                <div className="w-12 h-12 rounded-2xl bg-orange/20 border border-orange text-orange flex items-center justify-center mb-6 font-display text-2xl font-bold">
-                  2
-                </div>
-                <h3 className="font-display text-2xl text-ink mb-2">
-                  Sort into collections
-                </h3>
-                <p className="text-sm text-ink/80 leading-relaxed font-sans">
-                  Create color-coded collections for Claude rules, Cursor prompts, project readmes, or agent setups. Tag files freely.
-                </p>
-              </div>
-
-              {/* Step 3 */}
-              <div className="p-8 rounded-3xl bg-cream-dim/60 border border-line-ink flex flex-col items-start text-left relative overflow-hidden group hover:border-orange transition-all">
-                <div className="w-12 h-12 rounded-2xl bg-orange/20 border border-orange text-orange flex items-center justify-center mb-6 font-display text-2xl font-bold">
-                  3
-                </div>
-                <h3 className="font-display text-2xl text-ink mb-2">
-                  Drop or copy anywhere
-                </h3>
-                <p className="text-sm text-ink/80 leading-relaxed font-sans">
-                  Copy prompt-ready blocks with file headers, fenced code blocks, or drag files out directly onto your desktop or IDE chats.
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
+        {/* Pinned Scroll-Story: How It Works */}
+        <HowItWorksStory />
 
         {/* Features Grid */}
         <section id="features" className="py-20 border-t border-line-ink/40">
