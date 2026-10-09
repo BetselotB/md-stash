@@ -1,14 +1,9 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Copy, Check, FileText, Send, GripVertical, RotateCcw, Play, Pause } from 'lucide-react';
 import gsap from 'gsap';
-import { MotionPathPlugin } from 'gsap/MotionPathPlugin';
 import { Pill } from '../ui/Pill';
 import { formatFileForCopy } from '../../domain/copyFormats';
 import { CopyMode } from '../../domain/types';
-
-if (typeof window !== 'undefined') {
-  gsap.registerPlugin(MotionPathPlugin);
-}
 
 // Module-level flag to mark demo-generated interactions so takeover listeners ignore them
 // and copy handler skips navigator.clipboard.writeText.
@@ -19,7 +14,6 @@ export function dispatchDemoClick(el: HTMLElement | null) {
   isDemoDispatching = true;
   const activeBefore = document.activeElement;
   try {
-    // Dispatch pointerdown and mousedown with defaultPrevented so browsers do not transfer focus
     const pEvt = new PointerEvent('pointerdown', { bubbles: true, cancelable: true });
     pEvt.preventDefault();
     el.dispatchEvent(pEvt);
@@ -29,7 +23,7 @@ export function dispatchDemoClick(el: HTMLElement | null) {
 
     el.click();
 
-    // Ensure focus does not move to the element clicked by demo
+    // Defensively ensure focus did not move to the element clicked by the demo
     if (document.activeElement && (document.activeElement === el || el.contains(document.activeElement))) {
       (document.activeElement as HTMLElement).blur();
       if (activeBefore && activeBefore !== el && !el.contains(activeBefore) && activeBefore instanceof HTMLElement && activeBefore !== document.body) {
@@ -78,7 +72,7 @@ export const SAMPLE_FILES: SampleFile[] = [
   },
 ];
 
-export function truncatePromptLines(text: string, maxLines = 4): string {
+export function truncatePromptLines(text: string, maxLines = 3): string {
   const lines = text.split('\n');
   if (lines.length <= maxLines) return text;
   return lines.slice(0, maxLines).join('\n') + '\n…';
@@ -86,60 +80,45 @@ export function truncatePromptLines(text: string, maxLines = 4): string {
 
 export type DemoAct = 1 | 2 | 3;
 
-export type DemoPhase =
-  | 'idle'
-  // Act 1: CLAUDE.md (Drag and drop)
-  | 'act1-move-to-chip'
-  | 'act1-grab'
-  | 'act1-drag'
-  | 'act1-drop'
-  | 'act1-move-to-send'
-  | 'act1-send'
-  | 'act1-sent'
-  | 'act1-move-to-reset'
-  | 'act1-reset'
-  | 'select-agents'
-  // Act 2: AGENTS.md (Copy and paste)
-  | 'act2-move-to-copy'
-  | 'act2-copy'
-  | 'act2-move-to-input'
-  | 'act2-paste'
-  | 'act2-move-to-send'
-  | 'act2-send'
-  | 'act2-sent'
-  | 'act2-move-to-reset'
-  | 'act2-reset'
-  | 'select-cursorrules'
-  // Act 3: .cursorrules (Drag and drop)
-  | 'act3-move-to-chip'
-  | 'act3-grab'
-  | 'act3-drag'
-  | 'act3-drop'
-  | 'act3-move-to-send'
-  | 'act3-send'
-  | 'act3-sent'
-  | 'act3-move-to-reset'
-  | 'act3-reset'
-  | 'select-claude'
-  | 'rest';
-
 export interface TakeoverLogEntry {
   type: string;
   target: string;
   time: number;
 }
 
+export interface TraceEntry {
+  t: number;
+  act: number;
+  step: string;
+  event: 'start' | 'end';
+  selectedFile: string;
+  chatState: 'greeting' | 'sent' | 'empty';
+  inputChip: null | string;
+  copyState: 'idle' | 'copied';
+  resetClicks: number;
+  ringElements: string[];
+}
+
+export interface DemoErrorEntry {
+  step: string;
+  message: string;
+  state?: Record<string, unknown>;
+}
+
 declare global {
   interface Window {
     __demo?: {
       act: DemoAct;
-      phase: DemoPhase;
+      step: string;
+      phase: string;
       userPaused: boolean;
       interactionPaused: boolean;
+      loopCount: number;
       takeoverReason: string | null;
       cursorRect: { left: number; top: number; width: number; height: number } | null;
-      loopCount: number;
       takeoverLog: TakeoverLogEntry[];
+      errors: DemoErrorEntry[];
+      trace: TraceEntry[];
     };
   }
 }
@@ -165,50 +144,101 @@ export const InteractivePlayground: React.FC = () => {
   const [resetClickCount, setResetClickCount] = useState(0);
   const [isDemoInputFocus, setIsDemoInputFocus] = useState(false);
 
-  // Demo state: userPaused (the button) and interactionPaused (takeover)
+  // Demo playback states
   const [userPaused, setUserPaused] = useState(false);
   const [interactionPaused, setInteractionPaused] = useState(false);
   const [demoAct, setDemoAct] = useState<DemoAct>(1);
-  const [demoPhase, setDemoPhase] = useState<DemoPhase>('idle');
+  const [demoStep, setDemoStep] = useState<string>('idle');
   const [reducedMotion, setReducedMotion] = useState(false);
 
-  // DOM Refs
+  // Synchronous State & DOM Refs
   const containerRef = useRef<HTMLElement>(null);
   const cursorRef = useRef<HTMLDivElement>(null);
   const ghostChipRef = useRef<HTMLDivElement>(null);
   const chipRef = useRef<HTMLDivElement>(null);
   const chipHintRef = useRef<HTMLSpanElement>(null);
   const copyBtnRef = useRef<HTMLButtonElement>(null);
-  const copyRippleRef = useRef<HTMLSpanElement>(null);
   const previewRef = useRef<HTMLPreElement>(null);
   const chatInputContainerRef = useRef<HTMLDivElement>(null);
   const chatInputElRef = useRef<HTMLInputElement>(null);
   const dropRingRef = useRef<HTMLDivElement>(null);
   const sendBtnRef = useRef<HTMLButtonElement>(null);
-  const sendRippleRef = useRef<HTMLSpanElement>(null);
   const resetBtnRef = useRef<HTMLButtonElement>(null);
-  const resetRippleRef = useRef<HTMLSpanElement>(null);
   const fileCardRefs = useRef<Array<HTMLButtonElement | null>>([]);
 
-  // Control & Lifecycle Refs
-  const masterTimelineRef = useRef<gsap.core.Timeline | null>(null);
+  // Runner Control Refs
   const loopCountRef = useRef<number>(0);
   const isVisibleRef = useRef<boolean>(false);
   const takeoverReasonRef = useRef<string | null>(null);
   const takeoverTimerRef = useRef<NodeJS.Timeout | null>(null);
   const takeoverLogRef = useRef<TakeoverLogEntry[]>([]);
-  const interactionPausedRef = useRef<boolean>(false);
-  const userPausedRef = useRef<boolean>(false);
-  interactionPausedRef.current = interactionPaused;
-  userPausedRef.current = userPaused;
+  const errorsRef = useRef<DemoErrorEntry[]>([]);
+  const traceRef = useRef<TraceEntry[]>([]);
+  const copyTimerRef = useRef<NodeJS.Timeout | null>(null);
 
-  const isDebug = typeof window !== 'undefined' && window.location.search.includes('demodebug');
+  // State Mirror Refs for immediate reading inside async runner
+  const selectedFileRef = useRef<SampleFile>(SAMPLE_FILES[0]);
+  selectedFileRef.current = selectedFile;
+  const chatMessagesRef = useRef(chatMessages);
+  chatMessagesRef.current = chatMessages;
+  const attachedFileRef = useRef(attachedFile);
+  attachedFileRef.current = attachedFile;
+  const pastedContentRef = useRef(pastedContent);
+  pastedContentRef.current = pastedContent;
+  const copiedRef = useRef(copied);
+  copiedRef.current = copied;
+  const resetClickCountRef = useRef(resetClickCount);
+  resetClickCountRef.current = resetClickCount;
+  const userPausedRef = useRef(userPaused);
+  userPausedRef.current = userPaused;
+  const interactionPausedRef = useRef(interactionPaused);
+  interactionPausedRef.current = interactionPaused;
+  const demoActRef = useRef<DemoAct>(1);
+  demoActRef.current = demoAct;
+  const demoStepRef = useRef<string>('idle');
+  demoStepRef.current = demoStep;
+  const chatInputRef = useRef(chatInput);
+  chatInputRef.current = chatInput;
+  const modeRef = useRef(mode);
+  modeRef.current = mode;
+
+  // Active Runner and Tween Handles
+  const runAbortControllerRef = useRef<AbortController | null>(null);
+  const activeTweenRef = useRef<gsap.core.Tween | null>(null);
+  const pauseGateRef = useRef<{ promise: Promise<void>; resolve: () => void } | null>(null);
+  const runnerRestartTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const assistantReplyTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const resetChatTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   const formattedText = formatFileForCopy(
     selectedFile.name,
     selectedFile.content,
     mode
   );
+
+  // Helper: Publish State to window.__demo
+  const updateDebugHook = useCallback(() => {
+    if (typeof window === 'undefined') return;
+    const cursorEl = cursorRef.current;
+    let cursorRect = null;
+    if (cursorEl) {
+      const r = cursorEl.getBoundingClientRect();
+      cursorRect = { left: r.left, top: r.top, width: r.width, height: r.height };
+    }
+    window.__demo = {
+      act: demoActRef.current,
+      step: demoStepRef.current,
+      phase: demoStepRef.current,
+      userPaused: userPausedRef.current,
+      interactionPaused: interactionPausedRef.current,
+      loopCount: loopCountRef.current,
+      takeoverReason: takeoverReasonRef.current,
+      cursorRect,
+      takeoverLog: [...takeoverLogRef.current],
+      errors: [...errorsRef.current],
+      trace: [...traceRef.current],
+    };
+  }, []);
 
   // Reduced motion detection
   useEffect(() => {
@@ -220,19 +250,30 @@ export const InteractivePlayground: React.FC = () => {
     return () => mediaQuery.removeEventListener('change', handler);
   }, []);
 
-  // Real copy handler: if demo-invoked, skips writing to clipboard but runs UI state
-  const handleCopy = async () => {
+  // UI Handlers: Copy, Drag, Send, Reset
+  const handleCopy = () => {
+    const textToCopy = formatFileForCopy(
+      selectedFileRef.current.name,
+      selectedFileRef.current.content,
+      modeRef.current
+    );
     if (!isDemoDispatching) {
       try {
-        if (navigator.clipboard) {
-          await navigator.clipboard.writeText(formattedText);
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(textToCopy).catch(() => {});
         }
       } catch {
-        // clipboard access error fallback
+        // fallback
       }
     }
     setCopied(true);
-    setTimeout(() => setCopied(false), 1200);
+    copiedRef.current = true;
+    if (copyTimerRef.current) clearTimeout(copyTimerRef.current);
+    copyTimerRef.current = setTimeout(() => {
+      setCopied(false);
+      copiedRef.current = false;
+      copyTimerRef.current = null;
+    }, 1200);
   };
 
   const handleDragStart = (e: React.DragEvent) => {
@@ -249,617 +290,976 @@ export const InteractivePlayground: React.FC = () => {
     e.preventDefault();
     setIsDragging(false);
     const data = e.dataTransfer.getData('text/plain') || formattedText;
-    setChatMessages((prev) => [
-      ...prev,
-      {
-        id: String(Date.now()),
-        sender: 'user',
-        text: data,
-        fileName: selectedFile.name,
-      },
-      {
-        id: String(Date.now() + 1),
-        sender: 'assistant',
-        text: `Got context from ${selectedFile.name}! Ready to execute using these guidelines.`,
-      },
-    ]);
+    const userMsg = {
+      id: String(Date.now()),
+      sender: 'user' as const,
+      text: data,
+      fileName: selectedFileRef.current.name,
+    };
+    const assistantMsg = {
+      id: String(Date.now() + 1),
+      sender: 'assistant' as const,
+      text: `Got context from ${selectedFileRef.current.name}! Ready to execute using these guidelines.`,
+    };
+    const nextMsgs = [userMsg, assistantMsg];
+    setChatMessages(nextMsgs);
+    chatMessagesRef.current = nextMsgs;
   };
 
   const handleSendMessage = (e?: React.FormEvent) => {
     if (e) e.preventDefault();
-    if (!chatInput.trim() && !attachedFile && !pastedContent) return;
+    const curAttached = attachedFileRef.current;
+    const curPasted = pastedContentRef.current;
+    const curInput = chatInputRef.current;
+    if (!curInput.trim() && !curAttached && !curPasted) return;
 
-    let userText = chatInput;
+    let userText = curInput;
     let fileName: string | undefined = undefined;
 
-    if (attachedFile) {
-      userText = truncatePromptLines(formatFileForCopy(attachedFile.name, attachedFile.content, 'prompt'), 4);
-      fileName = attachedFile.name;
-    } else if (pastedContent) {
-      userText = truncatePromptLines(pastedContent, 4);
-      fileName = selectedFile.name;
+    const isNarrow = typeof window !== 'undefined' && window.innerWidth <= 400;
+    const promptLines = isNarrow ? 2 : 3;
+
+    if (curAttached) {
+      userText = truncatePromptLines(formatFileForCopy(curAttached.name, curAttached.content, 'prompt'), promptLines);
+      fileName = curAttached.name;
+    } else if (curPasted) {
+      userText = truncatePromptLines(curPasted, promptLines);
+      fileName = selectedFileRef.current.name;
     }
 
-    setChatMessages((prev) => [
-      ...prev,
-      { id: String(Date.now()), sender: 'user', text: userText, fileName },
-      {
-        id: String(Date.now() + 1),
-        sender: 'assistant',
-        text: fileName
-          ? `Got context from ${fileName}! Ready to execute using these guidelines.`
-          : `Understood: "${chatInput}". Prompt context is active.`,
-      },
-    ]);
+    const targetFileName = fileName || selectedFileRef.current.name;
+    const userMsg = { id: String(Date.now()), sender: 'user' as const, text: userText, fileName: targetFileName };
+
+    // 1. Remove greeting bubble immediately and add user message
+    setChatMessages([userMsg]);
+    chatMessagesRef.current = [userMsg];
     setChatInput('');
+    chatInputRef.current = '';
     setAttachedFile(null);
+    attachedFileRef.current = null;
     setPastedContent(null);
+    pastedContentRef.current = null;
     setIsDemoInputFocus(false);
+
+    // 2. Add assistant reply after ~0.7s
+    if (assistantReplyTimerRef.current) clearTimeout(assistantReplyTimerRef.current);
+    assistantReplyTimerRef.current = setTimeout(() => {
+      const assistantMsg = {
+        id: String(Date.now() + 1),
+        sender: 'assistant' as const,
+        text: targetFileName
+          ? `Got context from ${targetFileName}! Ready to execute using these guidelines.`
+          : `Understood: "${curInput}". Prompt context is active.`,
+      };
+      setChatMessages((prev) => {
+        const next = [...prev.filter((m) => m.id !== 'welcome'), assistantMsg];
+        chatMessagesRef.current = next;
+        return next;
+      });
+      assistantReplyTimerRef.current = null;
+    }, 700);
   };
 
-  // Reset chat handler with 0.45s smooth fade & slide out transition
   const handleResetChat = () => {
     setResetClickCount((c) => c + 1);
+    resetClickCountRef.current += 1;
     setIsResettingChat(true);
-    setTimeout(() => {
+    if (assistantReplyTimerRef.current) {
+      clearTimeout(assistantReplyTimerRef.current);
+      assistantReplyTimerRef.current = null;
+    }
+    if (resetChatTimerRef.current) clearTimeout(resetChatTimerRef.current);
+    resetChatTimerRef.current = setTimeout(() => {
       setChatMessages([WELCOME_MESSAGE]);
+      chatMessagesRef.current = [WELCOME_MESSAGE];
       setChatInput('');
+      chatInputRef.current = '';
       setAttachedFile(null);
+      attachedFileRef.current = null;
       setPastedContent(null);
+      pastedContentRef.current = null;
       setIsDemoInputFocus(false);
       setIsResettingChat(false);
-    }, 450);
+      resetChatTimerRef.current = null;
+    }, 400);
   };
 
-  // Synchronous ref for debug hook
-  const demoActRef = useRef<DemoAct>(1);
-  const demoPhaseRef = useRef<DemoPhase>('idle');
+  // =========================================================================
+  // RUNNER PRIMITIVES: Pause Gate, Preconditions, Tween Helpers
+  // =========================================================================
 
-  // Debug Hook Updater
-  const updateDebugHook = useCallback(() => {
-    if (typeof window === 'undefined') return;
-    const cursorEl = cursorRef.current;
-    let cursorRect = null;
-    if (cursorEl) {
-      const r = cursorEl.getBoundingClientRect();
-      cursorRect = { left: r.left, top: r.top, width: r.width, height: r.height };
+  // Pause Gate Checker: Blocks between steps or during sleeps if paused
+  const checkGate = useCallback(async (signal: AbortSignal) => {
+    if (signal.aborted) {
+      throw new DOMException('Aborted', 'AbortError');
     }
-    window.__demo = {
-      act: demoActRef.current,
-      phase: demoPhaseRef.current,
-      userPaused: userPausedRef.current,
-      interactionPaused: interactionPausedRef.current,
-      takeoverReason: takeoverReasonRef.current,
-      cursorRect,
-      loopCount: loopCountRef.current,
-      takeoverLog: [...takeoverLogRef.current],
+    while (pauseGateRef.current) {
+      await pauseGateRef.current.promise;
+      if (signal.aborted) {
+        throw new DOMException('Aborted', 'AbortError');
+      }
+    }
+  }, []);
+
+  // Sleep Helper: Respects abort and pause gate
+  const sleep = useCallback(
+    (ms: number, signal: AbortSignal): Promise<void> => {
+      return new Promise<void>((resolve, reject) => {
+        if (signal.aborted) return reject(new DOMException('Aborted', 'AbortError'));
+        let timer: NodeJS.Timeout;
+        const onAbort = () => {
+          clearTimeout(timer);
+          reject(new DOMException('Aborted', 'AbortError'));
+        };
+        signal.addEventListener('abort', onAbort, { once: true });
+        timer = setTimeout(() => {
+          signal.removeEventListener('abort', onAbort);
+          checkGate(signal).then(resolve, reject);
+        }, ms);
+      });
+    },
+    [checkGate]
+  );
+
+  // Position Calculator: Relative coordinates inside container
+  const getRelPos = useCallback((el: HTMLElement | null, offsetXRatio = 0.5, offsetYRatio = 0.5) => {
+    if (!el || !containerRef.current) return { x: 0, y: 0 };
+    const cRect = containerRef.current.getBoundingClientRect();
+    const r = el.getBoundingClientRect();
+    return {
+      x: r.left - cRect.left + r.width * offsetXRatio,
+      y: r.top - cRect.top + r.height * offsetYRatio,
     };
   }, []);
 
-  const setPhaseAndAct = useCallback((act: DemoAct, phase: DemoPhase) => {
-    demoActRef.current = act;
-    demoPhaseRef.current = phase;
-    setDemoAct(act);
-    setDemoPhase(phase);
-    updateDebugHook();
-  }, [updateDebugHook]);
+  // Tween Runner: Animates with GSAP, cancel-safe, pause-safe
+  const tween = useCallback(
+    (target: gsap.TweenTarget, vars: gsap.TweenVars, signal: AbortSignal): Promise<void> => {
+      return new Promise<void>((resolve, reject) => {
+        if (signal.aborted) return reject(new DOMException('Aborted', 'AbortError'));
 
-  useEffect(() => {
-    updateDebugHook();
-  }, [updateDebugHook, demoAct, demoPhase, userPaused, interactionPaused]);
+        let tw: gsap.core.Tween;
+        const onAbort = () => {
+          tw.kill();
+          reject(new DOMException('Aborted', 'AbortError'));
+        };
+        signal.addEventListener('abort', onAbort, { once: true });
 
-  // Master Timeline Builder: Three Acts in One Continuous Seamless Loop
-  const buildMasterTimeline = useCallback(
-    (preserveProgress = false) => {
-      if (!containerRef.current || !cursorRef.current) return;
-      if (userPausedRef.current || interactionPausedRef.current || !isVisibleRef.current || reducedMotion) {
-        return;
+        const originalOnComplete = vars.onComplete;
+        tw = gsap.to(target, {
+          ...vars,
+          onComplete: () => {
+            signal.removeEventListener('abort', onAbort);
+            activeTweenRef.current = null;
+            if (originalOnComplete) originalOnComplete();
+            checkGate(signal).then(resolve, reject);
+          },
+        });
+        activeTweenRef.current = tw;
+      });
+    },
+    [checkGate]
+  );
+
+  // Linear / Eased Move to Target
+  const moveTo = useCallback(
+    (targetPos: { x: number; y: number }, duration: number, signal: AbortSignal, ease = 'power3.inOut') => {
+      if (!cursorRef.current) return Promise.resolve();
+      return tween(cursorRef.current, { x: targetPos.x, y: targetPos.y, duration, ease }, signal);
+    },
+    [tween]
+  );
+
+  // Quadratic Curved Move (Arc)
+  const curveTo = useCallback(
+    (
+      targetPos: { x: number; y: number },
+      arcYOffset: number,
+      duration: number,
+      signal: AbortSignal,
+      onProgress?: (prog: number, curPos: { x: number; y: number }) => void
+    ) => {
+      if (!cursorRef.current) return Promise.resolve();
+      const cursor = cursorRef.current;
+      const startX = gsap.getProperty(cursor, 'x') as number;
+      const startY = gsap.getProperty(cursor, 'y') as number;
+
+      const ctrlX = (startX + targetPos.x) / 2;
+      const ctrlY = Math.min(startY, targetPos.y) - arcYOffset;
+
+      const obj = { progress: 0 };
+      return tween(
+        obj,
+        {
+          progress: 1,
+          duration,
+          ease: 'power3.inOut',
+          onUpdate: () => {
+            const p = obj.progress;
+            const x = (1 - p) * (1 - p) * startX + 2 * (1 - p) * p * ctrlX + p * p * targetPos.x;
+            const y = (1 - p) * (1 - p) * startY + 2 * (1 - p) * p * ctrlY + p * p * targetPos.y;
+            gsap.set(cursor, { x, y });
+            if (onProgress) onProgress(p, { x, y });
+          },
+        },
+        signal
+      );
+    },
+    [tween]
+  );
+
+  // Button Click Press Scale Animation
+  const press = useCallback(
+    async (el: HTMLElement | null, signal: AbortSignal, scale = 0.92, duration = 0.24) => {
+      if (!cursorRef.current) return;
+      const half = duration / 2;
+      await Promise.all([
+        tween(cursorRef.current, { scale: 0.88, duration: half, ease: 'power2.in' }, signal),
+        el ? tween(el, { scale, duration: half, ease: 'power2.in' }, signal) : Promise.resolve(),
+      ]);
+      await Promise.all([
+        tween(cursorRef.current, { scale: 1, duration: half, ease: 'power2.out' }, signal),
+        el ? tween(el, { scale: 1, duration: half, ease: 'power2.out' }, signal) : Promise.resolve(),
+      ]);
+    },
+    [tween]
+  );
+
+  // Detect which playground elements currently display a visible outline or ring
+  const inspectRingElements = useCallback((): string[] => {
+    if (typeof window === 'undefined' || !containerRef.current) return [];
+    const playground = containerRef.current;
+    const controls = playground.querySelectorAll<HTMLElement>(
+      '[data-card-index], [data-testid="copy-btn"], [data-testid="send-btn"], [data-testid="reset-chat-btn"], [data-testid="drag-chip"], [data-testid="chat-input-container"], input'
+    );
+    const ringList: string[] = [];
+    controls.forEach((el) => {
+      const cs = window.getComputedStyle(el);
+      const outlineWidth = parseFloat(cs.outlineWidth) || 0;
+      const hasOutline = cs.outlineStyle !== 'none' && outlineWidth > 0;
+      const hasBoxShadowRing = cs.boxShadow && cs.boxShadow !== 'none' && cs.boxShadow.includes('238, 178, 87');
+      if (hasOutline || hasBoxShadowRing) {
+        ringList.push(el.getAttribute('data-testid') || el.getAttribute('data-file-id') || el.tagName.toLowerCase());
       }
+    });
+    return ringList;
+  }, []);
 
-      let prevProgress = 0;
-      if (masterTimelineRef.current) {
-        if (preserveProgress) {
-          prevProgress = masterTimelineRef.current.progress();
+  // Step Wrapper: Preconditions, Trace, Timing & Error Boundary
+  const runStep = useCallback(
+    async (
+      act: DemoAct,
+      stepName: string,
+      precondition: (() => string | null) | null,
+      stepFn: (signal: AbortSignal) => Promise<void>,
+      signal: AbortSignal
+    ) => {
+      await checkGate(signal);
+
+      // 1. Guard Rails: Assert Preconditions
+      if (precondition) {
+        const errorMsg = precondition();
+        if (errorMsg) {
+          const errEntry: DemoErrorEntry = {
+            step: stepName,
+            message: errorMsg,
+            state: {
+              act,
+              selectedFile: selectedFileRef.current.name,
+              attachedFile: attachedFileRef.current?.name,
+              pastedContent: !!pastedContentRef.current,
+              chatMessagesCount: chatMessagesRef.current.length,
+            },
+          };
+          errorsRef.current.push(errEntry);
+          updateDebugHook();
+          throw new Error(`[Precondition Failed in ${stepName}]: ${errorMsg}`);
         }
-        masterTimelineRef.current.kill();
-        masterTimelineRef.current = null;
       }
 
-      const container = containerRef.current;
+      // 2. Trace 'start'
+      const getChatState = (): 'greeting' | 'sent' | 'empty' => {
+        const msgs = chatMessagesRef.current;
+        if (msgs.length === 1 && msgs[0].id === 'welcome') return 'greeting';
+        if (msgs.some((m) => m.sender === 'user')) return 'sent';
+        return 'empty';
+      };
+
+      const getInputChip = (): null | string => {
+        if (attachedFileRef.current) return `file:${attachedFileRef.current.name}`;
+        if (pastedContentRef.current) return `paste:${selectedFileRef.current.name}`;
+        return null;
+      };
+
+      traceRef.current.push({
+        t: performance.now(),
+        act,
+        step: stepName,
+        event: 'start',
+        selectedFile: selectedFileRef.current.name,
+        chatState: getChatState(),
+        inputChip: getInputChip(),
+        copyState: copiedRef.current ? 'copied' : 'idle',
+        resetClicks: resetClickCountRef.current,
+        ringElements: inspectRingElements(),
+      });
+
+      // 3. Update Sync State and DOM dataset
+      demoActRef.current = act;
+      demoStepRef.current = stepName;
+      setDemoAct(act);
+      setDemoStep(stepName);
+      if (containerRef.current) {
+        containerRef.current.setAttribute('data-demo-act', String(act));
+        containerRef.current.setAttribute('data-demo-phase', stepName);
+      }
+      updateDebugHook();
+
+      // 4. Run Step Body
+      await stepFn(signal);
+      await checkGate(signal);
+
+      // 5. Trace 'end'
+      traceRef.current.push({
+        t: performance.now(),
+        act,
+        step: stepName,
+        event: 'end',
+        selectedFile: selectedFileRef.current.name,
+        chatState: getChatState(),
+        inputChip: getInputChip(),
+        copyState: copiedRef.current ? 'copied' : 'idle',
+        resetClicks: resetClickCountRef.current,
+        ringElements: inspectRingElements(),
+      });
+      updateDebugHook();
+    },
+    [checkGate, inspectRingElements, updateDebugHook]
+  );
+
+  // Restore Idempotent HOME State
+  const restoreHome = useCallback(() => {
+    setSelectedFile(SAMPLE_FILES[0]);
+    selectedFileRef.current = SAMPLE_FILES[0];
+    setMode('prompt');
+    setCopied(false);
+    copiedRef.current = false;
+    if (copyTimerRef.current) {
+      clearTimeout(copyTimerRef.current);
+      copyTimerRef.current = null;
+    }
+    if (assistantReplyTimerRef.current) {
+      clearTimeout(assistantReplyTimerRef.current);
+      assistantReplyTimerRef.current = null;
+    }
+    if (resetChatTimerRef.current) {
+      clearTimeout(resetChatTimerRef.current);
+      resetChatTimerRef.current = null;
+    }
+    setAttachedFile(null);
+    attachedFileRef.current = null;
+    setPastedContent(null);
+    pastedContentRef.current = null;
+    setChatInput('');
+    chatInputRef.current = '';
+    setIsDemoInputFocus(false);
+    setIsResettingChat(false);
+    setChatMessages([WELCOME_MESSAGE]);
+    chatMessagesRef.current = [WELCOME_MESSAGE];
+
+    if (ghostChipRef.current) {
+      gsap.set(ghostChipRef.current, { opacity: 0, scale: 0.95, rotation: 0 });
+    }
+    if (dropRingRef.current) {
+      gsap.set(dropRingRef.current, { opacity: 0 });
+    }
+    if (chipRef.current) {
+      gsap.set(chipRef.current, { y: 0, opacity: 1 });
+    }
+  }, []);
+
+  // Cancel Active Execution cleanly
+  const cancelRunner = useCallback(() => {
+    if (assistantReplyTimerRef.current) {
+      clearTimeout(assistantReplyTimerRef.current);
+      assistantReplyTimerRef.current = null;
+    }
+    if (resetChatTimerRef.current) {
+      clearTimeout(resetChatTimerRef.current);
+      resetChatTimerRef.current = null;
+    }
+    if (runAbortControllerRef.current) {
+      runAbortControllerRef.current.abort();
+      runAbortControllerRef.current = null;
+    }
+    if (activeTweenRef.current) {
+      activeTweenRef.current.kill();
+      activeTweenRef.current = null;
+    }
+    if (runnerRestartTimerRef.current) {
+      clearTimeout(runnerRestartTimerRef.current);
+      runnerRestartTimerRef.current = null;
+    }
+    if (pauseGateRef.current) {
+      const gate = pauseGateRef.current;
+      pauseGateRef.current = null;
+      gate.resolve();
+    }
+  }, []);
+
+  // =========================================================================
+  // THE SCRIPT: 3 Acts in Continuous Await-Based Sequence
+  // =========================================================================
+  const runMasterScript = useCallback(
+    async (signal: AbortSignal) => {
+      if (!containerRef.current || !cursorRef.current) return;
       const cursor = cursorRef.current;
       const ghost = ghostChipRef.current;
       const chip = chipRef.current;
       const copyBtn = copyBtnRef.current;
-      const chatInputContainer = chatInputContainerRef.current;
       const sendBtn = sendBtnRef.current;
       const resetBtn = resetBtnRef.current;
       const cardClaude = fileCardRefs.current[0];
       const cardAgents = fileCardRefs.current[1];
       const cardCursorrules = fileCardRefs.current[2];
 
-      const cRect = container.getBoundingClientRect();
-      if (cRect.width === 0 || cRect.height === 0) {
-        requestAnimationFrame(() => buildMasterTimeline(preserveProgress));
-        return;
-      }
-
-      const getCenter = (el: HTMLElement | null, offsetXRatio = 0.5, offsetYRatio = 0.5) => {
-        if (!el) return { x: 0, y: 0 };
-        const r = el.getBoundingClientRect();
-        return {
-          x: r.left - cRect.left + r.width * offsetXRatio,
-          y: r.top - cRect.top + r.height * offsetYRatio,
-        };
-      };
-
       // HOME Position: CLAUDE.md card center-right area
-      const homePos = getCenter(cardClaude, 0.65, 0.5);
-      const chipPos = getCenter(chip, 0.35, 0.5);
-      const copyBtnPos = getCenter(copyBtn, 0.5, 0.5);
-      const inputPos = getCenter(chatInputContainer, 0.35, 0.5);
-      const sendPos = getCenter(sendBtn, 0.5, 0.5);
-      const resetPos = getCenter(resetBtn, 0.5, 0.5);
-      const agentsCardPos = getCenter(cardAgents, 0.5, 0.5);
-      const cursorrulesCardPos = getCenter(cardCursorrules, 0.5, 0.5);
+      const homePos = getRelPos(cardClaude, 0.65, 0.5);
 
-      const isMobile = window.innerWidth <= 768;
-      const sp = isMobile ? 1.05 : 1.0;
-
-      // Master continuous timeline
-      const tl = gsap.timeline({
-        repeat: -1,
-        onRepeat: () => {
-          loopCountRef.current += 1;
-        },
-      });
-      masterTimelineRef.current = tl;
-
-      // Initial cursor starts at HOME: fade in smoothly without flying
-      if (!preserveProgress) {
-        gsap.set(cursor, { x: homePos.x, y: homePos.y, opacity: 0, scale: 1, rotation: 0 });
-        gsap.to(cursor, { opacity: 1, duration: 0.35, ease: 'power2.out' });
-      } else {
-        gsap.set(cursor, { opacity: 1, scale: 1 });
-      }
-      if (ghost) gsap.set(ghost, { opacity: 0, scale: 0.95, rotation: 0 });
+      // Initial entry: cursor smoothly fades in at HOME
+      gsap.set(cursor, { x: homePos.x, y: homePos.y, scale: 1, rotation: 0 });
+      await tween(cursor, { opacity: 1, duration: 0.35, ease: 'power2.out' }, signal);
 
       // =====================================================================
       // ACT 1: CLAUDE.md (via Drag and Drop)
       // =====================================================================
-      // 0. Home rest
-      tl.call(() => {
-        setPhaseAndAct(1, 'idle');
-      });
-      tl.to({}, { duration: 0.8 * sp });
-
-      // 1. Move from HOME to drag chip
-      tl.call(() => setPhaseAndAct(1, 'act1-move-to-chip'));
-      const mid1X = (homePos.x + chipPos.x) / 2 + (isMobile ? 10 : 25);
-      const mid1Y = (homePos.y + chipPos.y) / 2 - (isMobile ? 20 : 35);
-      tl.to(cursor, {
-        motionPath: {
-          path: [{ x: mid1X, y: mid1Y }, { x: chipPos.x, y: chipPos.y }],
-          curviness: 1.2,
+      // 1. Move to Grip of chip
+      await runStep(
+        1,
+        'act1-move-to-chip',
+        null,
+        async (sig) => {
+          const gripPos = getRelPos(chip, 0.08, 0.5);
+          await moveTo(gripPos, 0.85, sig);
         },
-        duration: 1.15 * sp,
-        ease: 'power3.inOut',
-      });
+        signal
+      );
 
-      // Lift chip on arrival
-      if (chip) {
-        tl.to(chip, { y: -3, duration: 0.15, ease: 'power2.out' }, '-=0.15');
-        if (chipHintRef.current) {
-          tl.to(chipHintRef.current, { x: 4, duration: 0.15, yoyo: true, repeat: 1 }, '-=0.15');
-        }
-      }
-
-      // 2. Grab chip
-      tl.call(() => setPhaseAndAct(1, 'act1-grab'));
-      tl.to(cursor, { scale: 0.9, duration: 0.12 * sp, ease: 'power2.in' });
-      if (chip) tl.to(chip, { opacity: 0.5, duration: 0.12 * sp }, '<');
-      if (ghost) tl.to(ghost, { opacity: 1, scale: 1, duration: 0.12 * sp }, '<');
-      tl.to({}, { duration: 0.12 * sp });
+      // 2. Grab: compact ghost attaches
+      await runStep(
+        1,
+        'act1-grab',
+        () => (selectedFileRef.current.id !== 'claude' ? 'CLAUDE.md must be selected before grab' : null),
+        async (sig) => {
+          if (ghost) gsap.set(ghost, { opacity: 0, scale: 0.85, rotation: 0 });
+          await Promise.all([
+            tween(cursor, { scale: 0.9, duration: 0.12, ease: 'power2.in' }, sig),
+            chip ? tween(chip, { opacity: 0.5, duration: 0.12 }, sig) : Promise.resolve(),
+            ghost ? tween(ghost, { opacity: 1, scale: 1, duration: 0.12 }, sig) : Promise.resolve(),
+          ]);
+        },
+        signal
+      );
 
       // 3. Drag arc to chat input
-      tl.call(() => setPhaseAndAct(1, 'act1-drag'));
-      const midDrag1X = (chipPos.x + inputPos.x) / 2;
-      const midDrag1Y = Math.min(chipPos.y, inputPos.y) - (isMobile ? 35 : 65);
-      tl.to(cursor, {
-        motionPath: {
-          path: [{ x: midDrag1X, y: midDrag1Y }, { x: inputPos.x, y: inputPos.y }],
-          curviness: 1.25,
+      await runStep(
+        1,
+        'act1-drag',
+        null,
+        async (sig) => {
+          const inputPos = getRelPos(chatInputContainerRef.current, 0.35, 0.5);
+          await curveTo(inputPos, 50, 1.25, sig, (prog) => {
+            if (ghost) {
+              const tilt = Math.sin(prog * Math.PI) * 5;
+              gsap.set(ghost, { rotation: tilt });
+            }
+            if (prog > 0.65 && dropRingRef.current) {
+              gsap.set(dropRingRef.current, { opacity: 1 });
+            }
+          });
         },
-        duration: 1.35 * sp,
-        ease: 'power2.inOut',
-      });
-      if (ghost) {
-        tl.to(ghost, { rotation: isMobile ? 3 : 5, duration: 0.65 * sp, ease: 'power1.out' }, '<');
-        tl.to(ghost, { rotation: 0, duration: 0.7 * sp, ease: 'power1.in' }, '>-0.65');
-      }
-      if (dropRingRef.current) {
-        tl.to(dropRingRef.current, { opacity: 1, duration: 0.25 }, '-=0.35');
-      }
+        signal
+      );
 
-      // 4. Drop chip into input
-      tl.call(() => setPhaseAndAct(1, 'act1-drop'));
-      if (ghost) tl.to(ghost, { opacity: 0, scale: 0.8, y: '+=8', duration: 0.22 * sp, ease: 'power2.in' });
-      if (chip) tl.to(chip, { opacity: 1, y: 0, duration: 0.22 * sp }, '<');
-      if (dropRingRef.current) tl.to(dropRingRef.current, { opacity: 0, duration: 0.22 * sp }, '<');
-      tl.to(cursor, { scale: 1, duration: 0.15 * sp, ease: 'back.out' }, '<');
-      tl.call(() => setAttachedFile(SAMPLE_FILES[0]));
-      tl.to({}, { duration: 0.18 * sp });
+      // 4. Release / Drop chip into input
+      await runStep(
+        1,
+        'act1-drop',
+        null,
+        async (sig) => {
+          if (dropRingRef.current) gsap.set(dropRingRef.current, { opacity: 0 });
+          if (ghost) gsap.set(ghost, { opacity: 0, scale: 0.9, rotation: 0 });
+          if (chip) gsap.set(chip, { opacity: 1 });
+          setAttachedFile(SAMPLE_FILES[0]);
+          attachedFileRef.current = SAMPLE_FILES[0];
+          await tween(cursor, { scale: 1, duration: 0.15, ease: 'back.out' }, sig);
+          await sleep(200, sig);
+        },
+        signal
+      );
 
       // 5. Move to Send
-      tl.call(() => setPhaseAndAct(1, 'act1-move-to-send'));
-      tl.to(cursor, {
-        x: sendPos.x,
-        y: sendPos.y,
-        duration: 0.65 * sp,
-        ease: 'power3.out',
-      });
+      await runStep(
+        1,
+        'act1-move-to-send',
+        () => (!attachedFileRef.current ? 'Attachment chip must be in input before move to Send' : null),
+        async (sig) => {
+          const sendPos = getRelPos(sendBtn, 0.5, 0.5);
+          await moveTo(sendPos, 0.65, sig);
+        },
+        signal
+      );
 
-      // 6. Click Send
-      tl.call(() => setPhaseAndAct(1, 'act1-send'));
-      tl.to(cursor, { scale: 0.88, duration: 0.12 * sp, ease: 'power2.in' });
-      if (sendBtn) tl.to(sendBtn, { scale: 0.92, duration: 0.12 * sp }, '<');
-      if (sendRippleRef.current) {
-        tl.fromTo(
-          sendRippleRef.current,
-          { scale: 0.9, opacity: 0.8 },
-          { scale: 1.4, opacity: 0, duration: 0.25 * sp, ease: 'power2.out' },
-          '<'
-        );
-      }
-      tl.call(() => dispatchDemoClick(sendBtn));
-      tl.to(cursor, { scale: 1, duration: 0.12 * sp });
-      if (sendBtn) tl.to(sendBtn, { scale: 1, duration: 0.12 * sp }, '<');
+      // 6. Click Send: chip removed immediately, user msg added, reply added
+      await runStep(
+        1,
+        'act1-send',
+        () => (!attachedFileRef.current ? 'Input must contain attachment chip before clicking Send' : null),
+        async (sig) => {
+          await press(sendBtn, sig);
+          handleSendMessage();
+          await sleep(850, sig); // wait for assistant message to mount
+        },
+        signal
+      );
 
-      // 7. Sent message hold (~1.4s)
-      tl.call(() => setPhaseAndAct(1, 'act1-sent'));
-      tl.to({}, { duration: 1.4 * sp });
+      // 7. Sent message hold (~1.6s) with bubbles fully opaque
+      await runStep(
+        1,
+        'act1-sent',
+        () => (chatMessagesRef.current.length < 2 ? 'Chat must have user and reply bubbles during hold' : null),
+        async (sig) => {
+          await sleep(1600, sig);
+        },
+        signal
+      );
 
       // 8. Move to Reset button
-      tl.call(() => setPhaseAndAct(1, 'act1-move-to-reset'));
-      tl.to(cursor, {
-        x: resetPos.x,
-        y: resetPos.y,
-        duration: 0.75 * sp,
-        ease: 'power3.inOut',
-      });
+      await runStep(
+        1,
+        'act1-move-to-reset',
+        null,
+        async (sig) => {
+          const resetPos = getRelPos(resetBtn, 0.5, 0.5);
+          await moveTo(resetPos, 0.75, sig);
+        },
+        signal
+      );
 
-      // 9. Click Reset button (chat clears with 0.45s slide out)
-      tl.call(() => setPhaseAndAct(1, 'act1-reset'));
-      tl.to(cursor, { scale: 0.88, duration: 0.12 * sp, ease: 'power2.in' });
-      if (resetBtn) tl.to(resetBtn, { scale: 0.92, duration: 0.12 * sp }, '<');
-      if (resetRippleRef.current) {
-        tl.fromTo(
-          resetRippleRef.current,
-          { scale: 0.9, opacity: 0.8 },
-          { scale: 1.4, opacity: 0, duration: 0.25 * sp, ease: 'power2.out' },
-          '<'
-        );
-      }
-      tl.call(() => dispatchDemoClick(resetBtn));
-      tl.to(cursor, { scale: 1, duration: 0.12 * sp });
-      if (resetBtn) tl.to(resetBtn, { scale: 1, duration: 0.12 * sp }, '<');
-      tl.to({}, { duration: 0.55 * sp }); // wait for 0.45s slide out to complete
+      // 9. Click Reset: chat cleared, greeting returns
+      await runStep(
+        1,
+        'act1-reset',
+        () => (chatMessagesRef.current.length < 2 ? 'Chat must contain sent messages before Reset' : null),
+        async (sig) => {
+          await press(resetBtn, sig);
+          handleResetChat();
+          await sleep(450, sig); // wait for 400ms slide-out and greeting return
+        },
+        signal
+      );
 
-      // 10. Move to AGENTS.md card & click it
-      tl.call(() => setPhaseAndAct(1, 'select-agents'));
-      tl.to(cursor, {
-        x: agentsCardPos.x,
-        y: agentsCardPos.y,
-        duration: 1.05 * sp,
-        ease: 'power3.inOut',
-      });
-      tl.to(cursor, { scale: 0.9, duration: 0.12 * sp });
-      if (cardAgents) tl.to(cardAgents, { scale: 0.96, duration: 0.12 * sp }, '<');
-      tl.call(() => dispatchDemoClick(cardAgents));
-      tl.to(cursor, { scale: 1, duration: 0.12 * sp });
-      if (cardAgents) tl.to(cardAgents, { scale: 1, duration: 0.12 * sp }, '<');
-      tl.to({}, { duration: 0.35 * sp });
+      // 10. Move to AGENTS.md card & Click
+      await runStep(
+        1,
+        'select-agents',
+        () => (chatMessagesRef.current.length !== 1 || chatMessagesRef.current[0].id !== 'welcome' ? 'Chat must be at greeting before selecting AGENTS.md' : null),
+        async (sig) => {
+          const agentsPos = getRelPos(cardAgents, 0.5, 0.5);
+          await moveTo(agentsPos, 0.95, sig);
+          await press(cardAgents, sig);
+          setSelectedFile(SAMPLE_FILES[1]);
+          selectedFileRef.current = SAMPLE_FILES[1];
+          await sleep(250, sig);
+        },
+        signal
+      );
 
       // =====================================================================
       // ACT 2: AGENTS.md (via Copy to Clipboard & Paste)
       // =====================================================================
       // 1. Move to Copy button
-      tl.call(() => {
-        setPhaseAndAct(2, 'act2-move-to-copy');
-      });
-      tl.to(cursor, {
-        x: copyBtnPos.x,
-        y: copyBtnPos.y,
-        duration: 1.15 * sp,
-        ease: 'power3.inOut',
-      });
+      await runStep(
+        2,
+        'act2-move-to-copy',
+        null,
+        async (sig) => {
+          const copyPos = getRelPos(copyBtn, 0.5, 0.5);
+          await moveTo(copyPos, 0.95, sig);
+        },
+        signal
+      );
 
-      // 2. Click Copy button
-      tl.call(() => setPhaseAndAct(2, 'act2-copy'));
-      tl.to(cursor, { scale: 0.88, duration: 0.12 * sp, ease: 'power2.in' });
-      if (copyBtn) tl.to(copyBtn, { scale: 0.94, duration: 0.12 * sp }, '<');
-      if (copyRippleRef.current) {
-        tl.fromTo(
-          copyRippleRef.current,
-          { scale: 0.9, opacity: 0.8 },
-          { scale: 1.4, opacity: 0, duration: 0.25 * sp, ease: 'power2.out' },
-          '<'
-        );
-      }
-      tl.call(() => dispatchDemoClick(copyBtn));
-      tl.to(cursor, { scale: 1, duration: 0.12 * sp });
-      if (copyBtn) tl.to(copyBtn, { scale: 1, duration: 0.12 * sp }, '<');
-      tl.to({}, { duration: 0.45 * sp });
+      // 2. Click Copy button: button shows "Copied!" for 1.2s, ends ONLY when idle
+      await runStep(
+        2,
+        'act2-copy',
+        null,
+        async (sig) => {
+          isDemoDispatching = true;
+          try {
+            await press(copyBtn, sig);
+            handleCopy();
+            traceRef.current.push({
+              t: performance.now(),
+              act: 2,
+              step: 'act2-copy',
+              event: 'start',
+              selectedFile: selectedFileRef.current.name,
+              chatState: chatMessagesRef.current.length > 1 ? 'sent' : 'greeting',
+              inputChip: null,
+              copyState: 'copied',
+              resetClicks: resetClickCountRef.current,
+              ringElements: inspectRingElements(),
+            });
+            updateDebugHook();
+          } finally {
+            isDemoDispatching = false;
+          }
+          await sleep(1250, sig); // ensure copy state reverts to idle before proceeding
+          setCopied(false);
+          copiedRef.current = false;
+        },
+        signal
+      );
 
       // 3. Move to chat input
-      tl.call(() => setPhaseAndAct(2, 'act2-move-to-input'));
-      tl.to(cursor, {
-        x: inputPos.x,
-        y: inputPos.y,
-        duration: 1.15 * sp,
-        ease: 'power3.inOut',
-      });
+      await runStep(
+        2,
+        'act2-move-to-input',
+        () => (copiedRef.current ? 'Copy button must be idle before moving to input' : null),
+        async (sig) => {
+          const inputPos = getRelPos(chatInputContainerRef.current, 0.35, 0.5);
+          await moveTo(inputPos, 0.85, sig);
+        },
+        signal
+      );
 
-      // 4. Click input & paste
-      tl.call(() => {
-        setPhaseAndAct(2, 'act2-paste');
-        setIsDemoInputFocus(true);
-      });
-      tl.to(cursor, { scale: 0.9, duration: 0.12 * sp });
-      tl.call(() => {
-        const snippet = formatFileForCopy('AGENTS.md', SAMPLE_FILES[1].content, 'prompt');
-        setPastedContent(snippet);
-      });
-      tl.to(cursor, { scale: 1, duration: 0.12 * sp });
-      tl.to({}, { duration: 0.35 * sp });
+      // 4. Click input & Visual Demo Focus
+      await runStep(
+        2,
+        'act2-focus-input',
+        null,
+        async (sig) => {
+          await press(null, sig);
+          setIsDemoInputFocus(true);
+          await sleep(150, sig);
+        },
+        signal
+      );
 
-      // 5. Move to Send
-      tl.call(() => {
-        setIsDemoInputFocus(false);
-        setPhaseAndAct(2, 'act2-move-to-send');
-      });
-      tl.to(cursor, {
-        x: sendPos.x,
-        y: sendPos.y,
-        duration: 0.65 * sp,
-        ease: 'power3.out',
-      });
+      // 5. Paste: pasted chip appears, fake focus turns off
+      await runStep(
+        2,
+        'act2-paste',
+        null,
+        async (sig) => {
+          const snippet = formatFileForCopy('AGENTS.md', SAMPLE_FILES[1].content, 'prompt');
+          setPastedContent(snippet);
+          pastedContentRef.current = snippet;
+          setIsDemoInputFocus(false);
+          await sleep(300, sig);
+        },
+        signal
+      );
 
-      // 6. Click Send
-      tl.call(() => setPhaseAndAct(2, 'act2-send'));
-      tl.to(cursor, { scale: 0.88, duration: 0.12 * sp, ease: 'power2.in' });
-      if (sendBtn) tl.to(sendBtn, { scale: 0.92, duration: 0.12 * sp }, '<');
-      if (sendRippleRef.current) {
-        tl.fromTo(
-          sendRippleRef.current,
-          { scale: 0.9, opacity: 0.8 },
-          { scale: 1.4, opacity: 0, duration: 0.25 * sp, ease: 'power2.out' },
-          '<'
-        );
-      }
-      tl.call(() => dispatchDemoClick(sendBtn));
-      tl.to(cursor, { scale: 1, duration: 0.12 * sp });
-      if (sendBtn) tl.to(sendBtn, { scale: 1, duration: 0.12 * sp }, '<');
+      // 6. Move to Send
+      await runStep(
+        2,
+        'act2-move-to-send',
+        () => (!pastedContentRef.current ? 'Input must contain pasted chip before move to Send' : null),
+        async (sig) => {
+          const sendPos = getRelPos(sendBtn, 0.5, 0.5);
+          await moveTo(sendPos, 0.65, sig);
+        },
+        signal
+      );
 
-      // 7. Sent message hold (~1.4s)
-      tl.call(() => setPhaseAndAct(2, 'act2-sent'));
-      tl.to({}, { duration: 1.4 * sp });
+      // 7. Click Send
+      await runStep(
+        2,
+        'act2-send',
+        () => (!pastedContentRef.current ? 'Input must contain pasted chip before clicking Send' : null),
+        async (sig) => {
+          await press(sendBtn, sig);
+          handleSendMessage();
+          await sleep(850, sig);
+        },
+        signal
+      );
 
-      // 8. Move to Reset button
-      tl.call(() => setPhaseAndAct(2, 'act2-move-to-reset'));
-      tl.to(cursor, {
-        x: resetPos.x,
-        y: resetPos.y,
-        duration: 0.75 * sp,
-        ease: 'power3.inOut',
-      });
+      // 8. Sent message hold (~1.6s)
+      await runStep(
+        2,
+        'act2-sent',
+        () => (chatMessagesRef.current.length < 2 ? 'Chat must have user and reply bubbles during hold' : null),
+        async (sig) => {
+          await sleep(1600, sig);
+        },
+        signal
+      );
 
-      // 9. Click Reset button (chat clears)
-      tl.call(() => setPhaseAndAct(2, 'act2-reset'));
-      tl.to(cursor, { scale: 0.88, duration: 0.12 * sp, ease: 'power2.in' });
-      if (resetBtn) tl.to(resetBtn, { scale: 0.92, duration: 0.12 * sp }, '<');
-      if (resetRippleRef.current) {
-        tl.fromTo(
-          resetRippleRef.current,
-          { scale: 0.9, opacity: 0.8 },
-          { scale: 1.4, opacity: 0, duration: 0.25 * sp, ease: 'power2.out' },
-          '<'
-        );
-      }
-      tl.call(() => dispatchDemoClick(resetBtn));
-      tl.to(cursor, { scale: 1, duration: 0.12 * sp });
-      if (resetBtn) tl.to(resetBtn, { scale: 1, duration: 0.12 * sp }, '<');
-      tl.to({}, { duration: 0.55 * sp });
+      // 9. Move to Reset button
+      await runStep(
+        2,
+        'act2-move-to-reset',
+        null,
+        async (sig) => {
+          const resetPos = getRelPos(resetBtn, 0.5, 0.5);
+          await moveTo(resetPos, 0.75, sig);
+        },
+        signal
+      );
 
-      // 10. Move to .cursorrules card & click it
-      tl.call(() => setPhaseAndAct(2, 'select-cursorrules'));
-      tl.to(cursor, {
-        x: cursorrulesCardPos.x,
-        y: cursorrulesCardPos.y,
-        duration: 1.05 * sp,
-        ease: 'power3.inOut',
-      });
-      tl.to(cursor, { scale: 0.9, duration: 0.12 * sp });
-      if (cardCursorrules) tl.to(cardCursorrules, { scale: 0.96, duration: 0.12 * sp }, '<');
-      tl.call(() => dispatchDemoClick(cardCursorrules));
-      tl.to(cursor, { scale: 1, duration: 0.12 * sp });
-      if (cardCursorrules) tl.to(cardCursorrules, { scale: 1, duration: 0.12 * sp }, '<');
-      tl.to({}, { duration: 0.35 * sp });
+      // 10. Click Reset: chat cleared, greeting returns
+      await runStep(
+        2,
+        'act2-reset',
+        () => (chatMessagesRef.current.length < 2 ? 'Chat must contain sent messages before Reset' : null),
+        async (sig) => {
+          await press(resetBtn, sig);
+          handleResetChat();
+          await sleep(450, sig);
+        },
+        signal
+      );
+
+      // 11. Move to .cursorrules card & Click
+      await runStep(
+        2,
+        'select-cursorrules',
+        () => (chatMessagesRef.current.length !== 1 || chatMessagesRef.current[0].id !== 'welcome' ? 'Chat must be at greeting before selecting .cursorrules' : null),
+        async (sig) => {
+          const cursorrulesPos = getRelPos(cardCursorrules, 0.5, 0.5);
+          await moveTo(cursorrulesPos, 0.95, sig);
+          await press(cardCursorrules, sig);
+          setSelectedFile(SAMPLE_FILES[2]);
+          selectedFileRef.current = SAMPLE_FILES[2];
+          await sleep(250, sig);
+        },
+        signal
+      );
 
       // =====================================================================
       // ACT 3: .cursorrules (via Drag and Drop)
       // =====================================================================
-      // 1. Move to drag chip
-      tl.call(() => {
-        setPhaseAndAct(3, 'act3-move-to-chip');
-      });
-      const mid3X = (cursorrulesCardPos.x + chipPos.x) / 2 + (isMobile ? 10 : 25);
-      const mid3Y = (cursorrulesCardPos.y + chipPos.y) / 2 - (isMobile ? 20 : 35);
-      tl.to(cursor, {
-        motionPath: {
-          path: [{ x: mid3X, y: mid3Y }, { x: chipPos.x, y: chipPos.y }],
-          curviness: 1.2,
+      // 1. Move to Grip of chip
+      await runStep(
+        3,
+        'act3-move-to-chip',
+        () => (copiedRef.current ? 'Copied must NEVER be true in Act 3' : null),
+        async (sig) => {
+          const gripPos = getRelPos(chip, 0.08, 0.5);
+          await moveTo(gripPos, 0.85, sig);
         },
-        duration: 1.15 * sp,
-        ease: 'power3.inOut',
-      });
+        signal
+      );
 
-      // Lift chip on arrival
-      if (chip) {
-        tl.to(chip, { y: -3, duration: 0.15, ease: 'power2.out' }, '-=0.15');
-        if (chipHintRef.current) {
-          tl.to(chipHintRef.current, { x: 4, duration: 0.15, yoyo: true, repeat: 1 }, '-=0.15');
-        }
-      }
-
-      // 2. Grab chip
-      tl.call(() => setPhaseAndAct(3, 'act3-grab'));
-      tl.to(cursor, { scale: 0.9, duration: 0.12 * sp, ease: 'power2.in' });
-      if (chip) tl.to(chip, { opacity: 0.5, duration: 0.12 * sp }, '<');
-      if (ghost) tl.to(ghost, { opacity: 1, scale: 1, duration: 0.12 * sp }, '<');
-      tl.to({}, { duration: 0.12 * sp });
+      // 2. Grab: compact ghost attaches
+      await runStep(
+        3,
+        'act3-grab',
+        () => (selectedFileRef.current.id !== 'cursorrules' ? '.cursorrules must be selected before grab' : null),
+        async (sig) => {
+          if (ghost) gsap.set(ghost, { opacity: 0, scale: 0.85, rotation: 0 });
+          await Promise.all([
+            tween(cursor, { scale: 0.9, duration: 0.12, ease: 'power2.in' }, sig),
+            chip ? tween(chip, { opacity: 0.5, duration: 0.12 }, sig) : Promise.resolve(),
+            ghost ? tween(ghost, { opacity: 1, scale: 1, duration: 0.12 }, sig) : Promise.resolve(),
+          ]);
+        },
+        signal
+      );
 
       // 3. Drag arc to chat input
-      tl.call(() => setPhaseAndAct(3, 'act3-drag'));
-      const midDrag3X = (chipPos.x + inputPos.x) / 2;
-      const midDrag3Y = Math.min(chipPos.y, inputPos.y) - (isMobile ? 35 : 65);
-      tl.to(cursor, {
-        motionPath: {
-          path: [{ x: midDrag3X, y: midDrag3Y }, { x: inputPos.x, y: inputPos.y }],
-          curviness: 1.25,
+      await runStep(
+        3,
+        'act3-drag',
+        null,
+        async (sig) => {
+          const inputPos = getRelPos(chatInputContainerRef.current, 0.35, 0.5);
+          await curveTo(inputPos, 50, 1.25, sig, (prog) => {
+            if (ghost) {
+              const tilt = Math.sin(prog * Math.PI) * 5;
+              gsap.set(ghost, { rotation: tilt });
+            }
+            if (prog > 0.65 && dropRingRef.current) {
+              gsap.set(dropRingRef.current, { opacity: 1 });
+            }
+          });
         },
-        duration: 1.35 * sp,
-        ease: 'power2.inOut',
-      });
-      if (ghost) {
-        tl.to(ghost, { rotation: isMobile ? 3 : 5, duration: 0.65 * sp, ease: 'power1.out' }, '<');
-        tl.to(ghost, { rotation: 0, duration: 0.7 * sp, ease: 'power1.in' }, '>-0.65');
-      }
-      if (dropRingRef.current) {
-        tl.to(dropRingRef.current, { opacity: 1, duration: 0.25 }, '-=0.35');
-      }
+        signal
+      );
 
-      // 4. Drop chip into input
-      tl.call(() => setPhaseAndAct(3, 'act3-drop'));
-      if (ghost) tl.to(ghost, { opacity: 0, scale: 0.8, y: '+=8', duration: 0.22 * sp, ease: 'power2.in' });
-      if (chip) tl.to(chip, { opacity: 1, y: 0, duration: 0.22 * sp }, '<');
-      if (dropRingRef.current) tl.to(dropRingRef.current, { opacity: 0, duration: 0.22 * sp }, '<');
-      tl.to(cursor, { scale: 1, duration: 0.15 * sp, ease: 'back.out' }, '<');
-      tl.call(() => setAttachedFile(SAMPLE_FILES[2]));
-      tl.to({}, { duration: 0.18 * sp });
+      // 4. Release / Drop chip into input
+      await runStep(
+        3,
+        'act3-drop',
+        null,
+        async (sig) => {
+          if (dropRingRef.current) gsap.set(dropRingRef.current, { opacity: 0 });
+          if (ghost) gsap.set(ghost, { opacity: 0, scale: 0.9, rotation: 0 });
+          if (chip) gsap.set(chip, { opacity: 1 });
+          setAttachedFile(SAMPLE_FILES[2]);
+          attachedFileRef.current = SAMPLE_FILES[2];
+          await tween(cursor, { scale: 1, duration: 0.15, ease: 'back.out' }, sig);
+          await sleep(200, sig);
+        },
+        signal
+      );
 
       // 5. Move to Send
-      tl.call(() => setPhaseAndAct(3, 'act3-move-to-send'));
-      tl.to(cursor, {
-        x: sendPos.x,
-        y: sendPos.y,
-        duration: 0.65 * sp,
-        ease: 'power3.out',
-      });
+      await runStep(
+        3,
+        'act3-move-to-send',
+        () => (!attachedFileRef.current ? 'Attachment chip must be in input before move to Send' : null),
+        async (sig) => {
+          const sendPos = getRelPos(sendBtn, 0.5, 0.5);
+          await moveTo(sendPos, 0.65, sig);
+        },
+        signal
+      );
 
-      // 6. Click Send
-      tl.call(() => setPhaseAndAct(3, 'act3-send'));
-      tl.to(cursor, { scale: 0.88, duration: 0.12 * sp, ease: 'power2.in' });
-      if (sendBtn) tl.to(sendBtn, { scale: 0.92, duration: 0.12 * sp }, '<');
-      if (sendRippleRef.current) {
-        tl.fromTo(
-          sendRippleRef.current,
-          { scale: 0.9, opacity: 0.8 },
-          { scale: 1.4, opacity: 0, duration: 0.25 * sp, ease: 'power2.out' },
-          '<'
-        );
-      }
-      tl.call(() => dispatchDemoClick(sendBtn));
-      tl.to(cursor, { scale: 1, duration: 0.12 * sp });
-      if (sendBtn) tl.to(sendBtn, { scale: 1, duration: 0.12 * sp }, '<');
+      // 6. Click Send: chip removed immediately, user msg added, reply added
+      await runStep(
+        3,
+        'act3-send',
+        () => (!attachedFileRef.current ? 'Input must contain attachment chip before clicking Send' : null),
+        async (sig) => {
+          await press(sendBtn, sig);
+          handleSendMessage();
+          await sleep(850, sig);
+        },
+        signal
+      );
 
-      // 7. Sent message hold (~1.4s)
-      tl.call(() => setPhaseAndAct(3, 'act3-sent'));
-      tl.to({}, { duration: 1.4 * sp });
+      // 7. Sent message hold (~1.6s)
+      await runStep(
+        3,
+        'act3-sent',
+        () => (chatMessagesRef.current.length < 2 ? 'Chat must have user and reply bubbles during hold' : null),
+        async (sig) => {
+          await sleep(1600, sig);
+        },
+        signal
+      );
 
       // 8. Move to Reset button
-      tl.call(() => setPhaseAndAct(3, 'act3-move-to-reset'));
-      tl.to(cursor, {
-        x: resetPos.x,
-        y: resetPos.y,
-        duration: 0.75 * sp,
-        ease: 'power3.inOut',
-      });
+      await runStep(
+        3,
+        'act3-move-to-reset',
+        null,
+        async (sig) => {
+          const resetPos = getRelPos(resetBtn, 0.5, 0.5);
+          await moveTo(resetPos, 0.75, sig);
+        },
+        signal
+      );
 
-      // 9. Click Reset button (chat clears)
-      tl.call(() => setPhaseAndAct(3, 'act3-reset'));
-      tl.to(cursor, { scale: 0.88, duration: 0.12 * sp, ease: 'power2.in' });
-      if (resetBtn) tl.to(resetBtn, { scale: 0.92, duration: 0.12 * sp }, '<');
-      if (resetRippleRef.current) {
-        tl.fromTo(
-          resetRippleRef.current,
-          { scale: 0.9, opacity: 0.8 },
-          { scale: 1.4, opacity: 0, duration: 0.25 * sp, ease: 'power2.out' },
-          '<'
-        );
-      }
-      tl.call(() => dispatchDemoClick(resetBtn));
-      tl.to(cursor, { scale: 1, duration: 0.12 * sp });
-      if (resetBtn) tl.to(resetBtn, { scale: 1, duration: 0.12 * sp }, '<');
-      tl.to({}, { duration: 0.55 * sp });
+      // 9. Click Reset: chat cleared, greeting returns
+      await runStep(
+        3,
+        'act3-reset',
+        () => (chatMessagesRef.current.length < 2 ? 'Chat must contain sent messages before Reset' : null),
+        async (sig) => {
+          await press(resetBtn, sig);
+          handleResetChat();
+          await sleep(450, sig);
+        },
+        signal
+      );
 
-      // 10. CLOSING: Move from Reset button to CLAUDE.md card (= HOME) and click it
-      tl.call(() => setPhaseAndAct(3, 'select-claude'));
-      tl.to(cursor, {
-        x: homePos.x,
-        y: homePos.y,
-        duration: 1.15 * sp,
-        ease: 'power3.inOut',
-      });
-      tl.to(cursor, { scale: 0.9, duration: 0.12 * sp });
-      if (cardClaude) tl.to(cardClaude, { scale: 0.96, duration: 0.12 * sp }, '<');
-      tl.call(() => dispatchDemoClick(cardClaude));
-      tl.to(cursor, { scale: 1, duration: 0.12 * sp });
-      if (cardClaude) tl.to(cardClaude, { scale: 1, duration: 0.12 * sp }, '<');
+      // 10. CLOSING: Move to CLAUDE.md card (= HOME) and Click
+      await runStep(
+        3,
+        'select-claude',
+        () => (chatMessagesRef.current.length !== 1 || chatMessagesRef.current[0].id !== 'welcome' ? 'Chat must be at greeting before selecting CLAUDE.md' : null),
+        async (sig) => {
+          await moveTo(homePos, 0.95, sig);
+          await press(cardClaude, sig);
+          setSelectedFile(SAMPLE_FILES[0]);
+          selectedFileRef.current = SAMPLE_FILES[0];
+          await sleep(250, sig);
+        },
+        signal
+      );
 
       // 11. Rest at HOME for ~0.8s
-      tl.call(() => setPhaseAndAct(3, 'rest'));
-      tl.to({}, { duration: 0.85 * sp });
+      await runStep(
+        3,
+        'rest',
+        null,
+        async (sig) => {
+          await sleep(800, sig);
+        },
+        signal
+      );
 
-      // If preserving progress ratio across layout rebuild:
-      if (preserveProgress && prevProgress > 0) {
-        tl.progress(prevProgress);
-      }
+      // Increment loop count
+      loopCountRef.current += 1;
+      updateDebugHook();
     },
-    [reducedMotion]
+    [getRelPos, moveTo, curveTo, press, tween, sleep, runStep, updateDebugHook]
   );
 
-  // Stop timeline and fade cursor out cleanly
-  const stopTimelineAndFadeCursor = useCallback(() => {
-    if (masterTimelineRef.current) {
-      masterTimelineRef.current.kill();
-      masterTimelineRef.current = null;
+  // Self-Healing Runner Loop
+  const startRunnerLoop = useCallback(async () => {
+    cancelRunner();
+    if (userPausedRef.current || interactionPausedRef.current || !isVisibleRef.current || reducedMotion) {
+      return;
     }
-    if (cursorRef.current) {
-      gsap.to(cursorRef.current, { opacity: 0, duration: 0.25, ease: 'power2.out' });
+
+    const controller = new AbortController();
+    runAbortControllerRef.current = controller;
+
+    try {
+      while (!controller.signal.aborted) {
+        await runMasterScript(controller.signal);
+      }
+    } catch (err: unknown) {
+      if (err instanceof DOMException && err.name === 'AbortError') {
+        // Normal cancellation
+        return;
+      }
+      console.warn('[Demo Runner] Error encountered, self-healing back to HOME:', err);
+
+      // Self-Heal: Cancel, restore HOME, rest 0.6s, restart
+      cancelRunner();
+      restoreHome();
+      if (!userPausedRef.current && !interactionPausedRef.current && isVisibleRef.current && !reducedMotion) {
+        runnerRestartTimerRef.current = setTimeout(() => {
+          startRunnerLoop();
+        }, 600);
+      }
     }
-    if (ghostChipRef.current) {
-      gsap.set(ghostChipRef.current, { opacity: 0, scale: 0.95 });
+  }, [cancelRunner, restoreHome, runMasterScript, reducedMotion]);
+
+  // Pause / Resume in place for Viewport & Tab Visibility
+  const pauseInPlace = useCallback(() => {
+    if (!pauseGateRef.current) {
+      let resolveFn = () => {};
+      const promise = new Promise<void>((r) => {
+        resolveFn = r;
+      });
+      pauseGateRef.current = { promise, resolve: resolveFn };
     }
-    if (chipRef.current) {
-      gsap.set(chipRef.current, { y: 0, opacity: 1 });
+    if (activeTweenRef.current) {
+      activeTweenRef.current.pause();
     }
-    if (dropRingRef.current) {
-      gsap.set(dropRingRef.current, { opacity: 0 });
-    }
-    if (copyRippleRef.current) {
-      gsap.set(copyRippleRef.current, { opacity: 0 });
-    }
-    if (sendRippleRef.current) {
-      gsap.set(sendRippleRef.current, { opacity: 0 });
-    }
-    if (resetRippleRef.current) {
-      gsap.set(resetRippleRef.current, { opacity: 0 });
-    }
-    setCopied(false);
-    setIsDemoInputFocus(false);
   }, []);
 
-  // Real intent takeover handler
+  const resumeInPlace = useCallback(() => {
+    if (activeTweenRef.current) {
+      activeTweenRef.current.resume();
+    }
+    if (pauseGateRef.current) {
+      const gate = pauseGateRef.current;
+      pauseGateRef.current = null;
+      gate.resolve();
+    }
+  }, []);
+
+  // Real Intent Takeover: cancels runner, fades cursor out, restores HOME, auto-resumes after 6s
   const triggerTakeover = useCallback(
     (reason: string, targetName = 'unknown') => {
       takeoverReasonRef.current = reason;
@@ -869,47 +1269,28 @@ export const InteractivePlayground: React.FC = () => {
         ...takeoverLogRef.current.slice(-9),
         { type: reason, target: targetName, time: performance.now() },
       ];
-      if (isDebug) console.log(`[demodebug] Takeover triggered: ${reason} on ${targetName}`);
 
-      // Kill timeline, fade fake cursor out, drop ghost chip
-      stopTimelineAndFadeCursor();
-      setIsDemoInputFocus(false);
-
-      // Restore clean state: chat reset to greeting, whatever file user selected stays
-      setChatMessages([WELCOME_MESSAGE]);
-      setChatInput('');
-      setAttachedFile(null);
-      setPastedContent(null);
-      demoPhaseRef.current = 'idle';
-      setDemoPhase('idle');
-
-      // Auto-resume after 6s of no further real intent events
-      if (takeoverTimerRef.current) {
-        clearTimeout(takeoverTimerRef.current);
+      cancelRunner();
+      if (cursorRef.current) {
+        gsap.to(cursorRef.current, { opacity: 0, duration: 0.25, ease: 'power2.out' });
       }
+      restoreHome();
+      setDemoStep('idle');
+      demoStepRef.current = 'idle';
+
+      if (takeoverTimerRef.current) clearTimeout(takeoverTimerRef.current);
       takeoverTimerRef.current = setTimeout(() => {
         if (userPausedRef.current || !isVisibleRef.current || reducedMotion) return;
-        if (isDebug) console.log('[demodebug] Auto-resuming after 6s idle');
         interactionPausedRef.current = false;
         setInteractionPaused(false);
         takeoverReasonRef.current = null;
-        setIsDemoInputFocus(false);
-
-        // Reset to clean initial state: CLAUDE.md selected, prompt mode
-        setSelectedFile(SAMPLE_FILES[0]);
-        setMode('prompt');
-        setChatMessages([WELCOME_MESSAGE]);
-        setChatInput('');
-        setAttachedFile(null);
-        setPastedContent(null);
-
-        // Fade cursor in AT HOME position and start Act 1
-        buildMasterTimeline(false);
+        restoreHome();
+        startRunnerLoop();
       }, 6000);
 
       updateDebugHook();
     },
-    [isDebug, stopTimelineAndFadeCursor, buildMasterTimeline, updateDebugHook, reducedMotion]
+    [cancelRunner, restoreHome, startRunnerLoop, updateDebugHook, reducedMotion]
   );
 
   // IntersectionObserver & Visibility handling
@@ -926,7 +1307,7 @@ export const InteractivePlayground: React.FC = () => {
     if (checkInView() && !document.hidden) {
       isVisibleRef.current = true;
       if (!userPausedRef.current && !interactionPausedRef.current && !reducedMotion) {
-        buildMasterTimeline(false);
+        startRunnerLoop();
       }
     }
 
@@ -936,18 +1317,15 @@ export const InteractivePlayground: React.FC = () => {
           if (entry.isIntersecting && !document.hidden) {
             isVisibleRef.current = true;
             if (!userPausedRef.current && !interactionPausedRef.current && !reducedMotion) {
-              if (!masterTimelineRef.current) {
-                buildMasterTimeline(false);
+              if (!runAbortControllerRef.current) {
+                startRunnerLoop();
               } else {
-                masterTimelineRef.current.resume();
+                resumeInPlace();
               }
             }
           } else {
             isVisibleRef.current = false;
-            // Offscreen pause: pause in place, no restart or teleport
-            if (masterTimelineRef.current) {
-              masterTimelineRef.current.pause();
-            }
+            pauseInPlace();
           }
         });
       },
@@ -958,17 +1336,13 @@ export const InteractivePlayground: React.FC = () => {
 
     const handleVisibilityChange = () => {
       if (document.hidden) {
-        // Tab hidden: pause the same timeline in place
-        if (masterTimelineRef.current) {
-          masterTimelineRef.current.pause();
-        }
+        pauseInPlace();
       } else {
-        // Tab visible: resume in place if visible and not paused
         if (isVisibleRef.current && !userPausedRef.current && !interactionPausedRef.current && !reducedMotion) {
-          if (masterTimelineRef.current) {
-            masterTimelineRef.current.resume();
+          if (!runAbortControllerRef.current) {
+            startRunnerLoop();
           } else {
-            buildMasterTimeline(false);
+            resumeInPlace();
           }
         }
       }
@@ -979,16 +1353,12 @@ export const InteractivePlayground: React.FC = () => {
     return () => {
       observer.disconnect();
       document.removeEventListener('visibilitychange', handleVisibilityChange);
-      if (masterTimelineRef.current) {
-        masterTimelineRef.current.kill();
-      }
-      if (takeoverTimerRef.current) {
-        clearTimeout(takeoverTimerRef.current);
-      }
+      cancelRunner();
+      if (takeoverTimerRef.current) clearTimeout(takeoverTimerRef.current);
     };
-  }, [buildMasterTimeline, reducedMotion]);
+  }, [startRunnerLoop, pauseInPlace, resumeInPlace, cancelRunner, reducedMotion]);
 
-  // Handle Resize and Font Load (rebuilds preserving progress ratio)
+  // Handle Resize and Font Loading
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
@@ -997,77 +1367,47 @@ export const InteractivePlayground: React.FC = () => {
       clearTimeout(resizeTimer);
       resizeTimer = setTimeout(() => {
         if (isVisibleRef.current && !userPausedRef.current && !interactionPausedRef.current && !reducedMotion) {
-          buildMasterTimeline(true); // Preserve progress!
+          // Re-evaluate positions without breaking state
+          resumeInPlace();
         }
       }, 100);
     };
 
     window.addEventListener('resize', handleResize);
-
-    const container = containerRef.current;
-    let resizeObserver: ResizeObserver | null = null;
-    let lastWidth = 0;
-    let lastHeight = 0;
-    if (container && typeof ResizeObserver !== 'undefined') {
-      resizeObserver = new ResizeObserver((entries) => {
-        for (const entry of entries) {
-          const { width, height } = entry.contentRect;
-          if (Math.abs(width - lastWidth) > 3 || Math.abs(height - lastHeight) > 3) {
-            lastWidth = width;
-            lastHeight = height;
-            handleResize();
-          }
-        }
-      });
-      resizeObserver.observe(container);
-    }
-
-    if (document.fonts?.ready) {
-      document.fonts.ready.then(() => {
-        if (isVisibleRef.current && !userPausedRef.current && !interactionPausedRef.current && !reducedMotion) {
-          buildMasterTimeline(true);
-        }
-      });
-    }
-
     return () => {
       clearTimeout(resizeTimer);
       window.removeEventListener('resize', handleResize);
-      if (resizeObserver) resizeObserver.disconnect();
     };
-  }, [buildMasterTimeline, reducedMotion]);
+  }, [resumeInPlace, reducedMotion]);
 
   // Toggle Pause Button
   const togglePause = (e: React.MouseEvent) => {
     e.stopPropagation();
     if (userPaused) {
-      // Resume from user pause: resumes at HOME in Act 1
       setUserPaused(false);
       userPausedRef.current = false;
       interactionPausedRef.current = false;
       setInteractionPaused(false);
       if (takeoverTimerRef.current) clearTimeout(takeoverTimerRef.current);
 
-      setSelectedFile(SAMPLE_FILES[0]);
-      setMode('prompt');
-      setChatMessages([WELCOME_MESSAGE]);
-      setChatInput('');
-      setAttachedFile(null);
-      setPastedContent(null);
-
+      restoreHome();
+      updateDebugHook();
       setTimeout(() => {
         if (isVisibleRef.current && !reducedMotion) {
-          buildMasterTimeline(false);
+          startRunnerLoop();
         }
-      }, 30);
+      }, 50);
     } else {
-      // User pauses: clean state, cursor fades out
       setUserPaused(true);
       userPausedRef.current = true;
       if (takeoverTimerRef.current) clearTimeout(takeoverTimerRef.current);
-      stopTimelineAndFadeCursor();
-      demoPhaseRef.current = 'idle';
-      setDemoPhase('idle');
+      cancelRunner();
+      if (cursorRef.current) {
+        gsap.to(cursorRef.current, { opacity: 0, duration: 0.25, ease: 'power2.out' });
+      }
+      restoreHome();
+      setDemoStep('idle');
+      demoStepRef.current = 'idle';
       updateDebugHook();
     }
   };
@@ -1077,7 +1417,7 @@ export const InteractivePlayground: React.FC = () => {
       id="playground"
       ref={containerRef}
       data-demo-act={String(demoAct)}
-      data-demo-phase={demoPhase}
+      data-demo-phase={demoStep}
       className="py-24 bg-cream border-t border-line-ink/40 relative overflow-hidden"
       onPointerDown={(e) => {
         if (!e.isTrusted || isDemoDispatching) return;
@@ -1117,7 +1457,7 @@ export const InteractivePlayground: React.FC = () => {
           className="absolute top-0 left-0 pointer-events-none z-[35] opacity-0 will-change-transform select-none"
           style={{ transformOrigin: '4px 3px' }}
         >
-          {/* Soft Orange Halo: Blurred ring, ~1.6x arrow size, opacity ~0.35 */}
+          {/* Soft Orange Halo */}
           <div
             className="absolute rounded-full pointer-events-none"
             style={{
@@ -1131,7 +1471,7 @@ export const InteractivePlayground: React.FC = () => {
             }}
           />
 
-          {/* Desktop Arrow Cursor with stronger shadow */}
+          {/* Desktop Arrow Cursor */}
           <div className="hidden sm:block relative">
             <svg
               className="w-[clamp(23px,1.35vw,35px)] h-[clamp(23px,1.35vw,35px)] filter drop-shadow-[0_5px_8px_rgba(28,42,36,0.35)]"
@@ -1168,20 +1508,27 @@ export const InteractivePlayground: React.FC = () => {
             </svg>
           </div>
 
-          {/* Ghost Drag Chip */}
+          {/* Compact Pill Ghost Chip: Cursor tip sits exactly 14px inside ghost left edge, centered vertically */}
           <div
             ref={ghostChipRef}
             data-testid="ghost-chip"
-            className="absolute left-4 top-2 pointer-events-none rounded-xl bg-orange text-forest border-2 border-forest px-3 py-1.5 shadow-md flex items-center gap-1.5 text-xs font-mono font-bold select-none opacity-0 scale-95 origin-top-left whitespace-nowrap"
+            className="absolute pointer-events-none rounded-xl bg-orange text-forest border-2 border-forest px-3 py-1.5 shadow-md flex items-center gap-1.5 text-xs font-mono font-bold select-none opacity-0 scale-95 origin-[0px_17px] whitespace-nowrap"
+            style={{
+              left: '14px',
+              top: '-17px',
+              width: 'max-content',
+              maxWidth: '220px',
+              height: '34px',
+            }}
           >
-            <GripVertical className="w-3.5 h-3.5 text-forest/70" />
-            <span>{selectedFile.name}</span>
+            <FileText className="w-3.5 h-3.5 text-forest/70 shrink-0" />
+            <span className="truncate">{selectedFile.name}</span>
           </div>
         </div>
       )}
 
       <div className="max-w-6xl mx-auto px-6">
-        {/* Header with Circular Pause/Play Button (reflects ONLY userPaused) */}
+        {/* Header with Circular Pause/Play Button */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-6 mb-16">
           <div className="text-center sm:text-left max-w-2xl">
             <Pill className="mb-3">Live product demo</Pill>
@@ -1202,7 +1549,7 @@ export const InteractivePlayground: React.FC = () => {
               onClick={togglePause}
               aria-pressed={userPaused}
               aria-label={userPaused ? 'Play demo' : 'Pause demo'}
-              className="w-10 h-10 rounded-full border-2 border-line-ink/60 bg-cream hover:bg-cream-dim text-ink flex items-center justify-center transition-all hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-orange focus:ring-offset-2 shrink-0 shadow-sm cursor-pointer"
+              className="w-10 h-10 rounded-full border-2 border-line-ink/60 bg-cream hover:bg-cream-dim text-ink flex items-center justify-center transition-all hover:scale-105 active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-orange focus-visible:ring-offset-2 shrink-0 shadow-sm cursor-pointer"
             >
               {userPaused ? <Play className="w-4 h-4 fill-current ml-0.5" /> : <Pause className="w-4 h-4" />}
             </button>
@@ -1322,19 +1669,15 @@ export const InteractivePlayground: React.FC = () => {
                 </span>
               </div>
 
-              {/* Copy button */}
+              {/* Copy button: fixed width on sm to eliminate layout expansion */}
               <button
                 ref={copyBtnRef}
                 data-testid="copy-btn"
                 onClick={handleCopy}
-                className="relative w-full sm:w-[176px] shrink-0 px-4 py-2.5 rounded-xl bg-ink text-cream hover:bg-ink/90 font-display text-xs font-bold flex items-center justify-center gap-2 transition-colors shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-orange cursor-pointer"
+                className="relative w-full sm:w-[195px] shrink-0 px-4 py-2.5 rounded-xl bg-ink text-cream hover:bg-ink/90 font-display text-xs font-bold flex items-center justify-center gap-2 transition-colors shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-orange cursor-pointer"
               >
-                <span
-                  ref={copyRippleRef}
-                  className="pointer-events-none absolute inset-0 rounded-xl ring-2 ring-orange opacity-0 scale-90"
-                />
                 {copied ? <Check className="w-4 h-4 text-orange" /> : <Copy className="w-4 h-4" />}
-                {copied ? 'Copied!' : 'Copy to clipboard'}
+                {copied ? 'Copied to clipboard!' : 'Copy to clipboard'}
               </button>
             </div>
           </div>
@@ -1352,16 +1695,12 @@ export const InteractivePlayground: React.FC = () => {
                 className="relative text-ink/70 hover:text-ink text-xs font-display flex items-center gap-1.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-orange rounded px-2 py-1 cursor-pointer transition-transform"
                 title="Reset messages"
               >
-                <span
-                  ref={resetRippleRef}
-                  className="pointer-events-none absolute inset-0 rounded ring-2 ring-orange opacity-0 scale-90"
-                />
                 <RotateCcw className="w-3.5 h-3.5" />
                 Reset
               </button>
             </div>
 
-            {/* Drop Zone & Chat History */}
+            {/* Chat Area: Fixed height, overflow hidden, pinned to bottom */}
             <div
               data-testid="chat-dropzone"
               onDragOver={(e) => {
@@ -1369,7 +1708,7 @@ export const InteractivePlayground: React.FC = () => {
                 e.dataTransfer.dropEffect = 'copy';
               }}
               onDrop={handleDrop}
-              className={`flex-1 overflow-y-auto overflow-x-hidden space-y-3 p-3 rounded-xl transition-all border-2 h-[300px] max-h-[300px] ${
+              className={`flex-1 overflow-hidden flex flex-col justify-end space-y-3 p-3 rounded-xl transition-all border-2 h-[300px] max-h-[300px] ${
                 isDragging
                   ? 'border-dashed border-orange bg-orange/10 scale-[1.01]'
                   : 'border-line-ink/40 bg-cream'
@@ -1378,7 +1717,7 @@ export const InteractivePlayground: React.FC = () => {
               {chatMessages.map((msg) => (
                 <div
                   key={msg.id}
-                  className={`flex flex-col transition-all duration-[450ms] ease-out ${
+                  className={`flex flex-col transition-all duration-[400ms] ease-out ${
                     isResettingChat && msg.id !== 'welcome'
                       ? 'opacity-0 -translate-y-3 scale-95 pointer-events-none'
                       : 'opacity-100 translate-y-0 scale-100'
@@ -1466,10 +1805,6 @@ export const InteractivePlayground: React.FC = () => {
                     className="relative flex-none w-8 h-8 rounded-lg bg-orange hover:bg-orange-deep text-forest transition-colors shadow-sm flex items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-forest cursor-pointer"
                   >
                     <Send className="w-4 h-4" />
-                    <span
-                      ref={sendRippleRef}
-                      className="pointer-events-none absolute inset-0 rounded-lg ring-2 ring-orange opacity-0 scale-90"
-                    />
                   </button>
                 </div>
               </form>
