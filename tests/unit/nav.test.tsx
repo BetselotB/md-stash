@@ -15,15 +15,16 @@ describe('Landing Navigation & Menu Overlay', () => {
 
     // Zone 1: Left
     expect(screen.getByText('Home')).toBeInTheDocument();
-    expect(screen.getAllByTitle('GitHub repository').length).toBe(2);
+    expect(screen.getByTitle('GitHub repository')).toBeInTheDocument();
     expect(screen.getByTitle('Back to top')).toBeInTheDocument();
 
-    // Zone 2: Center framed badge
+    // Zone 2: Center hanging double-line framed badge
     expect(screen.getByTitle('MDstash Home')).toBeInTheDocument();
-    expect(screen.getByText('Local · Est. 2026')).toBeInTheDocument();
+    expect(screen.getByTestId('badge-tab')).toHaveTextContent(/md/i);
 
     // Zone 3: Right
-    expect(screen.getByText('click the stash')).toBeInTheDocument();
+    expect(screen.getByText(/the stash/i)).toBeInTheDocument();
+    expect(screen.getByTitle('Privacy policy')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /open menu/i })).toBeInTheDocument();
   });
 
