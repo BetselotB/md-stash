@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight, ArrowDown } from 'lucide-react';
+import { ArrowDown } from 'lucide-react';
 import { StampBadge } from '../ui/StampBadge';
 
 interface HeroSectionProps {
@@ -11,10 +11,9 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onScrollNext }) => {
   const navigate = useNavigate();
   const heroRef = useRef<HTMLDivElement>(null);
 
-  // Mouse tilt / parallax state
-  const [tilt, setTilt] = useState({ x: 0, y: 0 });
   const [isHovered, setIsHovered] = useState(false);
   const [isDropping, setIsDropping] = useState(false);
+  const [isTabHovered, setIsTabHovered] = useState(false);
 
   // Check prefers-reduced-motion
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
@@ -26,24 +25,6 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onScrollNext }) => {
     mq.addEventListener?.('change', handler);
     return () => mq.removeEventListener?.('change', handler);
   }, []);
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (prefersReducedMotion || !heroRef.current) return;
-    const rect = heroRef.current.getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
-    const deltaX = (e.clientX - centerX) / (rect.width / 2);
-    const deltaY = (e.clientY - centerY) / (rect.height / 2);
-    setTilt({
-      x: Math.max(-1, Math.min(1, deltaX)) * 8, // max 8 deg
-      y: Math.max(-1, Math.min(1, deltaY)) * 8,
-    });
-  };
-
-  const handleMouseLeave = () => {
-    setTilt({ x: 0, y: 0 });
-    setIsHovered(false);
-  };
 
   // Trigger file drop into crate then navigate to /app
   const handleStashClick = () => {
@@ -71,34 +52,77 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onScrollNext }) => {
   return (
     <section
       ref={heroRef}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      className="relative min-h-[calc(100vh-5rem)] max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-8 md:pb-12 flex flex-col justify-between items-center text-center select-none overflow-hidden"
+      className="relative min-h-[calc(100vh-clamp(72px,5.5vw,140px))] w-full max-w-[2560px] mx-auto px-[clamp(16px,1.7vw,44px)] pt-2 pb-0 flex flex-col justify-between items-center text-center select-none overflow-hidden"
     >
       {/* ================= FIXED RIGHT-EDGE PROTRUDING ORANGE TAB ================= */}
-      <div
-        className="fixed right-0 top-1/2 -translate-y-1/2 z-40 hidden md:flex"
-      >
+      <div className="fixed right-0 top-1/2 -translate-y-1/2 z-30 hidden md:block">
         <button
           type="button"
           onClick={handleStashClick}
+          onMouseEnter={() => setIsTabHovered(true)}
+          onMouseLeave={() => setIsTabHovered(false)}
           title="Open MDstash"
           aria-label="Open MDstash"
-          className="group relative flex items-center bg-orange hover:bg-orange-deep text-forest transition-all duration-200 cursor-pointer shadow-glow rounded-l-full py-4 pl-4 pr-2 hover:pl-6 focus:outline-none focus:ring-2 focus:ring-forest"
+          className="group relative flex items-center bg-orange hover:bg-orange-deep text-forest transition-all duration-300 cursor-pointer shadow-lg rounded-l-full overflow-hidden"
+          style={{
+            height: 'clamp(120px, 12.4vw, 318px)',
+            width: isTabHovered ? 'clamp(170px, 12vw, 300px)' : 'clamp(56px, 5vw, 128px)',
+            paddingLeft: 'clamp(12px, 1vw, 24px)',
+            paddingRight: 'clamp(8px, 0.6vw, 16px)',
+          }}
         >
-          <div className="flex items-center gap-2">
+          <div className="flex flex-col items-center justify-center gap-2 shrink-0">
             <img
               src="/logo.svg"
-              alt="Crate icon"
-              className="w-6 h-6 object-contain group-hover:scale-110 transition-transform"
+              alt="MDstash Crate"
+              className={`object-contain transition-transform duration-200 ${
+                isTabHovered ? 'scale-110 -rotate-6' : ''
+              }`}
+              style={{
+                width: 'clamp(34px, 3.5vw, 90px)',
+                height: 'clamp(34px, 3.5vw, 90px)',
+              }}
             />
-            <ArrowRight className="w-4 h-4 text-forest group-hover:translate-x-1 transition-transform" />
+            {/* Small circular rotate/drag arrows glyph */}
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="text-forest transition-transform group-hover:rotate-180 duration-500"
+              style={{
+                width: 'clamp(14px, 1.2vw, 28px)',
+                height: 'clamp(14px, 1.2vw, 28px)',
+              }}
+              aria-hidden="true"
+            >
+              <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+              <path d="M3 3v5h5" />
+              <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16" />
+              <path d="M16 21h5v-5" />
+            </svg>
           </div>
+          {/* Revealed label on hover */}
+          {isTabHovered && (
+            <span className="font-display text-forest text-[clamp(14px,1.1vw,28px)] ml-3 whitespace-nowrap animate-fadeIn leading-tight">
+              Open the stash
+            </span>
+          )}
         </button>
       </div>
 
-      {/* ================= TOP/LEFT ROTATING CIRCULAR STAMP BADGE ================= */}
-      <div className="absolute left-4 sm:left-8 top-4 md:top-8 z-20">
+      {/* ================= ROTATING CIRCULAR STAMP BADGE ================= */}
+      {/* Positioned beside lower headline lines: left ~6.3vw, vertically ~58% */}
+      <div
+        className="absolute z-20 hidden md:block"
+        style={{
+          left: 'clamp(20px, 6.3vw, 160px)',
+          top: '58%',
+          transform: 'translateY(-50%)',
+        }}
+      >
         <button
           type="button"
           onClick={handleScrollDown}
@@ -106,38 +130,67 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onScrollNext }) => {
           className="focus:outline-none focus:ring-2 focus:ring-orange rounded-full cursor-pointer hover:scale-105 transition-transform"
         >
           <StampBadge
-            text="private & honest · local first · works offline · "
-            size={110}
-            icon={<ArrowDown className="w-4 h-4 text-cream" />}
+            text="private & honest · local first · private & honest · local first · "
+            size="clamp(140px, 7.8vw, 200px)"
+            icon={<ArrowDown className="w-[clamp(18px,1.2vw,30px)] h-[clamp(18px,1.2vw,30px)] text-cream" />}
           />
         </button>
       </div>
 
-      {/* ================= HERO CENTER STAGE: HEADLINE + OVERLAPPING CRATE ================= */}
-      <div className="relative w-full max-w-5xl my-auto flex flex-col items-center justify-center pt-8 md:pt-4">
-        {/* Layer 1: Headline in 3 lines max in sentence case */}
+      {/* ================= HERO CENTER STAGE: HEADLINE + SUBLINE ================= */}
+      <div className="relative w-full max-w-[74vw] my-auto flex flex-col items-center justify-center pt-8 md:pt-4 z-10">
+        {/* Headline: exactly 3 lines on desktop, line pitch ~7.9vw, font-size ~8.5vw, line-height ~0.95 */}
         <h1
-          className="font-display text-[12vw] sm:text-[10vw] md:text-[7.8rem] lg:text-[8.8rem] leading-[0.84] tracking-tight text-cream select-none text-shadow-stamp z-0 relative"
-          style={{ letterSpacing: '-0.02em' }}
+          className="font-display text-cream select-none text-shadow-stamp"
+          style={{
+            fontSize: 'clamp(38px, 8.5vw, 218px)',
+            lineHeight: '0.95',
+            letterSpacing: '-0.02em',
+          }}
         >
-          <span className="block">Your markdown,</span>
-          <span className="block">stashed.</span>
-          <span className="block">Zero cloud, zero fuss.</span>
+          <span className="block whitespace-nowrap">Your markdown,</span>
+          <span className="block whitespace-nowrap">stashed without</span>
+          <span className="block whitespace-nowrap">any cloud fuss.</span>
         </h1>
 
-        {/* Layer 2: Overlapping Center Crate Logo (Layered on top of headline like the reference can) */}
+        {/* Thin dotted cream rule above subline (~30vw wide) */}
         <div
+          className="border-t-2 border-dotted border-cream/35 my-4"
+          style={{
+            width: 'clamp(220px, 30vw, 768px)',
+          }}
+          aria-hidden="true"
+        />
+
+        {/* Subline: ONE line in display font at ~2.7vw */}
+        <p
+          className="font-display text-cream tracking-normal"
+          style={{
+            fontSize: 'clamp(16px, 2.7vw, 68px)',
+            lineHeight: '1.1',
+          }}
+        >
+          Pure, local, and ready to drop anywhere.
+        </p>
+      </div>
+
+      {/* ================= BOTTOM CENTER CRATE INSIDE DASHED ARCH OUTLINE ================= */}
+      <div
+        className="relative z-10 flex flex-col items-center justify-end overflow-visible"
+        style={{
+          marginTop: 'clamp(10px, 1.5vw, 36px)',
+        }}
+      >
+        {/* Dashed arch outline running off the bottom edge of hero */}
+        <div
+          className="border-t-2 border-x-2 border-dashed border-cream/35 rounded-t-[50px] md:rounded-t-[80px] flex flex-col items-center justify-end relative cursor-pointer group"
+          style={{
+            width: 'clamp(180px, 13vw, 340px)',
+            paddingTop: 'clamp(14px, 1.2vw, 30px)',
+          }}
           onClick={handleStashClick}
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
-          className="absolute z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-[45%] cursor-pointer group"
-          style={{
-            transform: prefersReducedMotion
-              ? 'translate(-50%, -45%)'
-              : `translate(calc(-50% + ${tilt.x * 2}px), calc(-45% + ${tilt.y * 2}px)) rotate(${tilt.x * 0.4}deg)`,
-            transition: isHovered ? 'transform 0.15s ease-out' : 'transform 0.4s ease-out',
-          }}
-          title="Click to stash and open MDstash"
           role="button"
           tabIndex={0}
           onKeyDown={(e) => {
@@ -147,153 +200,137 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onScrollNext }) => {
             }
           }}
           aria-label="Interactive MDstash crate. Click to open application"
+          title="Click to drop into crate and open MDstash"
         >
+          {/* File card pops up out of crate on hover */}
+          <div
+            className={`absolute left-1/2 -translate-x-1/2 z-20 bg-cream rounded-lg border-2 border-orange shadow-card flex flex-col p-2 gap-1 transition-all duration-300 pointer-events-none ${
+              isHovered && !isDropping
+                ? '-top-12 opacity-100 scale-100'
+                : 'top-2 opacity-0 scale-75'
+            }`}
+            style={{
+              width: 'clamp(54px, 4vw, 100px)',
+              height: 'clamp(70px, 5.2vw, 130px)',
+            }}
+          >
+            <div className="h-2 w-8 bg-orange rounded" />
+            <div className="h-1.5 w-full bg-forest/30 rounded mt-1" />
+            <div className="h-1.5 w-3/4 bg-forest/30 rounded" />
+            <div className="h-1.5 w-5/6 bg-forest/30 rounded" />
+          </div>
+
           {/* Animated dropping card on click */}
           {isDropping && (
             <div
-              className="absolute left-1/2 -translate-x-1/2 -top-12 z-20 w-16 h-20 bg-cream rounded-lg border-2 border-orange shadow-card flex flex-col p-1.5 gap-1 animate-slideDown"
+              className="absolute left-1/2 -translate-x-1/2 z-20 bg-cream rounded-lg border-2 border-orange shadow-card flex flex-col p-2 gap-1 animate-slideDown"
               style={{
+                width: 'clamp(54px, 4vw, 100px)',
+                height: 'clamp(70px, 5.2vw, 130px)',
                 animation: 'dropIntoCrate 450ms cubic-bezier(0.2, 0.8, 0.2, 1) forwards',
               }}
             >
-              <div className="h-1.5 w-8 bg-orange rounded" />
-              <div className="h-1 w-full bg-forest/30 rounded" />
-              <div className="h-1 w-10 bg-forest/30 rounded" />
-              <div className="h-1 w-12 bg-forest/30 rounded" />
+              <div className="h-2 w-8 bg-orange rounded" />
+              <div className="h-1.5 w-full bg-forest/30 rounded" />
+              <div className="h-1.5 w-3/4 bg-forest/30 rounded" />
             </div>
           )}
 
-          {/* Radial Warm Glow behind crate */}
-          <div className="absolute inset-0 -inset-x-8 rounded-full bg-orange/20 blur-3xl group-hover:bg-orange/40 transition-all pointer-events-none" />
-
-          {/* Crate image with float animation */}
+          {/* Crate image with gentle float */}
           <div className={prefersReducedMotion ? '' : 'animate-bob'}>
             <img
               src="/logo.svg"
               alt="MDstash Crate Logo"
-              className="w-36 sm:w-48 md:w-56 lg:w-64 h-auto drop-shadow-[0_16px_28px_rgba(25,32,28,0.55)] group-hover:scale-105 transition-transform duration-200"
+              className="object-contain drop-shadow-[0_12px_24px_rgba(25,32,28,0.5)] group-hover:scale-105 transition-transform duration-200"
+              style={{
+                width: 'clamp(150px, 11vw, 280px)',
+                height: 'auto',
+              }}
             />
           </div>
         </div>
-
-        {/* Subline under thin rules */}
-        <div className="w-full max-w-xl mx-auto mt-6 z-10 flex flex-col items-center">
-          <div className="w-full flex items-center gap-4 my-2">
-            <div className="flex-1 h-px bg-cream/25" />
-            <p className="font-display text-lg sm:text-xl md:text-2xl tracking-normal text-cream shrink-0">
-              Pure, local, and ready to drop anywhere.
-            </p>
-            <div className="flex-1 h-px bg-cream/25" />
-          </div>
-          <p className="text-xs sm:text-sm text-cream-dim max-w-md mx-auto leading-relaxed mt-1">
-            Drag files in, organize collections, and copy prompt-ready markdown directly into your editor or AI chats.
-          </p>
-        </div>
       </div>
 
-      {/* ================= BOTTOM CORNERS: CHUNKY MARKDOWN MOTIFS ================= */}
-      <div className="w-full flex items-end justify-between pt-4 border-t border-line mt-6 z-10">
-        {/* Bottom Left: Chunky M↓ Markdown Mark */}
-        <div className="flex items-center gap-3 text-left">
+      {/* ================= BOTTOM CORNERS: FLAT SOLID ORANGE CHUNKY SHAPES ================= */}
+      <div
+        className="w-full flex items-end justify-between z-10 pointer-events-none"
+        style={{
+          marginTop: '-clamp(20px, 2vw, 44px)',
+          paddingBottom: 'clamp(10px, 1vw, 24px)',
+        }}
+      >
+        {/* Bottom Left: Chunky solid orange asterisk mark (tilted, slowly rotating) */}
+        <div className="flex items-center gap-[clamp(8px,0.8vw,20px)] text-left pointer-events-auto">
           <div
-            className={`transition-transform duration-300 ${
-              prefersReducedMotion ? '' : 'animate-bob'
-            }`}
-            style={{ transform: 'rotate(-8deg)' }}
+            className={`transition-transform duration-300 ${prefersReducedMotion ? '' : 'animate-spin-slow'}`}
+            style={{
+              width: 'clamp(44px, 7vw, 180px)',
+              height: 'clamp(44px, 7vw, 180px)',
+            }}
           >
             <svg
-              viewBox="0 0 160 110"
-              className="w-24 sm:w-32 md:w-36 h-auto drop-shadow-md"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              aria-label="Markdown M-down motif"
+              viewBox="0 0 100 100"
+              className="w-full h-full text-orange drop-shadow-md"
+              fill="currentColor"
+              aria-label="Markdown asterisk motif"
             >
-              <rect
-                x="4"
-                y="4"
-                width="152"
-                height="102"
-                rx="18"
-                stroke="var(--orange)"
-                strokeWidth="7"
-                fill="rgba(242, 163, 58, 0.12)"
-              />
-              {/* Chunky M */}
-              <path
-                d="M26 78V32L52 58L78 32V78"
-                stroke="var(--orange)"
-                strokeWidth="9"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              {/* Chunky Down Arrow ↓ */}
-              <path
-                d="M116 32V74M116 74L100 58M116 74L132 58"
-                stroke="var(--orange)"
-                strokeWidth="9"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
+              <g transform="translate(50,50)">
+                <rect x="-9" y="-46" width="18" height="92" rx="9" fill="var(--orange)" />
+                <rect x="-9" y="-46" width="18" height="92" rx="9" transform="rotate(60)" fill="var(--orange)" />
+                <rect x="-9" y="-46" width="18" height="92" rx="9" transform="rotate(120)" fill="var(--orange)" />
+              </g>
             </svg>
           </div>
-          <div className="font-mono text-[10px] sm:text-xs text-cream-dim leading-tight">
-            <span className="block font-bold text-cream">Zero cloud</span>
-            <span className="block opacity-80">zero servers</span>
+          <div
+            className="font-display text-cream leading-tight hidden sm:block"
+            style={{
+              fontSize: 'clamp(11px, 0.9vw, 23px)',
+            }}
+          >
+            <span className="block">Zero cloud</span>
+            <span className="block opacity-85">zero servers</span>
           </div>
         </div>
 
-        {/* Center prompt quick scroll hint */}
-        <button
-          type="button"
-          onClick={handleScrollDown}
-          className="hidden md:flex flex-col items-center gap-1 text-[11px] font-mono text-cream-dim hover:text-orange transition-colors cursor-pointer"
-        >
-          <span>Explore workflow</span>
-          <ArrowDown className="w-3.5 h-3.5 animate-bounce" />
-        </button>
-
-        {/* Bottom Right: Chunky # Hash Mark */}
-        <div className="flex items-center gap-3 text-right">
-          <div className="font-mono text-[10px] sm:text-xs text-cream-dim leading-tight hidden xs:block">
-            <span className="block font-bold text-cream">Works offline</span>
-            <span className="block opacity-80">stored in your browser</span>
+        {/* Bottom Right: Chunky solid orange >_ prompt mark (tilted +6°, blinking cursor) */}
+        <div className="flex items-center gap-[clamp(8px,0.8vw,20px)] text-right pointer-events-auto">
+          <div
+            className="font-display text-cream leading-tight hidden sm:block"
+            style={{
+              fontSize: 'clamp(11px, 0.9vw, 23px)',
+            }}
+          >
+            <span className="block">Works offline</span>
+            <span className="block opacity-85">stored in your browser</span>
           </div>
           <div
-            className={`transition-transform duration-300 ${
-              prefersReducedMotion ? '' : 'animate-bob-delayed'
-            }`}
-            style={{ transform: 'rotate(8deg)' }}
+            className="transition-transform duration-300"
+            style={{
+              width: 'clamp(52px, 8vw, 204px)',
+              height: 'clamp(38px, 5.8vw, 148px)',
+              transform: 'rotate(6deg)',
+            }}
           >
             <svg
-              viewBox="0 0 120 110"
-              className="w-20 sm:w-28 md:w-32 h-auto drop-shadow-md"
+              viewBox="0 0 140 100"
+              className="w-full h-full drop-shadow-md"
               fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              aria-label="Markdown header hash motif"
+              aria-label="Markdown prompt motif"
             >
+              {/* Chunky > blockquote chevron */}
+              <path
+                d="M12 18 L68 50 L12 82 L26 94 L94 50 L26 6 Z"
+                fill="var(--orange)"
+              />
+              {/* Chunky _ cursor underscore */}
               <rect
-                x="4"
-                y="4"
-                width="112"
-                height="102"
-                rx="18"
-                stroke="var(--orange)"
-                strokeWidth="7"
-                fill="rgba(242, 163, 58, 0.12)"
-              />
-              {/* Hash vertical bars */}
-              <path
-                d="M44 24L34 86M76 24L66 86"
-                stroke="var(--orange)"
-                strokeWidth="9"
-                strokeLinecap="round"
-              />
-              {/* Hash horizontal bars */}
-              <path
-                d="M18 44L98 40M14 70L94 66"
-                stroke="var(--orange)"
-                strokeWidth="9"
-                strokeLinecap="round"
+                x="98"
+                y="74"
+                width="38"
+                height="16"
+                rx="4"
+                fill="var(--orange)"
+                className={prefersReducedMotion ? '' : 'animate-pulse'}
               />
             </svg>
           </div>

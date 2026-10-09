@@ -86,15 +86,15 @@ export const HowItWorksStory: React.FC = () => {
     >
       {/* Section Header */}
       <div className="text-center mb-12 md:mb-16">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cream-dim border border-line-ink text-xs font-mono text-ink font-semibold">
-          <span className="text-orange">#</span>
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cream-dim border border-line-ink text-xs font-display text-ink">
+          <span className="text-orange">●</span>
           <span>Pinned workflow story</span>
         </div>
         <h2 className="font-display text-4xl sm:text-5xl md:text-6xl text-ink mt-3 tracking-tight">
           How MDstash works
         </h2>
-        <p className="text-sm sm:text-base text-ink/75 max-w-xl mx-auto mt-2 font-sans">
-          From loose markdown files to an organized, prompt-ready library you can drop anywhere.
+        <p className="text-sm sm:text-base text-ink/80 max-w-xl mx-auto mt-2 font-sans">
+          Drag files in, organize collections, and copy prompt-ready markdown directly into your editor or AI chats.
         </p>
       </div>
 

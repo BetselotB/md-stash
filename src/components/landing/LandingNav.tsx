@@ -192,7 +192,7 @@ export const LandingNav: React.FC<LandingNavProps> = ({
                         : 'border-cream/50 bg-sage text-cream'
                     }`}
                   >
-                    <span className="font-display text-[clamp(10px,0.7vw,16px)] uppercase tracking-wider block leading-none">
+                    <span className="font-display text-[clamp(10px,0.7vw,16px)] tracking-wider block leading-none">
                       md
                     </span>
                   </div>

@@ -22,8 +22,8 @@ describe('HeroSection Component', () => {
     );
 
     expect(screen.getByText('Your markdown,')).toBeInTheDocument();
-    expect(screen.getByText('stashed.')).toBeInTheDocument();
-    expect(screen.getByText('Zero cloud, zero fuss.')).toBeInTheDocument();
+    expect(screen.getByText('stashed without')).toBeInTheDocument();
+    expect(screen.getByText('any cloud fuss.')).toBeInTheDocument();
     expect(screen.getByText('Pure, local, and ready to drop anywhere.')).toBeInTheDocument();
   });
 
@@ -35,18 +35,18 @@ describe('HeroSection Component', () => {
     );
 
     expect(screen.getByLabelText(/scroll to how it works/i)).toBeInTheDocument();
-    expect(screen.getByText(/private & honest · local first · works offline ·/i)).toBeInTheDocument();
+    expect(screen.getByText(/private & honest · local first ·/i)).toBeInTheDocument();
   });
 
-  it('renders markdown bottom motifs: M-down and hash mark with captions', () => {
+  it('renders markdown bottom motifs: asterisk and prompt mark with captions', () => {
     render(
       <BrowserRouter>
         <HeroSection />
       </BrowserRouter>
     );
 
-    expect(screen.getByLabelText('Markdown M-down motif')).toBeInTheDocument();
-    expect(screen.getByLabelText('Markdown header hash motif')).toBeInTheDocument();
+    expect(screen.getByLabelText('Markdown asterisk motif')).toBeInTheDocument();
+    expect(screen.getByLabelText('Markdown prompt motif')).toBeInTheDocument();
     expect(screen.getByText('Zero cloud')).toBeInTheDocument();
     expect(screen.getByText('zero servers')).toBeInTheDocument();
     expect(screen.getByText('Works offline')).toBeInTheDocument();
@@ -74,7 +74,7 @@ describe('HeroSection Component', () => {
     vi.useRealTimers();
   });
 
-  it('handles interactive center crate click and keyboard navigation', async () => {
+  it('handles interactive bottom center crate click and keyboard navigation', async () => {
     vi.useFakeTimers();
     render(
       <BrowserRouter>

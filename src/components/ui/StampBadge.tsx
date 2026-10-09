@@ -4,32 +4,36 @@ import { ArrowDown } from 'lucide-react';
 interface StampBadgeProps {
   text?: string;
   className?: string;
-  size?: number;
+  size?: number | string;
   icon?: React.ReactNode;
+  iconWrapperClassName?: string;
 }
 
 export const StampBadge: React.FC<StampBadgeProps> = ({
-  text = 'private & honest · local first · works offline · ',
+  text = 'private & honest · local first · private & honest · local first · ',
   className = '',
-  size = 110,
+  size = 140,
   icon = <ArrowDown className="w-5 h-5 text-cream" />,
+  iconWrapperClassName = 'w-10 h-10 rounded-full border border-cream/50 bg-transparent flex items-center justify-center',
 }) => {
   const radius = 37;
   const circumference = +(2 * Math.PI * radius).toFixed(1); // ~232.5
 
+  const dimensionStyle = typeof size === 'number' ? { width: `${size}px`, height: `${size}px` } : { width: size, height: size };
+
   return (
     <div
       className={`relative inline-flex items-center justify-center select-none ${className}`}
-      style={{ width: size, height: size }}
+      style={dimensionStyle}
     >
-      {/* Central icon */}
-      <div className="absolute z-10 flex items-center justify-center w-9 h-9 rounded-full bg-forest border border-line shadow-sm">
+      {/* Central icon: thin outlined cream arrow with no dark background */}
+      <div className={`absolute z-10 ${iconWrapperClassName}`}>
         {icon}
       </div>
 
       {/* Rotating SVG text ring */}
       <svg
-        className="w-full h-full animate-spin-slow origin-center"
+        className="w-full h-full animate-spin-slow origin-center overflow-visible"
         viewBox="0 0 100 100"
       >
         <defs>
@@ -40,10 +44,10 @@ export const StampBadge: React.FC<StampBadgeProps> = ({
         </defs>
         <text
           fill="var(--cream)"
-          fontSize="9"
-          letterSpacing="1.2"
-          fontWeight="600"
-          className="select-none opacity-90 font-display"
+          fontSize="9.2"
+          letterSpacing="0.8"
+          fontWeight="500"
+          className="select-none font-display opacity-95"
         >
           <textPath href="#textCircle" startOffset="0%" textLength={circumference} lengthAdjust="spacing">
             {text}
