@@ -120,5 +120,14 @@ export function useLandingScroll({
     };
   }, [heroRef, creamCurtainRef, finalCtaRef]);
 
-  return { navTheme, lenis: lenisRef.current };
+  const stopLenis = () => {
+    lenisRef.current?.stop();
+  };
+
+  const startLenis = () => {
+    lenisRef.current?.start();
+    ScrollTrigger.refresh();
+  };
+
+  return { navTheme, lenis: lenisRef.current, stopLenis, startLenis };
 }

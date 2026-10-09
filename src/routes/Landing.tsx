@@ -9,16 +9,22 @@ import { InteractivePlayground } from '../components/landing/InteractivePlaygrou
 import { PrivacyProofPanel } from '../components/landing/PrivacyProofPanel';
 import { MarqueeUseCases } from '../components/landing/MarqueeUseCases';
 import { useLandingScroll } from '../hooks/useLandingScroll';
+import { useHeroIntro } from '../hooks/useHeroIntro';
 
 export const Landing: React.FC = () => {
   const heroRef = useRef<HTMLDivElement>(null);
   const creamCurtainRef = useRef<HTMLDivElement>(null);
   const finalCtaRef = useRef<HTMLDivElement>(null);
 
-  const { navTheme } = useLandingScroll({
+  const { navTheme, stopLenis, startLenis } = useLandingScroll({
     heroRef,
     creamCurtainRef,
     finalCtaRef,
+  });
+
+  useHeroIntro({
+    onStopLenis: stopLenis,
+    onStartLenis: startLenis,
   });
 
   const handleScrollTo = (id: string) => {

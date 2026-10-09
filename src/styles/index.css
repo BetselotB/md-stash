@@ -203,6 +203,27 @@ html.lenis body {
   animation-play-state: paused;
 }
 
+mark.hl {
+  background-color: transparent;
+  color: inherit;
+  display: inline-block;
+  position: relative;
+  border-radius: 4px;
+}
+
+mark.hl .hl-bg {
+  transform-origin: left center;
+  transition: transform 0.2s ease;
+}
+
+mark.hl:hover .hl-bg {
+  transform: scaleX(1.02) rotate(-0.5deg);
+}
+
+mark.hl:hover .hl-caret {
+  opacity: 0.6;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .animate-spin-slow,
   .animate-bob,

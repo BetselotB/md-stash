@@ -55,7 +55,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onScrollNext }) => {
       className="relative min-h-[calc(100vh-clamp(72px,5.5vw,140px))] w-full max-w-[2560px] mx-auto px-[clamp(16px,1.7vw,44px)] pt-2 pb-0 flex flex-col justify-between items-center text-center select-none overflow-hidden"
     >
       {/* ================= FIXED RIGHT-EDGE PROTRUDING ORANGE TAB ================= */}
-      <div className="fixed right-0 top-1/2 -translate-y-1/2 z-30 hidden md:block">
+      <div className="hero-right-tab fixed right-0 top-1/2 -translate-y-1/2 z-30 hidden md:block">
         <button
           type="button"
           onClick={handleStashClick}
@@ -178,10 +178,10 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onScrollNext }) => {
       >
         {/* Dashed arch outline running off the bottom edge of hero */}
         <div
-          className="border-t-2 border-x-2 border-dashed border-cream/35 rounded-t-[50px] md:rounded-t-[80px] flex flex-col items-center justify-end relative cursor-pointer group"
+          className="relative flex flex-col items-center justify-end cursor-pointer group"
           style={{
             width: 'clamp(180px, 13vw, 340px)',
-            paddingTop: 'clamp(14px, 1.2vw, 30px)',
+            height: 'clamp(90px, 7vw, 170px)',
           }}
           onClick={handleStashClick}
           onMouseEnter={() => setIsHovered(true)}
@@ -197,6 +197,24 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onScrollNext }) => {
           aria-label="Interactive MDstash crate. Click to open application"
           title="Click to drop into crate and open MDstash"
         >
+          {/* SVG Dashed Arch outline that draws with strokeDashoffset */}
+          <svg
+            className="hero-crate-arch absolute inset-0 w-full h-full pointer-events-none overflow-visible"
+            viewBox="0 0 200 100"
+            preserveAspectRatio="none"
+          >
+            <path
+              className="hero-crate-arch-path"
+              d="M 2 100 L 2 45 A 98 45 0 0 1 198 45 L 198 100"
+              fill="none"
+              stroke="var(--cream)"
+              strokeOpacity="0.35"
+              strokeWidth="2"
+              strokeDasharray="6 6"
+              style={{ strokeDashoffset: 0 }}
+            />
+          </svg>
+
           {/* File card pops up out of crate on hover */}
           <div
             className={`absolute left-1/2 -translate-x-1/2 z-20 bg-cream rounded-lg border-2 border-orange shadow-card flex flex-col p-2 gap-1 transition-all duration-300 pointer-events-none ${
@@ -232,7 +250,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onScrollNext }) => {
           )}
 
           {/* Crate image with gentle float */}
-          <div className={prefersReducedMotion ? '' : 'animate-bob'}>
+          <div className={`hero-crate ${prefersReducedMotion ? '' : 'animate-bob'}`}>
             <img
               src="/logo.svg"
               alt="MDstash Crate Logo"
@@ -257,7 +275,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onScrollNext }) => {
         {/* Bottom Left: Chunky solid orange asterisk mark (tilted, slowly rotating) */}
         <div className="flex items-center gap-[clamp(8px,0.8vw,20px)] text-left pointer-events-auto">
           <div
-            className={`transition-transform duration-300 ${prefersReducedMotion ? '' : 'animate-spin-slow'}`}
+            className={`hero-motif-left transition-transform duration-300 ${prefersReducedMotion ? '' : 'animate-spin-slow'}`}
             style={{
               width: 'clamp(44px, 7vw, 180px)',
               height: 'clamp(44px, 7vw, 180px)',
@@ -277,7 +295,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onScrollNext }) => {
             </svg>
           </div>
           <div
-            className="font-display text-cream leading-tight hidden sm:block"
+            className="hero-caption-left font-display text-cream leading-tight hidden sm:block"
             style={{
               fontSize: 'clamp(11px, 0.9vw, 23px)',
             }}
@@ -290,7 +308,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onScrollNext }) => {
         {/* Bottom Right: Chunky solid orange >_ prompt mark (tilted +6°, blinking cursor) */}
         <div className="flex items-center gap-[clamp(8px,0.8vw,20px)] text-right pointer-events-auto">
           <div
-            className="font-display text-cream leading-tight hidden sm:block"
+            className="hero-caption-right font-display text-cream leading-tight hidden sm:block"
             style={{
               fontSize: 'clamp(11px, 0.9vw, 23px)',
             }}
@@ -299,7 +317,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onScrollNext }) => {
             <span className="block opacity-85">stored in your browser</span>
           </div>
           <div
-            className="transition-transform duration-300"
+            className="hero-motif-right transition-transform duration-300"
             style={{
               width: 'clamp(52px, 8vw, 204px)',
               height: 'clamp(38px, 5.8vw, 148px)',

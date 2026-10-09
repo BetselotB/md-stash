@@ -1,13 +1,61 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" class="is-loading">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/logo.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>MDstash — Your markdown, stashed & ready</title>
     <meta name="description" content="A local-first organizer for Markdown files. Drag files in, sort them into collections, copy or drag them back out into your IDE or AI chat. Nothing leaves your device." />
+    <style>
+      html, body {
+        background-color: #838D78;
+      }
+      /* Prevent flash of un-animated content before intro timeline runs */
+      .is-loading .hero-line-inner {
+        opacity: 0;
+        visibility: hidden;
+      }
+      .is-loading .nav-rule-left,
+      .is-loading .nav-rule-right,
+      .is-loading .nav-badge,
+      .is-loading .hero-badge,
+      .is-loading .hero-right-tab,
+      .is-loading .hero-crate,
+      .is-loading .hero-motif-left,
+      .is-loading .hero-motif-right,
+      .is-loading .hero-caption-left,
+      .is-loading .hero-caption-right {
+        opacity: 0;
+        visibility: hidden;
+      }
+    </style>
+    <noscript>
+      <style>
+        .is-loading .hero-line-inner,
+        .is-loading .nav-rule-left,
+        .is-loading .nav-rule-right,
+        .is-loading .nav-badge,
+        .is-loading .hero-badge,
+        .is-loading .hero-right-tab,
+        .is-loading .hero-crate,
+        .is-loading .hero-motif-left,
+        .is-loading .hero-motif-right,
+        .is-loading .hero-caption-left,
+        .is-loading .hero-caption-right {
+          opacity: 1 !important;
+          visibility: visible !important;
+          transform: none !important;
+        }
+      </style>
+    </noscript>
+    <script>
+      // 3s failsafe timeout so content is never stuck hidden if JS stalls
+      setTimeout(function() {
+        document.documentElement.classList.remove('is-loading');
+      }, 3000);
+    </script>
   </head>
-  <body class="bg-sage text-cream font-sans antialiased selection:bg-orange selection:text-forest min-h-screen">
+  <body class="bg-sage text-cream font-sans antialiased selection:bg-orange selection:text-ink min-h-screen">
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

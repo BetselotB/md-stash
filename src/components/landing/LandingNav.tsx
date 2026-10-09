@@ -66,7 +66,7 @@ export const LandingNav: React.FC<LandingNavProps> = ({
           }}
         >
           {/* ================= ZONE 1: LEFT ================= */}
-          <div className="flex items-center gap-[clamp(10px,0.8vw,20px)] shrink-0 z-10">
+          <div className="flex items-center gap-[clamp(10px,0.8vw,20px)] shrink-0 z-10 nav-left">
             <Link
               to="/"
               onClick={scrollToTop}
