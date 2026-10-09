@@ -121,35 +121,35 @@ export const LandingNav: React.FC<LandingNavProps> = ({
           </div>
 
           {/* ================= TWO THIN RULES (Left and Right of Badge) ================= */}
-          {/* Left rule: from left padding to badge's left edge, positioned about 5.5vw from top */}
+          {/* Left rule: from screen left edge to badge gap, positioned about 5.5vw from top */}
           <div
-            className={`hidden md:block absolute h-[1px] transition-colors pointer-events-none ${
+            className={`hidden md:block absolute h-[1px] transition-colors pointer-events-none nav-rule-left ${
               isCream ? 'bg-ink/30' : 'bg-cream/40'
             }`}
             style={{
               top: 'clamp(52px, 4.4vw, 112px)',
-              left: 'clamp(16px, 1.7vw, 44px)',
-              right: 'calc(50% + clamp(48px, 3.4vw, 90px))',
+              left: 0,
+              right: 'calc(50% + clamp(50px, 3.6vw, 96px))',
             }}
             aria-hidden="true"
           />
 
-          {/* Right rule: from badge's right edge to right padding, positioned about 5.5vw from top */}
+          {/* Right rule: from badge gap to screen right edge, positioned about 5.5vw from top */}
           <div
-            className={`hidden md:block absolute h-[1px] transition-colors pointer-events-none ${
+            className={`hidden md:block absolute h-[1px] transition-colors pointer-events-none nav-rule-right ${
               isCream ? 'bg-ink/30' : 'bg-cream/40'
             }`}
             style={{
               top: 'clamp(52px, 4.4vw, 112px)',
-              left: 'calc(50% + clamp(48px, 3.4vw, 90px))',
-              right: 'clamp(16px, 1.7vw, 44px)',
+              left: 'calc(50% + clamp(50px, 3.6vw, 96px))',
+              right: 0,
             }}
             aria-hidden="true"
           />
 
           {/* ================= ZONE 2: CENTER (Hanging Framed Logo Badge) ================= */}
           <div
-            className="absolute left-1/2 -translate-x-1/2 z-20"
+            className="absolute left-1/2 -translate-x-1/2 z-20 nav-badge"
             style={{
               top: 'clamp(8px, 0.6vw, 16px)',
               width: 'clamp(86px, 6.2vw, 160px)',
@@ -174,15 +174,15 @@ export const LandingNav: React.FC<LandingNavProps> = ({
                     isCream ? 'border-ink/35 text-ink' : 'border-cream/35 text-cream'
                   }`}
                 >
-                  {/* Crate Logo Mark */}
+                  {/* Crate Logo Mark ~40% of badge height */}
                   <img
                     src="/logo.svg"
                     alt="MDstash Crate Mark"
-                    className="w-[clamp(26px,2vw,50px)] h-[clamp(26px,2vw,50px)] object-contain mb-1 transition-transform group-hover:-rotate-3"
+                    className="h-[40%] w-auto max-h-[54px] object-contain mb-1 transition-transform group-hover:-rotate-3"
                   />
 
                   {/* MDstash Wordmark */}
-                  <span className="font-display text-[clamp(13px,1.05vw,26px)] leading-none tracking-tight">
+                  <span className="font-display text-[clamp(13px,1.05vw,26px)] leading-none tracking-tight whitespace-nowrap">
                     MD<span className="text-orange">stash</span>
                   </span>
 
@@ -205,42 +205,13 @@ export const LandingNav: React.FC<LandingNavProps> = ({
           </div>
 
           {/* ================= ZONE 3: RIGHT ================= */}
-          <div className="flex items-center gap-[clamp(10px,0.9vw,22px)] shrink-0 z-10 ml-auto">
-            {/* "click the stash" note: two lines, tilted -8°, display font in cream (not orange, not mono) with hand-drawn underline */}
-            <div className="hidden lg:flex flex-col items-center select-none relative -rotate-[8deg] pr-1">
-              <span
-                className={`font-display text-[clamp(13px,1.15vw,28px)] leading-[0.95] text-center tracking-tight transition-colors ${
-                  isCream ? 'text-ink' : 'text-cream'
-                }`}
-              >
-                click<br />the stash
-              </span>
-              {/* Hand-drawn small underline SVG */}
-              <svg
-                width="38"
-                height="8"
-                viewBox="0 0 38 8"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                className={`mt-0.5 transition-colors ${isCream ? 'text-ink/60' : 'text-cream/80'}`}
-                aria-hidden="true"
-              >
-                <path
-                  d="M1 5.5C10 2.5 24 2 37 6"
-                  stroke="currentColor"
-                  strokeWidth="1.75"
-                  strokeLinecap="round"
-                />
-              </svg>
-            </div>
-
-            {/* Orange Pill: ~6.8vw x 2.7vw with label ~1.1vw in display font */}
+          <div className="flex items-center gap-[clamp(10px,0.9vw,22px)] shrink-0 z-10 ml-auto nav-right">
+            {/* Orange Pill: single-line 'Open MDstash', white-space: nowrap, no fixed width, px-[clamp(16px,1.6vw,32px)] */}
             <Link to="/app" className="hidden sm:inline-block">
               <button
                 type="button"
-                className="bg-orange hover:bg-orange-deep text-forest font-display rounded-full transition-all duration-150 shadow-sm active:scale-95 cursor-pointer flex items-center justify-center text-center px-4"
+                className="bg-orange hover:bg-orange-deep text-forest font-display rounded-full transition-all duration-150 shadow-sm active:scale-95 cursor-pointer flex items-center justify-center text-center whitespace-nowrap px-[clamp(16px,1.6vw,32px)]"
                 style={{
-                  width: 'clamp(115px, 6.8vw, 175px)',
                   height: 'clamp(38px, 2.7vw, 70px)',
                   fontSize: 'clamp(13px, 1.1vw, 26px)',
                 }}

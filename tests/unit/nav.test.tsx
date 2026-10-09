@@ -23,7 +23,7 @@ describe('Landing Navigation & Menu Overlay', () => {
     expect(screen.getByTestId('badge-tab')).toHaveTextContent(/md/i);
 
     // Zone 3: Right
-    expect(screen.getByText(/the stash/i)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /open mdstash/i })).toBeInTheDocument();
     expect(screen.getByTitle('Privacy policy')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /open menu/i })).toBeInTheDocument();
   });

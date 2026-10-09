@@ -114,9 +114,9 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onScrollNext }) => {
       </div>
 
       {/* ================= ROTATING CIRCULAR STAMP BADGE ================= */}
-      {/* Positioned beside lower headline lines: left ~6.3vw, vertically ~58% */}
+      {/* Positioned beside lower headline line: left ~6.3vw, vertically ~58% */}
       <div
-        className="absolute z-20 hidden md:block"
+        className="hero-badge absolute z-20 hidden md:block"
         style={{
           left: 'clamp(20px, 6.3vw, 160px)',
           top: '58%',
@@ -137,48 +137,43 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onScrollNext }) => {
         </button>
       </div>
 
-      {/* ================= HERO CENTER STAGE: HEADLINE + SUBLINE ================= */}
-      <div className="relative w-full max-w-[74vw] my-auto flex flex-col items-center justify-center pt-8 md:pt-4 z-10">
-        {/* Headline: exactly 3 lines on desktop, line pitch ~7.9vw, font-size ~8.5vw, line-height ~0.95 */}
+      {/* ================= HERO CENTER STAGE: HEADLINE ================= */}
+      <div className="hero-stage relative w-full max-w-[80vw] my-auto flex flex-col items-center justify-center z-10 py-2">
+        {/* Headline: exactly 2 lines on desktop, font-size reduced by ~12% with clamp() */}
         <h1
-          className="font-display text-cream select-none text-shadow-stamp"
+          aria-label="Your markdown, stashed."
+          className="font-display text-cream select-none text-shadow-stamp text-center"
           style={{
-            fontSize: 'clamp(38px, 8.5vw, 218px)',
+            fontSize: 'clamp(34px, 7.5vw, 192px)',
             lineHeight: '0.95',
             letterSpacing: '-0.02em',
           }}
         >
-          <span className="block whitespace-nowrap">Your markdown,</span>
-          <span className="block whitespace-nowrap">stashed without</span>
-          <span className="block whitespace-nowrap">any cloud fuss.</span>
+          <span className="hero-line hero-line-1 block whitespace-nowrap overflow-hidden">
+            <span className="hero-line-inner inline-block">
+              Your{' '}
+              <mark className="hl text-inherit bg-transparent relative inline-block">
+                <span className="hl-bg absolute inset-0 bg-orange rounded-[0.15em] -rotate-[1deg] origin-left scale-x-0" aria-hidden="true" />
+                <span className="hl-caret absolute -left-1 top-0 bottom-0 w-[3px] bg-orange opacity-0" aria-hidden="true" />
+                <span className="hl-text relative z-10 transition-colors duration-300">markdown</span>
+              </mark>
+              ,
+            </span>
+          </span>
+          <span className="hero-line hero-line-2 block whitespace-nowrap overflow-hidden mt-[clamp(2px,0.6vw,12px)]">
+            <span className="hero-line-inner inline-block">
+              stashed.
+            </span>
+          </span>
         </h1>
-
-        {/* Thin dotted cream rule above subline (~30vw wide) */}
-        <div
-          className="border-t-2 border-dotted border-cream/35 my-4"
-          style={{
-            width: 'clamp(220px, 30vw, 768px)',
-          }}
-          aria-hidden="true"
-        />
-
-        {/* Subline: ONE line in display font at ~2.7vw */}
-        <p
-          className="font-display text-cream tracking-normal"
-          style={{
-            fontSize: 'clamp(16px, 2.7vw, 68px)',
-            lineHeight: '1.1',
-          }}
-        >
-          Pure, local, and ready to drop anywhere.
-        </p>
       </div>
 
       {/* ================= BOTTOM CENTER CRATE INSIDE DASHED ARCH OUTLINE ================= */}
       <div
-        className="relative z-10 flex flex-col items-center justify-end overflow-visible"
+        className="hero-crate-container relative z-10 flex flex-col items-center justify-end overflow-visible"
         style={{
-          marginTop: 'clamp(10px, 1.5vw, 36px)',
+          marginTop: 'auto',
+          marginBottom: '0',
         }}
       >
         {/* Dashed arch outline running off the bottom edge of hero */}

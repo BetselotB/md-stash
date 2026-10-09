@@ -14,17 +14,16 @@ vi.mock('react-router-dom', async () => {
 });
 
 describe('HeroSection Component', () => {
-  it('renders headline in 3 lines max in sentence case', () => {
+  it('renders simplified headline in 2 lines in sentence case', () => {
     render(
       <BrowserRouter>
         <HeroSection />
       </BrowserRouter>
     );
 
-    expect(screen.getByText('Your markdown,')).toBeInTheDocument();
-    expect(screen.getByText('stashed without')).toBeInTheDocument();
-    expect(screen.getByText('any cloud fuss.')).toBeInTheDocument();
-    expect(screen.getByText('Pure, local, and ready to drop anywhere.')).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 1 })).toHaveAttribute('aria-label', 'Your markdown, stashed.');
+    expect(screen.getByText('markdown')).toBeInTheDocument();
+    expect(screen.getByText('stashed.')).toBeInTheDocument();
   });
 
   it('renders rotating circular badge with seamless text and down arrow', () => {
