@@ -17,8 +17,25 @@ let isDemoDispatching = false;
 export function dispatchDemoClick(el: HTMLElement | null) {
   if (!el) return;
   isDemoDispatching = true;
+  const activeBefore = document.activeElement;
   try {
+    // Dispatch pointerdown and mousedown with defaultPrevented so browsers do not transfer focus
+    const pEvt = new PointerEvent('pointerdown', { bubbles: true, cancelable: true });
+    pEvt.preventDefault();
+    el.dispatchEvent(pEvt);
+    const mEvt = new MouseEvent('mousedown', { bubbles: true, cancelable: true });
+    mEvt.preventDefault();
+    el.dispatchEvent(mEvt);
+
     el.click();
+
+    // Ensure focus does not move to the element clicked by demo
+    if (document.activeElement && (document.activeElement === el || el.contains(document.activeElement))) {
+      (document.activeElement as HTMLElement).blur();
+      if (activeBefore && activeBefore !== el && !el.contains(activeBefore) && activeBefore instanceof HTMLElement && activeBefore !== document.body) {
+        activeBefore.focus({ preventScroll: true });
+      }
+    }
   } finally {
     isDemoDispatching = false;
   }
@@ -106,6 +123,12 @@ export type DemoPhase =
   | 'select-claude'
   | 'rest';
 
+export interface TakeoverLogEntry {
+  type: string;
+  target: string;
+  time: number;
+}
+
 declare global {
   interface Window {
     __demo?: {
@@ -116,6 +139,7 @@ declare global {
       takeoverReason: string | null;
       cursorRect: { left: number; top: number; width: number; height: number } | null;
       loopCount: number;
+      takeoverLog: TakeoverLogEntry[];
     };
   }
 }
@@ -139,6 +163,7 @@ export const InteractivePlayground: React.FC = () => {
   const [pastedContent, setPastedContent] = useState<string | null>(null);
   const [isResettingChat, setIsResettingChat] = useState(false);
   const [resetClickCount, setResetClickCount] = useState(0);
+  const [isDemoInputFocus, setIsDemoInputFocus] = useState(false);
 
   // Demo state: userPaused (the button) and interactionPaused (takeover)
   const [userPaused, setUserPaused] = useState(false);
@@ -171,10 +196,11 @@ export const InteractivePlayground: React.FC = () => {
   const isVisibleRef = useRef<boolean>(false);
   const takeoverReasonRef = useRef<string | null>(null);
   const takeoverTimerRef = useRef<NodeJS.Timeout | null>(null);
-  const userPausedRef = useRef<boolean>(false);
+  const takeoverLogRef = useRef<TakeoverLogEntry[]>([]);
   const interactionPausedRef = useRef<boolean>(false);
-  userPausedRef.current = userPaused;
+  const userPausedRef = useRef<boolean>(false);
   interactionPausedRef.current = interactionPaused;
+  userPausedRef.current = userPaused;
 
   const isDebug = typeof window !== 'undefined' && window.location.search.includes('demodebug');
 
@@ -268,6 +294,7 @@ export const InteractivePlayground: React.FC = () => {
     setChatInput('');
     setAttachedFile(null);
     setPastedContent(null);
+    setIsDemoInputFocus(false);
   };
 
   // Reset chat handler with 0.45s smooth fade & slide out transition
@@ -279,6 +306,7 @@ export const InteractivePlayground: React.FC = () => {
       setChatInput('');
       setAttachedFile(null);
       setPastedContent(null);
+      setIsDemoInputFocus(false);
       setIsResettingChat(false);
     }, 450);
   };
@@ -304,6 +332,7 @@ export const InteractivePlayground: React.FC = () => {
       takeoverReason: takeoverReasonRef.current,
       cursorRect,
       loopCount: loopCountRef.current,
+      takeoverLog: [...takeoverLogRef.current],
     };
   }, []);
 
@@ -571,33 +600,23 @@ export const InteractivePlayground: React.FC = () => {
       });
 
       // 4. Click input & paste
-      tl.call(() => setPhaseAndAct(2, 'act2-paste'));
+      tl.call(() => {
+        setPhaseAndAct(2, 'act2-paste');
+        setIsDemoInputFocus(true);
+      });
       tl.to(cursor, { scale: 0.9, duration: 0.12 * sp });
       tl.call(() => {
-        if (chatInputElRef.current) {
-          isDemoDispatching = true;
-          try {
-            chatInputElRef.current.focus();
-          } finally {
-            isDemoDispatching = false;
-          }
-        }
         const snippet = formatFileForCopy('AGENTS.md', SAMPLE_FILES[1].content, 'prompt');
         setPastedContent(snippet);
       });
       tl.to(cursor, { scale: 1, duration: 0.12 * sp });
-      if (chatInputContainer) {
-        tl.fromTo(
-          chatInputContainer,
-          { ringColor: 'var(--orange)', ringWidth: '2px' },
-          { ringWidth: '0px', duration: 0.35 * sp, ease: 'power2.out' },
-          '<'
-        );
-      }
       tl.to({}, { duration: 0.35 * sp });
 
       // 5. Move to Send
-      tl.call(() => setPhaseAndAct(2, 'act2-move-to-send'));
+      tl.call(() => {
+        setIsDemoInputFocus(false);
+        setPhaseAndAct(2, 'act2-move-to-send');
+      });
       tl.to(cursor, {
         x: sendPos.x,
         y: sendPos.y,
@@ -827,18 +846,34 @@ export const InteractivePlayground: React.FC = () => {
     if (dropRingRef.current) {
       gsap.set(dropRingRef.current, { opacity: 0 });
     }
+    if (copyRippleRef.current) {
+      gsap.set(copyRippleRef.current, { opacity: 0 });
+    }
+    if (sendRippleRef.current) {
+      gsap.set(sendRippleRef.current, { opacity: 0 });
+    }
+    if (resetRippleRef.current) {
+      gsap.set(resetRippleRef.current, { opacity: 0 });
+    }
+    setCopied(false);
+    setIsDemoInputFocus(false);
   }, []);
 
   // Real intent takeover handler
   const triggerTakeover = useCallback(
-    (reason: string) => {
+    (reason: string, targetName = 'unknown') => {
       takeoverReasonRef.current = reason;
       interactionPausedRef.current = true;
       setInteractionPaused(true);
-      if (isDebug) console.log(`[demodebug] Takeover triggered: ${reason}`);
+      takeoverLogRef.current = [
+        ...takeoverLogRef.current.slice(-9),
+        { type: reason, target: targetName, time: performance.now() },
+      ];
+      if (isDebug) console.log(`[demodebug] Takeover triggered: ${reason} on ${targetName}`);
 
       // Kill timeline, fade fake cursor out, drop ghost chip
       stopTimelineAndFadeCursor();
+      setIsDemoInputFocus(false);
 
       // Restore clean state: chat reset to greeting, whatever file user selected stays
       setChatMessages([WELCOME_MESSAGE]);
@@ -858,6 +893,7 @@ export const InteractivePlayground: React.FC = () => {
         interactionPausedRef.current = false;
         setInteractionPaused(false);
         takeoverReasonRef.current = null;
+        setIsDemoInputFocus(false);
 
         // Reset to clean initial state: CLAUDE.md selected, prompt mode
         setSelectedFile(SAMPLE_FILES[0]);
@@ -1036,15 +1072,6 @@ export const InteractivePlayground: React.FC = () => {
     }
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (isDemoDispatching) return;
-    const target = e.target as HTMLElement | null;
-    const isInput = target?.tagName === 'INPUT' || target?.tagName === 'TEXTAREA';
-    const SCROLL_KEYS = ['Space', 'PageUp', 'PageDown', 'End', 'Home', 'ArrowUp', 'ArrowDown'];
-    if (SCROLL_KEYS.includes(e.code) && !isInput) return;
-    triggerTakeover('keydown');
-  };
-
   return (
     <section
       id="playground"
@@ -1053,17 +1080,32 @@ export const InteractivePlayground: React.FC = () => {
       data-demo-phase={demoPhase}
       className="py-24 bg-cream border-t border-line-ink/40 relative overflow-hidden"
       onPointerDown={(e) => {
-        if (isDemoDispatching || (e.nativeEvent as unknown as { isDemo?: boolean }).isDemo) return;
-        triggerTakeover('pointerdown');
+        if (!e.isTrusted || isDemoDispatching) return;
+        const target = e.target as HTMLElement | null;
+        if (target?.closest('button[aria-label*="demo"]')) return;
+        const control = target?.closest(
+          '[data-card-index], [data-testid="copy-btn"], [data-testid="send-btn"], [data-testid="reset-chat-btn"], [data-testid="drag-chip"], [data-format-toggle], input, textarea'
+        ) as HTMLElement | null;
+        if (!control) return;
+        const controlName =
+          control.getAttribute('data-testid') ||
+          control.getAttribute('data-file-id') ||
+          (control.hasAttribute('data-format-toggle') ? 'format-toggle' : control.tagName.toLowerCase());
+        triggerTakeover('pointerdown', controlName);
       }}
       onTouchStart={(e) => {
-        if (isDemoDispatching || (e.nativeEvent as unknown as { isDemo?: boolean }).isDemo) return;
-        triggerTakeover('touchstart');
-      }}
-      onKeyDown={handleKeyDown}
-      onFocusCapture={(e) => {
-        if (isDemoDispatching || (e.nativeEvent as unknown as { isDemo?: boolean }).isDemo) return;
-        triggerTakeover('focus');
+        if (!e.isTrusted || isDemoDispatching) return;
+        const target = e.target as HTMLElement | null;
+        if (target?.closest('button[aria-label*="demo"]')) return;
+        const control = target?.closest(
+          '[data-card-index], [data-testid="copy-btn"], [data-testid="send-btn"], [data-testid="reset-chat-btn"], [data-testid="drag-chip"], [data-format-toggle], input, textarea'
+        ) as HTMLElement | null;
+        if (!control) return;
+        const controlName =
+          control.getAttribute('data-testid') ||
+          control.getAttribute('data-file-id') ||
+          (control.hasAttribute('data-format-toggle') ? 'format-toggle' : control.tagName.toLowerCase());
+        triggerTakeover('touchstart', controlName);
       }}
     >
       {/* Auto-playing Fake Cursor Overlay with Soft Orange Halo */}
@@ -1170,7 +1212,7 @@ export const InteractivePlayground: React.FC = () => {
         {/* Interactive Workspace */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           {/* Left Column: File Selector & Formatter Preview (7 cols) */}
-          <div className="lg:col-span-7 rounded-2xl bg-cream-dim/60 border-2 border-line-ink p-6 shadow-sm space-y-6 min-h-[500px]">
+          <div className="lg:col-span-7 rounded-2xl bg-cream-dim/60 border-2 border-line-ink p-6 shadow-sm space-y-6 min-h-[500px] overflow-hidden">
             {/* Step 1: Pick File */}
             <div>
               <div className="flex items-center justify-between mb-3">
@@ -1191,7 +1233,7 @@ export const InteractivePlayground: React.FC = () => {
                         fileCardRefs.current[idx] = el;
                       }}
                       onClick={() => setSelectedFile(file)}
-                      className={`p-3 rounded-xl border text-left transition-all cursor-pointer ${
+                      className={`p-3 rounded-xl border text-left transition-all cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-orange ${
                         isSelected
                           ? 'bg-cream border-orange shadow-sm ring-1 ring-orange'
                           : 'bg-cream-dim/70 border-line-ink/60 hover:border-ink hover:bg-cream'
@@ -1220,8 +1262,9 @@ export const InteractivePlayground: React.FC = () => {
                   {(['raw', 'codeblock', 'prompt'] as CopyMode[]).map((m) => (
                     <button
                       key={m}
+                      data-format-toggle="true"
                       onClick={() => setMode(m)}
-                      className={`px-3 py-1 text-xs font-display font-bold rounded-md transition-colors cursor-pointer ${
+                      className={`px-3 py-1 text-xs font-display font-bold rounded-md transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-orange ${
                         mode === m
                           ? 'bg-ink text-cream shadow-sm'
                           : 'text-ink/70 hover:text-ink'
@@ -1251,29 +1294,30 @@ export const InteractivePlayground: React.FC = () => {
             </div>
 
             {/* Step 3: Interactive Draggable Chip & Copy Button */}
-            <div className="pt-2 flex flex-col sm:flex-row items-center gap-3">
+            <div className="pt-2 flex flex-col sm:flex-row items-center gap-3 min-w-0 overflow-hidden">
               {/* HTML5 Draggable File Chip */}
               <div
                 ref={chipRef}
                 data-testid="drag-chip"
+                tabIndex={0}
                 draggable
                 onDragStart={(e) => {
                   if (!isDemoDispatching) {
-                    triggerTakeover('dragstart');
+                    triggerTakeover('dragstart', 'drag-chip');
                   }
                   handleDragStart(e);
                 }}
                 onDragEnd={handleDragEnd}
-                className="w-full sm:w-auto flex-1 flex items-center justify-between gap-3 px-4 py-2.5 rounded-xl bg-orange text-forest font-display text-xs font-bold border-2 border-forest shadow-sm cursor-grab active:cursor-grabbing hover:bg-orange-deep transition-all select-none"
+                className="w-full sm:w-auto flex-1 min-w-0 flex items-center justify-between gap-3 px-4 py-2.5 rounded-xl bg-orange text-forest font-display text-xs font-bold border-2 border-forest shadow-sm cursor-grab active:cursor-grabbing hover:bg-orange-deep transition-all select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-orange"
                 title="Drag this chip into the mock chat box on the right"
               >
-                <div className="flex items-center gap-2">
-                  <GripVertical className="w-4 h-4 text-forest/70" />
-                  <span>
+                <div className="flex items-center gap-2 min-w-0 flex-1">
+                  <GripVertical className="w-4 h-4 text-forest/70 shrink-0" />
+                  <span className="block truncate">
                     Drag <span className="font-mono">{selectedFile.name}</span> chip
                   </span>
                 </div>
-                <span ref={chipHintRef} className="text-xs font-display px-2 py-0.5 bg-forest/10 rounded">
+                <span ref={chipHintRef} className="text-xs font-display px-2 py-0.5 bg-forest/10 rounded shrink-0">
                   Drag me →
                 </span>
               </div>
@@ -1283,20 +1327,20 @@ export const InteractivePlayground: React.FC = () => {
                 ref={copyBtnRef}
                 data-testid="copy-btn"
                 onClick={handleCopy}
-                className="relative w-full sm:w-auto px-5 py-2.5 rounded-xl bg-ink text-cream hover:bg-ink/90 font-display text-xs font-bold flex items-center justify-center gap-2 transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-orange cursor-pointer"
+                className="relative w-full sm:w-[176px] shrink-0 px-4 py-2.5 rounded-xl bg-ink text-cream hover:bg-ink/90 font-display text-xs font-bold flex items-center justify-center gap-2 transition-colors shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-orange cursor-pointer"
               >
                 <span
                   ref={copyRippleRef}
                   className="pointer-events-none absolute inset-0 rounded-xl ring-2 ring-orange opacity-0 scale-90"
                 />
                 {copied ? <Check className="w-4 h-4 text-orange" /> : <Copy className="w-4 h-4" />}
-                {copied ? 'Copied to clipboard!' : 'Copy to clipboard'}
+                {copied ? 'Copied!' : 'Copy to clipboard'}
               </button>
             </div>
           </div>
 
           {/* Right Column: Fake Chat Box Receiver (5 cols) */}
-          <div className="lg:col-span-5 rounded-2xl bg-cream-dim/60 border-2 border-line-ink p-6 shadow-sm flex flex-col min-h-[500px]">
+          <div className="lg:col-span-5 rounded-2xl bg-cream-dim/60 border-2 border-line-ink p-6 shadow-sm flex flex-col min-h-[500px] overflow-hidden">
             {/* Header */}
             <div className="flex items-center justify-between pb-3 mb-4 border-b border-line-ink/40">
               <span className="font-display text-lg text-ink">Mock AI chat</span>
@@ -1305,7 +1349,7 @@ export const InteractivePlayground: React.FC = () => {
                 data-testid="reset-chat-btn"
                 data-reset-count={resetClickCount}
                 onClick={handleResetChat}
-                className="relative text-ink/70 hover:text-ink text-xs font-display flex items-center gap-1.5 focus:outline-none focus:ring-1 focus:ring-orange rounded px-2 py-1 cursor-pointer transition-transform"
+                className="relative text-ink/70 hover:text-ink text-xs font-display flex items-center gap-1.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-orange rounded px-2 py-1 cursor-pointer transition-transform"
                 title="Reset messages"
               >
                 <span
@@ -1325,7 +1369,7 @@ export const InteractivePlayground: React.FC = () => {
                 e.dataTransfer.dropEffect = 'copy';
               }}
               onDrop={handleDrop}
-              className={`flex-1 overflow-y-auto space-y-3 p-3 rounded-xl transition-all border-2 h-[300px] max-h-[300px] ${
+              className={`flex-1 overflow-y-auto overflow-x-hidden space-y-3 p-3 rounded-xl transition-all border-2 h-[300px] max-h-[300px] ${
                 isDragging
                   ? 'border-dashed border-orange bg-orange/10 scale-[1.01]'
                   : 'border-line-ink/40 bg-cream'
@@ -1341,18 +1385,18 @@ export const InteractivePlayground: React.FC = () => {
                   } ${msg.sender === 'user' ? 'items-end' : 'items-start'}`}
                 >
                   <div
-                    className={`max-w-[88%] p-3 rounded-xl text-xs font-sans leading-relaxed ${
+                    className={`max-w-[88%] p-3 rounded-xl text-xs font-sans leading-relaxed break-words [overflow-wrap:anywhere] ${
                       msg.sender === 'user'
                         ? 'bg-forest text-cream font-mono text-[11px]'
                         : 'bg-cream-dim border border-line-ink text-ink font-display text-xs'
                     }`}
                   >
                     {msg.fileName && (
-                      <div className="text-[10px] font-mono text-orange mb-1 font-bold">
+                      <div className="text-[10px] font-mono text-orange mb-1 font-bold break-words [overflow-wrap:anywhere]">
                         📄 {msg.fileName}
                       </div>
                     )}
-                    <div className="whitespace-pre-wrap">{msg.text}</div>
+                    <div className="whitespace-pre-wrap break-words [overflow-wrap:anywhere]">{msg.text}</div>
                   </div>
                 </div>
               ))}
@@ -1364,7 +1408,11 @@ export const InteractivePlayground: React.FC = () => {
                 <div
                   ref={chatInputContainerRef}
                   data-testid="chat-input-container"
-                  className="relative rounded-xl border border-line-ink bg-cream p-1.5 flex items-center gap-2 transition-all"
+                  className={`relative h-12 rounded-xl border border-line-ink bg-cream px-2 py-1.5 flex items-center gap-2 overflow-hidden transition-all ${
+                    isDemoInputFocus
+                      ? 'ring-2 ring-orange ring-inset'
+                      : 'focus-within:ring-2 focus-within:ring-orange focus-within:ring-inset'
+                  }`}
                 >
                   {/* Glowing orange drop-zone ring */}
                   <div
@@ -1372,39 +1420,55 @@ export const InteractivePlayground: React.FC = () => {
                     className="pointer-events-none absolute inset-0 rounded-xl ring-2 ring-orange opacity-0 transition-opacity"
                   />
 
-                  {attachedFile && (
-                    <span className="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-orange text-forest font-mono text-[10px] font-bold border border-forest/40 shrink-0">
-                      <FileText className="w-3 h-3" />
-                      {attachedFile.name}
-                    </span>
-                  )}
+                  {/* Attachment/Text area with zero-shrink, min-w-0 */}
+                  <div className="flex-1 min-w-0 h-full flex items-center gap-1.5 overflow-hidden">
+                    {attachedFile && (
+                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-orange text-forest font-mono text-[10px] font-bold border border-forest/40 max-w-full min-w-0 shrink-0 overflow-hidden">
+                        <FileText className="w-3 h-3 shrink-0" />
+                        <span className="truncate">{attachedFile.name}</span>
+                      </span>
+                    )}
 
-                  {pastedContent && !attachedFile && (
-                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-forest text-cream font-mono text-[10px] font-bold border border-forest shrink-0 max-w-[210px] shadow-sm animate-pulse">
-                      <FileText className="w-3 h-3 text-orange shrink-0" />
-                      <span className="truncate">{pastedContent.split('\n').filter(Boolean).slice(0, 2).join(' ') + '…'}</span>
-                    </span>
-                  )}
+                    {pastedContent && !attachedFile && (
+                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-forest text-cream font-mono text-[10px] font-bold border border-forest/60 max-w-full min-w-0 shrink-0 overflow-hidden">
+                        <FileText className="w-3 h-3 text-orange shrink-0" />
+                        <span className="truncate">Pasted from {selectedFile.name}</span>
+                        <span className="text-cream/70 text-[9px] shrink-0 font-normal">
+                          ({pastedContent.trim().split('\n').filter(Boolean).length} lines)
+                        </span>
+                      </span>
+                    )}
 
-                  <input
-                    ref={chatInputElRef}
-                    type="text"
-                    value={chatInput}
-                    onChange={(e) => setChatInput(e.target.value)}
-                    placeholder={attachedFile || pastedContent ? '' : 'Drop file here or type message...'}
-                    className="flex-1 px-2 py-1 text-xs font-mono bg-transparent border-none text-ink focus:outline-none placeholder:text-ink/40"
-                  />
+                    {isDemoInputFocus && (
+                      <span aria-hidden="true" className="w-[1.5px] h-4 bg-ink animate-pulse shrink-0 ml-0.5" />
+                    )}
+
+                    <input
+                      ref={chatInputElRef}
+                      type="text"
+                      value={chatInput}
+                      onChange={(e) => setChatInput(e.target.value)}
+                      onInput={(e) => {
+                        if (e.isTrusted && !isDemoDispatching) {
+                          triggerTakeover('input', 'chat-input');
+                        }
+                      }}
+                      placeholder={attachedFile || pastedContent || isDemoInputFocus ? '' : 'Drop file here or type message...'}
+                      className="flex-1 min-w-0 w-full h-full px-1 text-xs font-mono bg-transparent border-none text-ink focus:outline-none placeholder:text-ink/40 truncate"
+                    />
+                  </div>
+
                   <button
                     ref={sendBtnRef}
                     data-testid="send-btn"
                     type="submit"
                     aria-label="Send message"
-                    className="relative p-2 rounded-xl bg-orange hover:bg-orange-deep text-forest transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-forest shrink-0 cursor-pointer"
+                    className="relative flex-none w-8 h-8 rounded-lg bg-orange hover:bg-orange-deep text-forest transition-colors shadow-sm flex items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-forest cursor-pointer"
                   >
                     <Send className="w-4 h-4" />
                     <span
                       ref={sendRippleRef}
-                      className="pointer-events-none absolute inset-0 rounded-xl ring-2 ring-orange opacity-0 scale-90"
+                      className="pointer-events-none absolute inset-0 rounded-lg ring-2 ring-orange opacity-0 scale-90"
                     />
                   </button>
                 </div>
