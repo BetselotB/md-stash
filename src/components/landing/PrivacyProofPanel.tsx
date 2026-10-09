@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { ShieldCheck, RefreshCw, ExternalLink, Lock, CheckCircle2 } from 'lucide-react';
+import { Pill } from '../ui/Pill';
 
 interface NetworkEntry {
   name: string;
@@ -65,10 +66,7 @@ export const PrivacyProofPanel: React.FC = () => {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
             {/* Left info column (7 cols) */}
             <div className="lg:col-span-7 space-y-6">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cream border border-line-ink text-[11px] font-mono text-ink font-bold shadow-sm">
-                <Lock className="w-3.5 h-3.5 text-orange" />
-                Network Transparency
-              </div>
+              <Pill>Network transparency</Pill>
 
               <h2 className="font-display text-4xl sm:text-5xl text-ink leading-tight">
                 Proof, not promises.

@@ -4,7 +4,6 @@ interface BadgeProps {
   children: React.ReactNode;
   variant?: 'orange' | 'sage' | 'forest' | 'cream';
   size?: 'xs' | 'sm' | 'md';
-  dotColor?: string;
   onRemove?: () => void;
   className?: string;
 }
@@ -13,7 +12,6 @@ export const Badge: React.FC<BadgeProps> = ({
   children,
   variant = 'forest',
   size = 'sm',
-  dotColor,
   onRemove,
   className = '',
 }) => {
@@ -34,12 +32,6 @@ export const Badge: React.FC<BadgeProps> = ({
     <span
       className={`inline-flex items-center gap-1.5 rounded-full font-medium ${sizeStyles[size]} ${variantStyles[variant]} ${className}`}
     >
-      {dotColor && (
-        <span
-          className="w-2 h-2 rounded-full shrink-0 shadow-sm"
-          style={{ backgroundColor: dotColor }}
-        />
-      )}
       <span>{children}</span>
       {onRemove && (
         <button

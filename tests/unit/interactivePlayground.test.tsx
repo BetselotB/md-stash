@@ -53,7 +53,7 @@ describe('InteractivePlayground Component', () => {
 
   it('handles drag-and-drop into the fake chat box', () => {
     render(<InteractivePlayground />);
-    const dropZone = screen.getByText(/Hello! Drag a file chip/i).closest('div')?.parentElement;
+    const dropZone = screen.getByText(/Drop a file chip here to feed it to the assistant/i).closest('div')?.parentElement;
     expect(dropZone).toBeInTheDocument();
 
     if (dropZone) {

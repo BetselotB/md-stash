@@ -7,46 +7,45 @@ describe('HowItWorksStory Component', () => {
   it('renders section title and three steps with badges in sentence case', () => {
     render(<HowItWorksStory />);
 
-    expect(screen.getByText('How MDstash works')).toBeInTheDocument();
+    expect(screen.getByText('How it works')).toBeInTheDocument();
+    expect(screen.getByText('Drop, sort, drag out.')).toBeInTheDocument();
     expect(screen.getByText('Drop your markdown in.')).toBeInTheDocument();
-    expect(screen.getByText('Sort into color drawers.')).toBeInTheDocument();
+    expect(screen.getByText('Sort into drawers.')).toBeInTheDocument();
     expect(screen.getByText('Drop or copy anywhere.')).toBeInTheDocument();
   });
 
-  it('renders Step 1 Drop zone by default with falling files', () => {
+  it('renders all three free-scrolling scenes with cards, drawers, and replay controls', () => {
     render(<HowItWorksStory />);
 
-    expect(screen.getByText('Drop markdown files here')).toBeInTheDocument();
-    expect(screen.getByText('CLAUDE.md')).toBeInTheDocument();
-    expect(screen.getByText('AGENTS.md')).toBeInTheDocument();
-    expect(screen.getByText('.cursorrules')).toBeInTheDocument();
-  });
+    // Scene 1 elements
+    expect(screen.getByText('Local-first drop target')).toBeInTheDocument();
+    expect(screen.getAllByText('.cursorrules').length).toBeGreaterThanOrEqual(1);
+    expect(screen.getByRole('button', { name: /replay scene 1/i })).toBeInTheDocument();
 
-  it('switches to Step 2 Sort and reveals color drawers', () => {
-    render(<HowItWorksStory />);
-
-    const step2Button = screen.getByText('Sort into color drawers.');
-    fireEvent.click(step2Button);
-
+    // Scene 2 elements
     expect(screen.getByText('Agent rules')).toBeInTheDocument();
     expect(screen.getByText('Prompts')).toBeInTheDocument();
-    expect(screen.getByText('Notes & Starters')).toBeInTheDocument();
+    expect(screen.getByText('Notes')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /replay scene 2/i })).toBeInTheDocument();
+
+    // Scene 3 elements
+    expect(screen.getByRole('button', { name: /replay scene 3/i })).toBeInTheDocument();
+    expect(screen.getByText(/Ask anything with prompt context/i)).toBeInTheDocument();
+    expect(screen.getByText('### File: CLAUDE.md')).toBeInTheDocument();
   });
 
-  it('switches to Step 3 Drop Anywhere and allows copy mode toggle', () => {
+  it('allows switching copy format in Scene 3 and handles copy action', () => {
     render(<HowItWorksStory />);
 
-    const step3Button = screen.getByText('Drop or copy anywhere.');
-    fireEvent.click(step3Button);
-
-    // Shows mock editor and chat input
-    expect(screen.getByText(/Ask Claude or Cursor/i)).toBeInTheDocument();
-    expect(screen.getByText('### File: CLAUDE.md')).toBeInTheDocument();
-
-    // Toggle copy mode to codeblock
-    const codeblockToggle = screen.getByRole('button', { name: /codeblock/i });
+    // Toggle copy mode to code block
+    const codeblockToggle = screen.getByRole('button', { name: /code block/i });
     fireEvent.click(codeblockToggle);
-    expect(screen.getByText('```markdown')).toBeInTheDocument();
+    expect(screen.getByText(/```markdown/i)).toBeInTheDocument();
+
+    // Toggle copy mode to raw
+    const rawToggle = screen.getByRole('button', { name: /raw/i });
+    fireEvent.click(rawToggle);
+    expect(screen.getByText(/# Claude Project Memory & Rules/i)).toBeInTheDocument();
 
     // Test Copy format button
     const copyBtn = screen.getByRole('button', { name: /copy format/i });

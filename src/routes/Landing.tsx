@@ -16,7 +16,7 @@ export const Landing: React.FC = () => {
   const creamCurtainRef = useRef<HTMLDivElement>(null);
   const finalCtaRef = useRef<HTMLDivElement>(null);
 
-  const { navTheme, stopLenis, startLenis } = useLandingScroll({
+  const { navTheme, lenis, stopLenis, startLenis } = useLandingScroll({
     heroRef,
     creamCurtainRef,
     finalCtaRef,
@@ -28,9 +28,11 @@ export const Landing: React.FC = () => {
   });
 
   const handleScrollTo = (id: string) => {
-    const el = document.querySelector(id);
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth' });
+    if (lenis) {
+      lenis.scrollTo(id, { duration: 1.2, offset: -60 });
+    } else {
+      const el = document.querySelector(id);
+      el?.scrollIntoView({ behavior: 'smooth' });
     }
   };
 
@@ -56,7 +58,7 @@ export const Landing: React.FC = () => {
       <div
         id="cream-curtain"
         ref={creamCurtainRef}
-        className="relative z-10 bg-cream text-ink transition-colors duration-300"
+        className="relative bg-cream text-ink transition-colors duration-300"
       >
         {/* Curved Elliptical Top Arch that Flattens as it Rises */}
         <div className="curtain-arch overflow-hidden w-full leading-none -mt-1 pointer-events-none">
@@ -70,7 +72,7 @@ export const Landing: React.FC = () => {
           </svg>
         </div>
 
-        {/* Pinned Scroll-Story: How It Works */}
+        {/* Free-Scrolling Scenes: How It Works */}
         <HowItWorksStory />
 
         {/* Feature Crate Labels Lineup */}

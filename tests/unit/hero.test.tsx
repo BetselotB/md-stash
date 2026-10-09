@@ -14,27 +14,32 @@ vi.mock('react-router-dom', async () => {
 });
 
 describe('HeroSection Component', () => {
-  it('renders simplified headline in 2 lines in sentence case', () => {
+  it('renders headline in 3 lines with proper aria-label', () => {
     render(
       <BrowserRouter>
         <HeroSection />
       </BrowserRouter>
     );
 
-    expect(screen.getByRole('heading', { level: 1 })).toHaveAttribute('aria-label', 'Your markdown, stashed.');
-    expect(screen.getByText('markdown')).toBeInTheDocument();
-    expect(screen.getByText('stashed.')).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 1 })).toHaveAttribute(
+      'aria-label',
+      'Your markdown, stashed, sorted, ready to drop.'
+    );
+    expect(screen.getByText('stashed, sorted,')).toBeInTheDocument();
   });
 
-  it('renders rotating circular badge with seamless text and down arrow', () => {
+  it('renders downward scroll cue with arrow and handles click', () => {
+    const handleScrollNext = vi.fn();
     render(
       <BrowserRouter>
-        <HeroSection />
+        <HeroSection onScrollNext={handleScrollNext} />
       </BrowserRouter>
     );
 
-    expect(screen.getByLabelText(/scroll to how it works/i)).toBeInTheDocument();
-    expect(screen.getByText(/private & honest · local first ·/i)).toBeInTheDocument();
+    const scrollButton = screen.getByLabelText(/scroll down/i);
+    expect(scrollButton).toBeInTheDocument();
+    fireEvent.click(scrollButton);
+    expect(handleScrollNext).toHaveBeenCalledTimes(1);
   });
 
   it('renders markdown bottom motifs: asterisk and prompt mark with captions', () => {

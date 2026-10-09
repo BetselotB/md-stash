@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowUp, Shield } from 'lucide-react';
 import { MenuOverlay } from './MenuOverlay';
@@ -19,6 +19,108 @@ const GitHubIcon: React.FC<{ className?: string }> = ({ className = 'w-4 h-4' })
   </svg>
 );
 
+// Rebuilt Nav Badge in Brew District reference style
+export const BrewDistrictBadge: React.FC<{ isCream: boolean }> = ({ isCream }) => {
+  return (
+    <svg
+      viewBox="0 0 100 114"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className="w-full h-full overflow-visible transition-colors duration-300"
+      style={{ color: isCream ? 'var(--ink)' : 'var(--cream)' }}
+      aria-hidden="true"
+    >
+      {/* Outer Frame: Solid outline frame, stroke ~4% (4px) */}
+      <rect
+        x="4"
+        y="4"
+        width="92"
+        height="92"
+        stroke="currentColor"
+        strokeWidth="4"
+        fill="transparent"
+      />
+
+      {/* Top Thin Horizontal Bar */}
+      <line
+        x1="12"
+        y1="13"
+        x2="88"
+        y2="13"
+        stroke="currentColor"
+        strokeWidth="1.5"
+      />
+
+      {/* First Word: "MD" very large and heavy, condensed spanning inner width */}
+      <text
+        x="50"
+        y="48"
+        textAnchor="middle"
+        fontFamily="var(--font-display)"
+        fontSize="38"
+        fontWeight="900"
+        fill="currentColor"
+        letterSpacing="-0.02em"
+      >
+        MD
+      </text>
+
+      {/* Center Divider Bar (at 54% of badge frame, lines up with nav rules) */}
+      <line
+        x1="12"
+        y1="54"
+        x2="88"
+        y2="54"
+        stroke="currentColor"
+        strokeWidth="1.5"
+      />
+
+      {/* Second Word: "stash" in lowercase, justified to span exact same inner width */}
+      <text
+        x="50"
+        y="78"
+        textAnchor="middle"
+        fontFamily="var(--font-display)"
+        fontSize="23"
+        fontWeight="700"
+        fill="currentColor"
+        textLength="74"
+        lengthAdjust="spacingAndGlyphs"
+      >
+        stash
+      </text>
+
+      {/* Bottom Thin Bar */}
+      <line
+        x1="12"
+        y1="85"
+        x2="88"
+        y2="85"
+        stroke="currentColor"
+        strokeWidth="1.5"
+      />
+
+      {/* Centered Swallowtail Ribbon Tab on bottom edge with cutout "26" */}
+      <polygon
+        data-testid="badge-tab"
+        points="35,88 65,88 65,112 50,103 35,112"
+        fill="currentColor"
+      />
+      <text
+        x="50"
+        y="102"
+        textAnchor="middle"
+        fontFamily="var(--font-display)"
+        fontSize="13"
+        fontWeight="bold"
+        fill="var(--surface)"
+      >
+        26
+      </text>
+    </svg>
+  );
+};
+
 interface LandingNavProps {
   theme?: 'sage' | 'cream';
   onNavigateSection?: (id: string) => void;
@@ -29,6 +131,31 @@ export const LandingNav: React.FC<LandingNavProps> = ({
   onNavigateSection,
 }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  // Scroll listener with hysteresis: past 24px active, under 8px inactive
+  useEffect(() => {
+    let rafId: number | null = null;
+    const checkScroll = () => {
+      if (rafId !== null) return;
+      rafId = requestAnimationFrame(() => {
+        const y = window.scrollY || document.documentElement.scrollTop || 0;
+        setIsScrolled((prev) => {
+          if (!prev && y > 24) return true;
+          if (prev && y < 8) return false;
+          return prev;
+        });
+        rafId = null;
+      });
+    };
+
+    window.addEventListener('scroll', checkScroll, { passive: true });
+    checkScroll();
+    return () => {
+      window.removeEventListener('scroll', checkScroll);
+      if (rafId !== null) cancelAnimationFrame(rafId);
+    };
+  }, []);
 
   const scrollToTop = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -50,19 +177,79 @@ export const LandingNav: React.FC<LandingNavProps> = ({
     <>
       <nav
         aria-label="Main"
-        className={`fixed top-0 left-0 right-0 z-40 transition-colors duration-300 ${
-          isCream
-            ? 'bg-cream/95 text-ink shadow-sm backdrop-blur-md border-b border-line-ink'
-            : 'bg-transparent text-cream'
+        data-testid="landing-nav"
+        data-theme={theme}
+        data-scrolled={isScrolled ? 'true' : 'false'}
+        className={`fixed top-0 left-0 right-0 z-40 transition-colors duration-300 pointer-events-none ${
+          isCream ? 'text-ink theme-cream' : 'text-cream'
         }`}
       >
+        {/* ================= FROSTED GLASS BAR SIBLING ================= */}
+        {/* Direct child of fixed container, no backdrop-root ancestors */}
+        <div
+          data-testid="nav-glass-bar"
+          className={`nav-glass absolute top-0 left-0 right-0 pointer-events-auto transition-opacity duration-250 ${
+            isScrolled ? 'opacity-100' : 'opacity-0'
+          }`}
+          style={{
+            height: 'clamp(68px, 5.2vw, 110px)',
+          }}
+        />
+
+        <div
+          className={`hidden md:block absolute h-[1px] pointer-events-none nav-rule-left transition-opacity duration-300 ${
+            isCream ? 'bg-ink/60' : 'bg-cream/80'
+          } ${isScrolled ? 'opacity-0' : 'opacity-100'}`}
+          style={{
+            top: 'calc(clamp(8px, 1.1vw, 28px) + clamp(82px, 5.9vw, 150px) * 0.54)',
+            left: 'clamp(16px, 1.7vw, 44px)',
+            right: 'calc(50% + clamp(41px, 2.95vw, 75px) + clamp(20px, 4.6vw, 118px))',
+          }}
+          aria-hidden="true"
+        />
+
+        <div
+          className={`hidden md:block absolute h-[1px] pointer-events-none nav-rule-right transition-opacity duration-300 ${
+            isCream ? 'bg-ink/60' : 'bg-cream/80'
+          } ${isScrolled ? 'opacity-0' : 'opacity-100'}`}
+          style={{
+            top: 'calc(clamp(8px, 1.1vw, 28px) + clamp(82px, 5.9vw, 150px) * 0.54)',
+            left: 'calc(50% + clamp(41px, 2.95vw, 75px) + clamp(20px, 4.6vw, 118px))',
+            right: 'clamp(16px, 1.7vw, 44px)',
+          }}
+          aria-hidden="true"
+        />
+
+        <div
+          className="absolute left-1/2 -translate-x-1/2 z-20 nav-badge pointer-events-auto"
+          style={{
+            top: 'clamp(8px, 1.1vw, 28px)',
+            width: 'clamp(52px, 5.9vw, 150px)',
+            height: 'calc(clamp(52px, 5.9vw, 150px) * 1.14)',
+            transformOrigin: 'top center',
+            transform: isScrolled ? 'scale(0.58)' : 'scale(1)',
+            transition: 'transform 300ms cubic-bezier(0.16, 1, 0.3, 1), opacity 300ms ease',
+          }}
+        >
+          <Link
+            to="/"
+            onClick={scrollToTop}
+            title="MDstash home"
+            aria-label="MDstash home"
+            className="group block relative w-full h-full select-none cursor-pointer"
+          >
+            <BrewDistrictBadge isCream={isCream} />
+          </Link>
+        </div>
+
+        {/* ================= NAV ITEMS ROW ================= */}
         {/* Full-width container with ~1.7vw side padding */}
         <div
-          className="relative w-full flex items-center justify-between"
+          className="relative w-full flex items-center justify-between pointer-events-auto"
           style={{
             paddingLeft: 'clamp(16px, 1.7vw, 44px)',
             paddingRight: 'clamp(16px, 1.7vw, 44px)',
-            height: 'clamp(76px, 5.8vw, 150px)',
+            height: 'calc(clamp(8px, 1.1vw, 28px) + clamp(52px, 5.9vw, 150px) * 0.54)',
           }}
         >
           {/* ================= ZONE 1: LEFT ================= */}
@@ -92,11 +279,11 @@ export const LandingNav: React.FC<LandingNavProps> = ({
                     : 'border-line text-cream bg-transparent'
                 }`}
                 style={{
-                  width: 'clamp(38px, 2.7vw, 70px)',
-                  height: 'clamp(38px, 2.7vw, 70px)',
+                  width: 'clamp(34px, 2.5vw, 64px)',
+                  height: 'clamp(34px, 2.5vw, 64px)',
                 }}
               >
-                <GitHubIcon className="w-[clamp(16px,1vw,26px)] h-[clamp(16px,1vw,26px)]" />
+                <GitHubIcon className="w-[clamp(21px,1.4vw,34px)] h-[clamp(21px,1.4vw,34px)]" />
               </a>
 
               {/* Back to top arrow circle */}
@@ -105,122 +292,38 @@ export const LandingNav: React.FC<LandingNavProps> = ({
                 onClick={scrollToTop}
                 title="Back to top"
                 aria-label="Scroll back to top"
-                className={`rounded-full border flex items-center justify-center transition-colors cursor-pointer hover:border-orange hover:text-orange ${
+                className={`hidden sm:flex rounded-full border items-center justify-center transition-colors cursor-pointer hover:border-orange hover:text-orange ${
                   isCream
                     ? 'border-line-ink text-ink bg-cream/40'
                     : 'border-line text-cream bg-transparent'
                 }`}
                 style={{
-                  width: 'clamp(38px, 2.7vw, 70px)',
-                  height: 'clamp(38px, 2.7vw, 70px)',
+                  width: 'clamp(34px, 2.5vw, 64px)',
+                  height: 'clamp(34px, 2.5vw, 64px)',
                 }}
               >
-                <ArrowUp className="w-[clamp(16px,1vw,26px)] h-[clamp(16px,1vw,26px)]" />
+                <ArrowUp className="w-[clamp(15px,0.9vw,24px)] h-[clamp(15px,0.9vw,24px)]" />
               </button>
             </div>
           </div>
 
-          {/* ================= TWO THIN RULES (Left and Right of Badge) ================= */}
-          {/* Left rule: from screen left edge to badge gap, positioned about 5.5vw from top */}
-          <div
-            className={`hidden md:block absolute h-[1px] transition-colors pointer-events-none nav-rule-left ${
-              isCream ? 'bg-ink/30' : 'bg-cream/40'
-            }`}
-            style={{
-              top: 'clamp(52px, 4.4vw, 112px)',
-              left: 0,
-              right: 'calc(50% + clamp(50px, 3.6vw, 96px))',
-            }}
-            aria-hidden="true"
-          />
-
-          {/* Right rule: from badge gap to screen right edge, positioned about 5.5vw from top */}
-          <div
-            className={`hidden md:block absolute h-[1px] transition-colors pointer-events-none nav-rule-right ${
-              isCream ? 'bg-ink/30' : 'bg-cream/40'
-            }`}
-            style={{
-              top: 'clamp(52px, 4.4vw, 112px)',
-              left: 'calc(50% + clamp(50px, 3.6vw, 96px))',
-              right: 0,
-            }}
-            aria-hidden="true"
-          />
-
-          {/* ================= ZONE 2: CENTER (Hanging Framed Logo Badge) ================= */}
-          <div
-            className="absolute left-1/2 -translate-x-1/2 z-20 nav-badge"
-            style={{
-              top: 'clamp(8px, 0.6vw, 16px)',
-              width: 'clamp(86px, 6.2vw, 160px)',
-              height: 'clamp(96px, 7vw, 180px)',
-            }}
-          >
-            <Link
-              to="/"
-              onClick={scrollToTop}
-              title="MDstash Home"
-              aria-label="MDstash Home"
-              className="group block relative w-full h-full select-none"
-            >
-              {/* Double-line transparent frame (no dark filled box) */}
-              <div
-                className={`w-full h-full border rounded-sm p-[3px] transition-all group-hover:scale-105 ${
-                  isCream ? 'border-ink/50 bg-cream/20' : 'border-cream/50 bg-transparent'
-                }`}
-              >
-                <div
-                  className={`w-full h-full border rounded-[1px] flex flex-col items-center justify-center p-2 relative ${
-                    isCream ? 'border-ink/35 text-ink' : 'border-cream/35 text-cream'
-                  }`}
-                >
-                  {/* Crate Logo Mark ~40% of badge height */}
-                  <img
-                    src="/logo.svg"
-                    alt="MDstash Crate Mark"
-                    className="h-[40%] w-auto max-h-[54px] object-contain mb-1 transition-transform group-hover:-rotate-3"
-                  />
-
-                  {/* MDstash Wordmark */}
-                  <span className="font-display text-[clamp(13px,1.05vw,26px)] leading-none tracking-tight whitespace-nowrap">
-                    MD<span className="text-orange">stash</span>
-                  </span>
-
-                  {/* Small notched ribbon tab at bottom edge reading "md" (protrudes below frame) */}
-                  <div
-                    data-testid="badge-tab"
-                    className={`absolute -bottom-[clamp(10px,0.8vw,20px)] left-1/2 -translate-x-1/2 border px-2 py-0.5 rounded-b-[2px] transition-colors ${
-                      isCream
-                        ? 'border-ink/50 bg-cream text-ink'
-                        : 'border-cream/50 bg-sage text-cream'
-                    }`}
-                  >
-                    <span className="font-display text-[clamp(10px,0.7vw,16px)] tracking-wider block leading-none">
-                      md
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </Link>
-          </div>
-
           {/* ================= ZONE 3: RIGHT ================= */}
           <div className="flex items-center gap-[clamp(10px,0.9vw,22px)] shrink-0 z-10 ml-auto nav-right">
-            {/* Orange Pill: single-line 'Open MDstash', white-space: nowrap, no fixed width, px-[clamp(16px,1.6vw,32px)] */}
+            {/* Orange Pill: single-line 'Open MDstash', white-space: nowrap, no fixed width */}
             <Link to="/app" className="hidden sm:inline-block">
               <button
                 type="button"
                 className="bg-orange hover:bg-orange-deep text-forest font-display rounded-full transition-all duration-150 shadow-sm active:scale-95 cursor-pointer flex items-center justify-center text-center whitespace-nowrap px-[clamp(16px,1.6vw,32px)]"
                 style={{
-                  height: 'clamp(38px, 2.7vw, 70px)',
-                  fontSize: 'clamp(13px, 1.1vw, 26px)',
+                  height: 'clamp(36px, 2.5vw, 64px)',
+                  fontSize: 'clamp(13px, 1.05vw, 24px)',
                 }}
               >
                 Open MDstash
               </button>
             </Link>
 
-            {/* Right circle: shield/lock icon linking to /privacy (~2.7vw diameter) */}
+            {/* Right circle: shield/lock icon linking to /privacy */}
             <Link
               to="/privacy"
               title="Privacy policy"
@@ -231,53 +334,37 @@ export const LandingNav: React.FC<LandingNavProps> = ({
                   : 'border-line text-cream bg-transparent'
               }`}
               style={{
-                width: 'clamp(38px, 2.7vw, 70px)',
-                height: 'clamp(38px, 2.7vw, 70px)',
+                width: 'clamp(34px, 2.5vw, 64px)',
+                height: 'clamp(34px, 2.5vw, 64px)',
               }}
             >
-              <Shield className="w-[clamp(16px,1vw,26px)] h-[clamp(16px,1vw,26px)]" />
+              <Shield className="w-[clamp(15px,0.9vw,24px)] h-[clamp(15px,0.9vw,24px)]" />
             </Link>
 
-            {/* "Menu" label + Hamburger button with thicker strokes */}
+            {/* Menu Trigger Button */}
             <button
               type="button"
               onClick={() => setIsMenuOpen(true)}
-              aria-haspopup="dialog"
-              aria-expanded={isMenuOpen}
-              aria-label="Open menu"
-              className={`flex items-center gap-[clamp(6px,0.5vw,12px)] px-[clamp(12px,0.9vw,22px)] rounded-full border font-display transition-all cursor-pointer hover:border-orange hover:text-orange ${
+              title="Open navigation menu"
+              aria-label="Open navigation menu"
+              className={`rounded-full border flex items-center justify-center gap-1.5 transition-colors cursor-pointer hover:border-orange hover:text-orange px-[clamp(12px,1vw,20px)] ${
                 isCream
-                  ? 'border-line-ink text-ink hover:bg-cream-dim/60'
-                  : 'border-line text-cream hover:bg-forest/50'
+                  ? 'border-line-ink text-ink bg-cream/40'
+                  : 'border-line text-cream bg-transparent'
               }`}
               style={{
-                height: 'clamp(38px, 2.7vw, 70px)',
-                fontSize: 'clamp(13px, 1.1vw, 26px)',
-                minWidth: '44px',
-                minHeight: '44px',
+                height: 'clamp(36px, 2.5vw, 64px)',
+                fontSize: 'clamp(13px, 1vw, 22px)',
               }}
             >
-              <span>Menu</span>
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="w-[clamp(16px,1.1vw,28px)] h-[clamp(16px,1.1vw,28px)]"
-                aria-hidden="true"
-              >
-                <line x1="3" y1="6" x2="21" y2="6" />
-                <line x1="3" y1="12" x2="21" y2="12" />
-                <line x1="3" y1="18" x2="21" y2="18" />
-              </svg>
+              <span className="font-display">Menu</span>
+              <span className="font-mono text-xs opacity-75">≡</span>
             </button>
           </div>
         </div>
       </nav>
 
-      {/* Full-screen Overlay Menu */}
+      {/* Fullscreen Mobile/Desktop Menu Drawer */}
       <MenuOverlay
         isOpen={isMenuOpen}
         onClose={() => setIsMenuOpen(false)}

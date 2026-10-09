@@ -15,10 +15,22 @@
   --fleck-opacity: 0.04;
   --grain-scale: 512px;
 
+  /* Page background surface token for glassmorphism color-mix */
+  --surface: var(--sage);
+
   /* Borders & Rules */
   --line: rgba(248, 247, 230, 0.28);
   --line-light: rgba(248, 247, 230, 0.15);
   --line-ink: rgba(38, 51, 42, 0.18);
+}
+
+[data-theme="cream"],
+.theme-cream {
+  --surface: var(--cream);
+  --line: var(--line-ink);
+}
+
+:root {
 
   /* Display Font:
      Chelsea Market matches the Brew District reference: medium-bold (~1/4 cap height),

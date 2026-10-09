@@ -67,7 +67,7 @@
   width: 100vw;
   height: 100vh;
   pointer-events: none;
-  z-index: 45; /* above page content & nav rule, below menu overlay (z-50) and modals */
+  z-index: 25; /* above page content (z-10), below cursor overlay (z-35), nav (z-40), menu (z-60) */
 }
 
 .grain-overlay::before {
@@ -203,25 +203,104 @@ html.lenis body {
   animation-play-state: paused;
 }
 
+/* Caret blink step animation */
+@keyframes caret-blink {
+  0%, 49.9% {
+    opacity: 1;
+  }
+  50%, 100% {
+    opacity: 0;
+  }
+}
+
+.animate-caret-blink {
+  animation: caret-blink 1.06s steps(1) infinite;
+}
+
+/* Frosted glass nav bar */
+.nav-glass {
+  background: color-mix(in srgb, var(--surface) 58%, transparent);
+  -webkit-backdrop-filter: blur(16px) saturate(1.25);
+  backdrop-filter: blur(16px) saturate(1.25);
+  border-bottom: 1px solid var(--line);
+  box-shadow: 0 4px 20px -2px rgba(25, 32, 28, 0.12);
+}
+
+@supports not (backdrop-filter: blur(16px)) {
+  .nav-glass {
+    background: color-mix(in srgb, var(--surface) 90%, transparent);
+  }
+}
+
 mark.hl {
   background-color: transparent;
   color: inherit;
   display: inline-block;
   position: relative;
-  border-radius: 4px;
+  padding: 0 0.04em;
 }
 
 mark.hl .hl-bg {
+  position: absolute;
+  inset: -0.04em -0.06em -0.22em -0.06em;
+  background-color: var(--orange);
+  border-radius: 0.18em;
+  transform: rotate(-0.6deg);
   transform-origin: left center;
-  transition: transform 0.2s ease;
+  pointer-events: none;
+  z-index: 0;
+  transition: filter 0.2s ease;
+}
+
+mark.hl .hl-caret {
+  position: absolute;
+  top: 6%;
+  width: 0.06em;
+  height: 0.9em;
+  background-color: var(--cream);
+  pointer-events: none;
+  z-index: 20;
+}
+
+mark.hl .hl-text {
+  position: relative;
+  z-index: 10;
 }
 
 mark.hl:hover .hl-bg {
-  transform: scaleX(1.02) rotate(-0.5deg);
+  filter: brightness(0.96) saturate(1.08);
 }
 
-mark.hl:hover .hl-caret {
-  opacity: 0.6;
+@keyframes cue-ripple {
+  0% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  60% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+}
+
+@keyframes arrow-bob {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(8px);
+  }
+}
+
+.animate-cue-ripple {
+  animation: cue-ripple 3.2s cubic-bezier(0.2, 0.8, 0.2, 1) infinite;
+}
+
+.animate-arrow-bob {
+  animation: arrow-bob 1.6s ease-in-out infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -229,7 +308,9 @@ mark.hl:hover .hl-caret {
   .animate-bob,
   .animate-bob-delayed,
   .animate-marquee-left,
-  .animate-marquee-right {
+  .animate-marquee-right,
+  .animate-cue-ripple,
+  .animate-arrow-bob {
     animation: none !important;
   }
   * {

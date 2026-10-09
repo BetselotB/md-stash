@@ -80,7 +80,7 @@ export const MenuOverlay: React.FC<MenuOverlayProps> = ({
       role="dialog"
       aria-modal="true"
       aria-label="Navigation Menu"
-      className="fixed inset-0 z-50 bg-forest/98 backdrop-blur-xl text-cream flex flex-col justify-between p-6 sm:p-12 md:p-16 animate-fadeIn selection:bg-orange selection:text-forest"
+      className="fixed inset-0 z-[60] bg-forest/98 backdrop-blur-xl text-cream flex flex-col justify-between p-6 sm:p-12 md:p-16 animate-fadeIn selection:bg-orange selection:text-forest"
     >
       {/* Top Header of Overlay */}
       <div className="flex items-center justify-between border-b border-line pb-6">

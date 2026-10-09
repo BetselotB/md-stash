@@ -18,14 +18,13 @@ describe('Landing Navigation & Menu Overlay', () => {
     expect(screen.getByTitle('GitHub repository')).toBeInTheDocument();
     expect(screen.getByTitle('Back to top')).toBeInTheDocument();
 
-    // Zone 2: Center hanging double-line framed badge
-    expect(screen.getByTitle('MDstash Home')).toBeInTheDocument();
-    expect(screen.getByTestId('badge-tab')).toHaveTextContent(/md/i);
+    // Zone 2: Center hanging Brew District style badge
+    expect(screen.getByTitle(/mdstash home/i)).toBeInTheDocument();
+    expect(screen.getByTestId('badge-tab')).toBeInTheDocument();
 
     // Zone 3: Right
     expect(screen.getByRole('button', { name: /open mdstash/i })).toBeInTheDocument();
-    expect(screen.getByTitle('Privacy policy')).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /open menu/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /open navigation menu/i })).toBeInTheDocument();
   });
 
   it('opens and closes MenuOverlay via Escape key', () => {

@@ -1,5 +1,6 @@
 import React from 'react';
 import { FileCode, Folder, Hash } from 'lucide-react';
+import { Pill } from '../ui/Pill';
 
 const ROW_1_FILES = [
   { name: 'CLAUDE.md', type: 'rules', tag: 'agent-context' },
@@ -27,10 +28,7 @@ export const MarqueeUseCases: React.FC = () => {
   return (
     <section id="use-cases" className="py-20 bg-cream border-t border-line-ink/40 overflow-hidden relative">
       <div className="max-w-7xl mx-auto px-6 mb-10 text-center">
-        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-cream-dim border border-line-ink text-[11px] font-mono text-ink font-bold mb-3 shadow-sm">
-          <Hash className="w-3.5 h-3.5 text-orange" />
-          Every Markdown Pattern
-        </div>
+        <Pill className="mb-3">Every markdown pattern</Pill>
         <h2 className="font-display text-4xl sm:text-5xl text-ink leading-tight">
           Stash anything you don't want to retype.
         </h2>

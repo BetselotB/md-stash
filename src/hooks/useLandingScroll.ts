@@ -51,11 +51,15 @@ export function useLandingScroll({
 
     // 1. Initialize Lenis instance
     const lenis = new Lenis({
-      duration: 1.15,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      duration: 1.05,
+      wheelMultiplier: 1,
       smoothWheel: true,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
     });
     lenisRef.current = lenis;
+    if (typeof window !== 'undefined') {
+      (window as unknown as { lenis?: Lenis }).lenis = lenis;
+    }
 
     // 2. Synchronize Lenis with ScrollTrigger
     lenis.on('scroll', ScrollTrigger.update);
@@ -117,6 +121,9 @@ export function useLandingScroll({
       gsap.ticker.remove(tickerCallback);
       lenis.destroy();
       lenisRef.current = null;
+      if (typeof window !== 'undefined') {
+        (window as unknown as { lenis?: Lenis | null }).lenis = null;
+      }
     };
   }, [heroRef, creamCurtainRef, finalCtaRef]);
 

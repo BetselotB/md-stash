@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowDown } from 'lucide-react';
-import { StampBadge } from '../ui/StampBadge';
+import { CrateLogo } from '../ui/CrateLogo';
 
 interface HeroSectionProps {
   onScrollNext?: () => void;
@@ -14,6 +14,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onScrollNext }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [isDropping, setIsDropping] = useState(false);
   const [isTabHovered, setIsTabHovered] = useState(false);
+  const [isScrolledPastHero, setIsScrolledPastHero] = useState(false);
+  const [canScroll, setCanScroll] = useState(true);
 
   // Check prefers-reduced-motion
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
@@ -24,6 +26,33 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onScrollNext }) => {
     const handler = (e: MediaQueryListEvent) => setPrefersReducedMotion(e.matches);
     mq.addEventListener?.('change', handler);
     return () => mq.removeEventListener?.('change', handler);
+  }, []);
+
+  // Track scroll position to fade out scroll cue past 80px
+  useEffect(() => {
+    const handleScroll = () => {
+      const y = window.scrollY || document.documentElement.scrollTop || 0;
+      setIsScrolledPastHero(y > 80);
+    };
+
+    const checkCanScroll = () => {
+      const sh = document.documentElement.scrollHeight;
+      if (!sh) {
+        setCanScroll(true);
+        return;
+      }
+      const isScrollable = sh > window.innerHeight + 40;
+      setCanScroll(isScrollable);
+    };
+
+    handleScroll();
+    checkCanScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener('resize', checkCanScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', checkCanScroll);
+    };
   }, []);
 
   // Trigger file drop into crate then navigate to /app
@@ -39,12 +68,16 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onScrollNext }) => {
     }, 480);
   };
 
-  const handleScrollDown = (e: React.MouseEvent) => {
-    e.preventDefault();
-    if (onScrollNext) {
+  const handleScrollCueClick = () => {
+    const win = window as unknown as {
+      lenis?: { scrollTo: (target: string, opts?: { duration?: number; offset?: number }) => void };
+    };
+    if (win.lenis && typeof win.lenis.scrollTo === 'function') {
+      win.lenis.scrollTo('#cream-curtain', { duration: 1.2, offset: -60 });
+    } else if (onScrollNext) {
       onScrollNext();
     } else {
-      const el = document.querySelector('#how-it-works');
+      const el = document.querySelector('#cream-curtain') || document.querySelector('#how-it-works');
       el?.scrollIntoView({ behavior: 'smooth' });
     }
   };
@@ -52,7 +85,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onScrollNext }) => {
   return (
     <section
       ref={heroRef}
-      className="relative min-h-[calc(100vh-clamp(72px,5.5vw,140px))] w-full max-w-[2560px] mx-auto px-[clamp(16px,1.7vw,44px)] pt-2 pb-0 flex flex-col justify-between items-center text-center select-none overflow-hidden"
+      className="relative min-h-[calc(100vh-clamp(72px,5.5vw,140px))] w-full max-w-[2560px] mx-auto px-[clamp(16px,1.7vw,44px)] pt-2 pb-0 flex flex-col justify-between items-center text-center select-none overflow-visible"
     >
       {/* ================= FIXED RIGHT-EDGE PROTRUDING ORANGE TAB ================= */}
       <div className="hero-right-tab fixed right-0 top-1/2 -translate-y-1/2 z-30 hidden md:block">
@@ -72,18 +105,21 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onScrollNext }) => {
           }}
         >
           <div className="flex flex-col items-center justify-center gap-2 shrink-0">
-            <img
-              src="/logo.svg"
-              alt="MDstash Crate"
+            {/* Recolorable Crate Logo: Green crate body in --forest, doc & # in --cream */}
+            <CrateLogo
               className={`object-contain transition-transform duration-200 ${
                 isTabHovered ? 'scale-110 -rotate-6' : ''
               }`}
               style={{
                 width: 'clamp(34px, 3.5vw, 90px)',
                 height: 'clamp(34px, 3.5vw, 90px)',
+                // @ts-expect-error CSS variable overrides
+                '--logo-body': 'var(--forest)',
+                '--logo-doc': 'var(--cream)',
+                '--logo-mark': 'var(--cream)',
               }}
             />
-            {/* Small circular rotate/drag arrows glyph */}
+            {/* Small circular rotate/drag arrows glyph in --ink */}
             <svg
               viewBox="0 0 24 24"
               fill="none"
@@ -91,10 +127,11 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onScrollNext }) => {
               strokeWidth="2.5"
               strokeLinecap="round"
               strokeLinejoin="round"
-              className="text-forest transition-transform group-hover:rotate-180 duration-500"
+              className="transition-transform group-hover:rotate-180 duration-500"
               style={{
                 width: 'clamp(14px, 1.2vw, 28px)',
                 height: 'clamp(14px, 1.2vw, 28px)',
+                color: 'var(--ink)',
               }}
               aria-hidden="true"
             >
@@ -113,56 +150,136 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onScrollNext }) => {
         </button>
       </div>
 
-      {/* ================= ROTATING CIRCULAR STAMP BADGE ================= */}
-      {/* Positioned beside lower headline line: left ~6.3vw, vertically ~58% */}
+      {/* ================= ASTERISK SHAPE & CAPTION IN RING BADGE'S OLD PLACE ================= */}
+      {/* Centered where the ring badge's center was: about 6vw from left edge and about 76% down the first viewport */}
       <div
-        className="hero-badge absolute z-20 hidden md:block"
+        className="hero-asterisk-group absolute z-20 flex items-center gap-[clamp(8px,0.8vw,20px)] text-left pointer-events-auto"
         style={{
-          left: 'clamp(20px, 6.3vw, 160px)',
-          top: '58%',
+          left: 'clamp(20px, 6vw, 154px)',
+          top: '76%',
           transform: 'translateY(-50%)',
         }}
       >
-        <button
-          type="button"
-          onClick={handleScrollDown}
-          aria-label="Scroll to how it works"
-          className="focus:outline-none focus:ring-2 focus:ring-orange rounded-full cursor-pointer hover:scale-105 transition-transform"
+        <div
+          className={`hero-motif-left transition-transform duration-300 ${prefersReducedMotion ? '' : 'animate-spin-slow'}`}
+          style={{
+            width: 'clamp(44px, 7vw, 180px)',
+            height: 'clamp(44px, 7vw, 180px)',
+          }}
         >
-          <StampBadge
-            text="private & honest · local first · private & honest · local first · "
-            size="clamp(140px, 7.8vw, 200px)"
-            icon={<ArrowDown className="w-[clamp(18px,1.2vw,30px)] h-[clamp(18px,1.2vw,30px)] text-cream" />}
-          />
-        </button>
+          <svg
+            viewBox="0 0 100 100"
+            className="w-full h-full text-orange drop-shadow-md"
+            fill="currentColor"
+            aria-label="Markdown asterisk motif"
+          >
+            <g transform="translate(50,50)">
+              <rect x="-9" y="-46" width="18" height="92" rx="9" fill="var(--orange)" />
+              <rect x="-9" y="-46" width="18" height="92" rx="9" transform="rotate(60)" fill="var(--orange)" />
+              <rect x="-9" y="-46" width="18" height="92" rx="9" transform="rotate(120)" fill="var(--orange)" />
+            </g>
+          </svg>
+        </div>
+        <div
+          className="hero-caption-left font-display text-cream leading-tight hidden sm:block"
+          style={{
+            fontSize: 'clamp(11px, 0.9vw, 23px)',
+          }}
+        >
+          <span className="block">Zero cloud</span>
+          <span className="block opacity-85">zero servers</span>
+        </div>
       </div>
 
       {/* ================= HERO CENTER STAGE: HEADLINE ================= */}
-      <div className="hero-stage relative w-full max-w-[80vw] my-auto flex flex-col items-center justify-center z-10 py-2">
-        {/* Headline: exactly 2 lines on desktop, font-size reduced by ~12% with clamp() */}
+      <div className="hero-stage relative w-full max-w-[85vw] my-auto flex flex-col items-center justify-center z-10 py-2">
+        {/* Headline: 3 lines on desktop, font-size reduced ~8% to target ~68% width at 2560 */}
         <h1
-          aria-label="Your markdown, stashed."
-          className="font-display text-cream select-none text-shadow-stamp text-center"
+          aria-label="Your markdown, stashed, sorted, ready to drop."
+          className="hero-headline font-display text-cream select-none text-shadow-stamp text-center"
           style={{
-            fontSize: 'clamp(34px, 7.5vw, 192px)',
+            fontSize: 'min(clamp(31px, 8.5vw, 222px), clamp(31px, 15.2vh, 222px))',
             lineHeight: '0.95',
             letterSpacing: '-0.02em',
           }}
         >
-          <span className="hero-line hero-line-1 block whitespace-nowrap overflow-hidden">
-            <span className="hero-line-inner inline-block">
+          {/* LINE 1 */}
+          <span
+            className="hero-line hero-line-1 block whitespace-normal sm:whitespace-nowrap"
+            style={{
+              overflow: 'hidden',
+              padding: '0.12em 0.35em 0.35em 0.35em',
+              margin: '-0.12em -0.35em -0.35em -0.35em',
+            }}
+          >
+            <span className="hero-line-inner inline-block" aria-hidden="true">
               Your{' '}
-              <mark className="hl text-inherit bg-transparent relative inline-block">
-                <span className="hl-bg absolute inset-0 bg-orange rounded-[0.15em] -rotate-[1deg] origin-left scale-x-0" aria-hidden="true" />
-                <span className="hl-caret absolute -left-1 top-0 bottom-0 w-[3px] bg-orange opacity-0" aria-hidden="true" />
-                <span className="hl-text relative z-10 transition-colors duration-300">markdown</span>
+              <mark className="hl hl-markdown text-inherit bg-transparent relative inline-block">
+                <span
+                  className="hl-bg absolute bg-orange rounded-[0.18em] -rotate-[0.6deg] origin-left pointer-events-none"
+                  style={{ width: '0%' }}
+                  aria-hidden="true"
+                />
+                <span
+                  className="hl-caret absolute top-[6%] w-[0.06em] h-[0.9em] bg-cream opacity-0 pointer-events-none z-20"
+                  style={{ left: '0%' }}
+                  aria-hidden="true"
+                />
+                <span className="hl-text relative z-10 transition-colors duration-200">
+                  {'markdown'.split('').map((char, i) => (
+                    <span key={i} className="hl-char inline-block" data-char={char}>
+                      {char}
+                    </span>
+                  ))}
+                </span>
               </mark>
               ,
             </span>
           </span>
-          <span className="hero-line hero-line-2 block whitespace-nowrap overflow-hidden mt-[clamp(2px,0.6vw,12px)]">
-            <span className="hero-line-inner inline-block">
-              stashed.
+
+          {/* LINE 2 */}
+          <span
+            className="hero-line hero-line-2 block whitespace-normal sm:whitespace-nowrap mt-[clamp(2px,0.5vw,10px)]"
+            style={{
+              overflow: 'hidden',
+              padding: '0.12em 0.35em 0.35em 0.35em',
+              margin: '-0.12em -0.35em -0.35em -0.35em',
+            }}
+          >
+            <span className="hero-line-inner inline-block" aria-hidden="true">
+              stashed, sorted,
+            </span>
+          </span>
+
+          {/* LINE 3 */}
+          <span
+            className="hero-line hero-line-3 block whitespace-normal sm:whitespace-nowrap mt-[clamp(2px,0.5vw,10px)]"
+            style={{
+              overflow: 'hidden',
+              padding: '0.12em 0.35em 0.35em 0.35em',
+              margin: '-0.12em -0.35em -0.35em -0.35em',
+            }}
+          >
+            <span className="hero-line-inner inline-block" aria-hidden="true">
+              <mark className="hl hl-ready text-inherit bg-transparent relative inline-block">
+                <span
+                  className="hl-bg absolute bg-orange rounded-[0.18em] -rotate-[0.6deg] origin-left pointer-events-none"
+                  style={{ width: '0%' }}
+                  aria-hidden="true"
+                />
+                <span
+                  className="hl-caret absolute top-[6%] w-[0.06em] h-[0.9em] bg-cream opacity-0 pointer-events-none z-20"
+                  style={{ left: '0%' }}
+                  aria-hidden="true"
+                />
+                <span className="hl-text relative z-10 transition-colors duration-200">
+                  {'ready to drop.'.split('').map((char, i) => (
+                    <span key={i} className="hl-char inline-block" data-char={char}>
+                      {char === ' ' ? '\u00A0' : char}
+                    </span>
+                  ))}
+                </span>
+              </mark>
             </span>
           </span>
         </h1>
@@ -173,10 +290,10 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onScrollNext }) => {
         className="hero-crate-container relative z-10 flex flex-col items-center justify-end overflow-visible"
         style={{
           marginTop: 'auto',
-          marginBottom: '0',
+          marginBottom: 'calc(clamp(14px, 2.2vh, 40px) + clamp(44px, 2.7vw, 70px) + clamp(18px, 1.4vw, 36px))',
         }}
       >
-        {/* Dashed arch outline running off the bottom edge of hero */}
+        {/* Dashed arch outline with legs ending safely above the scroll cue */}
         <div
           className="relative flex flex-col items-center justify-end cursor-pointer group"
           style={{
@@ -197,18 +314,24 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onScrollNext }) => {
           aria-label="Interactive MDstash crate. Click to open application"
           title="Click to drop into crate and open MDstash"
         >
-          {/* SVG Dashed Arch outline that draws with strokeDashoffset */}
+          {/* SVG Dashed Arch outline with shortened legs and soft fade-out */}
           <svg
             className="hero-crate-arch absolute inset-0 w-full h-full pointer-events-none overflow-visible"
             viewBox="0 0 200 100"
             preserveAspectRatio="none"
           >
+            <defs>
+              <linearGradient id="archFade" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="var(--cream)" stopOpacity="0.35" />
+                <stop offset="70%" stopColor="var(--cream)" stopOpacity="0.35" />
+                <stop offset="100%" stopColor="var(--cream)" stopOpacity="0" />
+              </linearGradient>
+            </defs>
             <path
               className="hero-crate-arch-path"
-              d="M 2 100 L 2 45 A 98 45 0 0 1 198 45 L 198 100"
+              d="M 2 85 L 2 45 A 98 45 0 0 1 198 45 L 198 85"
               fill="none"
-              stroke="var(--cream)"
-              strokeOpacity="0.35"
+              stroke="url(#archFade)"
               strokeWidth="2"
               strokeDasharray="6 6"
               style={{ strokeDashoffset: 0 }}
@@ -264,48 +387,55 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onScrollNext }) => {
         </div>
       </div>
 
-      {/* ================= BOTTOM CORNERS: FLAT SOLID ORANGE CHUNKY SHAPES ================= */}
+      {/* ================= DOWNWARD SCROLL CUE AT BOTTOM CENTER ================= */}
+      {canScroll && (
+        <div
+          className="hero-scroll-cue absolute z-30 left-1/2 -translate-x-1/2 transition-opacity duration-300"
+          style={{
+            bottom: 'clamp(14px, 2.2vh, 40px)',
+            opacity: isScrolledPastHero ? 0 : 1,
+            pointerEvents: isScrolledPastHero ? 'none' : 'auto',
+          }}
+        >
+          <button
+            type="button"
+            onClick={handleScrollCueClick}
+            aria-label="Scroll down"
+            title="Scroll down"
+            className="group relative flex items-center justify-center rounded-full border border-cream/70 hover:border-orange text-cream hover:text-orange bg-transparent transition-colors duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-orange"
+            style={{
+              width: 'clamp(44px, 2.7vw, 70px)',
+              height: 'clamp(44px, 2.7vw, 70px)',
+            }}
+          >
+            {/* Subtle outward rippling ring */}
+            <span
+              className={`absolute inset-0 rounded-full border border-cream/50 pointer-events-none ${
+                prefersReducedMotion ? 'hidden' : 'animate-cue-ripple'
+              }`}
+              aria-hidden="true"
+            />
+            {/* Thin down arrow gently bobbing */}
+            <ArrowDown
+              className={`w-[clamp(18px,1.2vw,32px)] h-[clamp(18px,1.2vw,32px)] transition-colors ${
+                prefersReducedMotion ? '' : 'animate-arrow-bob'
+              }`}
+              strokeWidth={1.75}
+              aria-hidden="true"
+            />
+          </button>
+        </div>
+      )}
+
+      {/* ================= BOTTOM BAR: BOTTOM-LEFT IS EMPTY, BOTTOM-RIGHT HAS PROMPT MARK ================= */}
       <div
-        className="w-full flex items-end justify-between z-10 pointer-events-none"
+        className="w-full flex items-end justify-end z-10 pointer-events-none"
         style={{
           marginTop: '-clamp(20px, 2vw, 44px)',
-          paddingBottom: 'clamp(10px, 1vw, 24px)',
+          paddingBottom: 'clamp(22px, 3vh, 48px)',
         }}
       >
-        {/* Bottom Left: Chunky solid orange asterisk mark (tilted, slowly rotating) */}
-        <div className="flex items-center gap-[clamp(8px,0.8vw,20px)] text-left pointer-events-auto">
-          <div
-            className={`hero-motif-left transition-transform duration-300 ${prefersReducedMotion ? '' : 'animate-spin-slow'}`}
-            style={{
-              width: 'clamp(44px, 7vw, 180px)',
-              height: 'clamp(44px, 7vw, 180px)',
-            }}
-          >
-            <svg
-              viewBox="0 0 100 100"
-              className="w-full h-full text-orange drop-shadow-md"
-              fill="currentColor"
-              aria-label="Markdown asterisk motif"
-            >
-              <g transform="translate(50,50)">
-                <rect x="-9" y="-46" width="18" height="92" rx="9" fill="var(--orange)" />
-                <rect x="-9" y="-46" width="18" height="92" rx="9" transform="rotate(60)" fill="var(--orange)" />
-                <rect x="-9" y="-46" width="18" height="92" rx="9" transform="rotate(120)" fill="var(--orange)" />
-              </g>
-            </svg>
-          </div>
-          <div
-            className="hero-caption-left font-display text-cream leading-tight hidden sm:block"
-            style={{
-              fontSize: 'clamp(11px, 0.9vw, 23px)',
-            }}
-          >
-            <span className="block">Zero cloud</span>
-            <span className="block opacity-85">zero servers</span>
-          </div>
-        </div>
-
-        {/* Bottom Right: Chunky solid orange >_ prompt mark (tilted +6°, blinking cursor) */}
+        {/* Bottom Right: Chunky solid orange >_ prompt mark (wider underscore, aligned with nav right) */}
         <div className="flex items-center gap-[clamp(8px,0.8vw,20px)] text-right pointer-events-auto">
           <div
             className="hero-caption-right font-display text-cream leading-tight hidden sm:block"
@@ -319,13 +449,14 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onScrollNext }) => {
           <div
             className="hero-motif-right transition-transform duration-300"
             style={{
-              width: 'clamp(52px, 8vw, 204px)',
+              width: 'clamp(66px, 10.3vw, 262px)',
               height: 'clamp(38px, 5.8vw, 148px)',
               transform: 'rotate(6deg)',
+              transformOrigin: 'right bottom',
             }}
           >
             <svg
-              viewBox="0 0 140 100"
+              viewBox="0 0 180 100"
               className="w-full h-full drop-shadow-md"
               fill="none"
               aria-label="Markdown prompt motif"
@@ -335,11 +466,11 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onScrollNext }) => {
                 d="M12 18 L68 50 L12 82 L26 94 L94 50 L26 6 Z"
                 fill="var(--orange)"
               />
-              {/* Chunky _ cursor underscore */}
+              {/* Chunky _ cursor underscore (about 2x wider) */}
               <rect
                 x="98"
                 y="74"
-                width="38"
+                width="76"
                 height="16"
                 rx="4"
                 fill="var(--orange)"
