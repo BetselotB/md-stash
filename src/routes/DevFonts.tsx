@@ -78,8 +78,8 @@ const CANDIDATES: Candidate[] = [
 ];
 
 export const DevFonts: React.FC = () => {
-  const [headline, setHeadline] = useState('Your markdown, stashed without any cloud fuss.');
-  const [subline, setSubline] = useState('Pure, local, and ready to drop anywhere.');
+  const [headline, setHeadline] = useState('Your markdown, stashed.');
+  const [subline, setSubline] = useState('Markdown craft for your desktop.');
 
   return (
     <div className="min-h-screen bg-sage text-cream p-6 md:p-12 font-sans selection:bg-orange selection:text-forest">
@@ -159,7 +159,6 @@ export const DevFonts: React.FC = () => {
                 <div className="flex items-center gap-6" style={{ fontFamily: c.family }}>
                   <span className="text-base text-cream">Home</span>
                   <span className="text-base text-cream">Menu</span>
-                  <span className="text-sm text-cream -rotate-6">click the stash</span>
                   <span className="px-4 py-1.5 rounded-full bg-orange text-forest text-sm font-bold">
                     Open MDstash
                   </span>
