@@ -5,13 +5,25 @@
 @import '@fontsource/jetbrains-mono/400.css';
 @import '@fontsource/jetbrains-mono/500.css';
 
-/* Candidate display fonts */
-@import '@fontsource/passion-one/400.css';
-@import '@fontsource/passion-one/700.css';
-@import '@fontsource/passion-one/900.css';
+/* Candidate display fonts - only weights needed */
+@import '@fontsource/lilita-one/400.css';
+@import '@fontsource/chelsea-market/400.css';
+@import '@fontsource/alumni-sans/800.css';
 @import '@fontsource/londrina-solid/400.css';
 @import '@fontsource/londrina-solid/900.css';
-@import '@fontsource/alumni-sans/700.css';
-@import '@fontsource/alumni-sans/900.css';
-@import '@fontsource/bowlby-one/400.css';
-@import '@fontsource/anton/400.css';
+@import '@fontsource/passion-one/700.css';
+@import '@fontsource/gluten/700.css';
+@import '@fontsource/sniglet/800.css';
+@import '@fontsource/bagel-fat-one/400.css';
+@import '@fontsource/limelight/400.css';
+
+/* Optional custom display font drop-in:
+   Place custom-display.woff2 into public/fonts/custom-display.woff2
+   and switch --font-display in tokens.css
+*/
+@font-face {
+  font-family: 'CustomDisplay';
+  src: url('/fonts/custom-display.woff2') format('woff2');
+  font-weight: 400 900;
+  font-display: swap;
+}

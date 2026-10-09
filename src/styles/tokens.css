@@ -15,12 +15,13 @@
   --line-light: rgba(247, 243, 225, 0.15);
   --line-ink: rgba(38, 51, 42, 0.18);
 
-  /* Display Font Candidates:
-     - 'Passion One': Chunky retro condensed with tight leading, organic hand-cut feel & real lowercase glyphs (matches Brew District aesthetic best)
-     - 'Londrina Solid': Organic hand-crafted poster style
-     - 'Alumni Sans': Ultra-condensed tall sans
-     - 'Bowlby One': Heavy block 20th century
-     - 'Anton': Wood-type condensed
+  /* Display Font:
+     Chelsea Market matches the Brew District reference: medium-bold (~1/4 cap height),
+     near-monoline, round terminals, wide-open C, low crossbars, quirky hand-cut edges,
+     tight letter spacing, and authentic lowercase glyphs.
+
+     To use a custom font, drop custom-display.woff2 in public/fonts/ and change this single line:
+     --font-display: 'CustomDisplay', 'Chelsea Market', sans-serif;
   */
-  --font-display: 'Passion One', 'Londrina Solid', sans-serif;
+  --font-display: 'Chelsea Market', cursive, sans-serif;
 }

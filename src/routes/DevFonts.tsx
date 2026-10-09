@@ -1,66 +1,99 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
-const FONT_CANDIDATES = [
+interface Candidate {
+  id: string;
+  name: string;
+  family: string;
+  weight: string;
+  notes: string;
+  recommended?: boolean;
+}
+
+const CANDIDATES: Candidate[] = [
   {
-    id: 'passion-one',
-    name: 'Passion One',
-    family: "'Passion One', sans-serif",
-    weight: '700 / 900',
-    character: 'Chunky, condensed retro headline face with tight leading, organic hand-cut feel, and true lowercase glyphs. Closest to the Brew District reference aesthetic.',
+    id: 'chelsea-market',
+    name: 'Chelsea Market',
+    family: "'Chelsea Market', cursive, sans-serif",
+    weight: '400',
+    notes: 'Medium-bold stroke (~1/4 cap height), near-monoline, hand-cut retro bohemian sans with round terminals, wide-open C, low crossbars on A/E/H, quirky imperfect edges, and beautiful authentic lowercase glyphs. Closest match to the Brew District craft aesthetic.',
     recommended: true,
+  },
+  {
+    id: 'alumni-sans',
+    name: 'Alumni Sans ExtraBold',
+    family: "'Alumni Sans', sans-serif",
+    weight: '800',
+    notes: 'Condensed tall retro/art-deco sans with low crossbars and tight tracking. Geometric terminals, slightly cleaner than the reference hand-cut style.',
   },
   {
     id: 'londrina-solid',
     name: 'Londrina Solid',
-    family: "'Londrina Solid', cursive",
+    family: "'Londrina Solid', cursive, sans-serif",
     weight: '400 / 900',
-    character: 'Rounded, organic hand-crafted letterpress style with friendly curves and great lowercase character.',
-    recommended: false,
+    notes: 'Hand-crafted poster letterpress style with friendly rounded corners and authentic lowercase characters.',
   },
   {
-    id: 'alumni-sans',
-    name: 'Alumni Sans',
-    family: "'Alumni Sans', sans-serif",
-    weight: '700 / 900',
-    character: 'Ultra-condensed, tall, sleek vintage poster sans with tight horizontal space efficiency.',
-    recommended: false,
+    id: 'passion-one',
+    name: 'Passion One',
+    family: "'Passion One', sans-serif",
+    weight: '700',
+    notes: 'Punchy retro condensed headline font. Thicker stroke weight with tight spacing, but heavier and less art-deco than the reference.',
   },
   {
-    id: 'bowlby-one',
-    name: 'Bowlby One',
-    family: "'Bowlby One', cursive",
+    id: 'lilita-one',
+    name: 'Lilita One',
+    family: "'Lilita One', cursive, sans-serif",
     weight: '400',
-    character: 'Ultra-heavy 20th century advertising block display with immense weight and presence.',
-    recommended: false,
+    notes: 'Bold, slightly rounded display face with retro packaging feel, wider proportions.',
   },
   {
-    id: 'anton',
-    name: 'Anton',
-    family: "'Anton', sans-serif",
+    id: 'gluten',
+    name: 'Gluten',
+    family: "'Gluten', cursive, sans-serif",
+    weight: '700',
+    notes: 'Bouncy, quirky personality with rounded terminals, highly expressive and organic.',
+  },
+  {
+    id: 'sniglet',
+    name: 'Sniglet ExtraBold',
+    family: "'Sniglet', cursive, sans-serif",
+    weight: '800',
+    notes: 'Rounded and friendly, softer and wider aesthetic.',
+  },
+  {
+    id: 'bagel-fat-one',
+    name: 'Bagel Fat One',
+    family: "'Bagel Fat One', cursive, sans-serif",
     weight: '400',
-    character: 'Traditional condensed sans-serif wood-type revival; clean and punchy.',
-    recommended: false,
+    notes: 'Heavy puffy display face, thicker stroke than reference.',
+  },
+  {
+    id: 'limelight',
+    name: 'Limelight',
+    family: "'Limelight', cursive, sans-serif",
+    weight: '400',
+    notes: 'Classic geometric art-deco theatre font with dramatic contrast strokes.',
   },
 ];
 
 export const DevFonts: React.FC = () => {
-  const [headline, setHeadline] = useState('Your markdown, stashed. Zero cloud, zero fuss.');
+  const [headline, setHeadline] = useState('Your markdown, stashed without any cloud fuss.');
   const [subline, setSubline] = useState('Pure, local, and ready to drop anywhere.');
 
   return (
     <div className="min-h-screen bg-sage text-cream p-6 md:p-12 font-sans selection:bg-orange selection:text-forest">
-      <div className="max-w-5xl mx-auto space-y-10">
+      <div className="max-w-6xl mx-auto space-y-10">
         <header className="border-b border-cream/20 pb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-2 mb-2">
               <span className="px-2.5 py-0.5 rounded-full bg-orange/20 text-orange font-mono text-xs font-bold">
-                Dev Tool
+                Font Lab
               </span>
               <h1 className="text-2xl font-bold tracking-tight">Display Font Candidates</h1>
             </div>
             <p className="text-sm text-cream-dim">
-              Comparing 5 self-hosted woff2 candidates in sentence case against the Brew District style language.
+              Comparing 9 self-hosted candidates against the Brew District reference traits: medium-bold, near-monoline, condensed, hand-cut retro sans with round terminals, wide-open C, low crossbars, tight letter spacing, and real lowercase glyphs.
             </p>
           </div>
           <div className="flex items-center gap-3">
@@ -73,10 +106,10 @@ export const DevFonts: React.FC = () => {
           </div>
         </header>
 
-        {/* Live Controls */}
+        {/* Live Input Controls */}
         <section className="p-6 rounded-2xl bg-forest border border-cream/20 space-y-4">
           <label className="block text-xs font-mono text-orange font-bold tracking-wider">
-            Edit headline text (sentence case)
+            Headline text (sentence case)
           </label>
           <input
             type="text"
@@ -88,18 +121,18 @@ export const DevFonts: React.FC = () => {
             type="text"
             value={subline}
             onChange={(e) => setSubline(e.target.value)}
-            className="w-full px-4 py-2 rounded-xl bg-forest-dark border border-cream/20 text-cream-dim focus:outline-none focus:border-orange font-medium text-xs"
+            className="w-full px-4 py-2.5 rounded-xl bg-forest-dark border border-cream/20 text-cream-dim focus:outline-none focus:border-orange font-medium text-xs"
           />
         </section>
 
-        {/* Candidate Comparison Cards */}
+        {/* Font Candidate Comparison List */}
         <div className="space-y-8">
-          {FONT_CANDIDATES.map((c) => (
+          {CANDIDATES.map((c) => (
             <div
               key={c.id}
               className={`p-8 rounded-3xl bg-forest border transition-all ${
                 c.recommended
-                  ? 'border-orange shadow-glow ring-2 ring-orange/30'
+                  ? 'border-orange shadow-glow ring-2 ring-orange/40'
                   : 'border-cream/20 hover:border-cream/40'
               }`}
             >
@@ -109,14 +142,27 @@ export const DevFonts: React.FC = () => {
                     <h2 className="text-xl font-bold text-cream">{c.name}</h2>
                     {c.recommended && (
                       <span className="px-3 py-0.5 rounded-full bg-orange text-forest text-xs font-bold tracking-wider">
-                        Recommended
+                        Closest Match
                       </span>
                     )}
                   </div>
-                  <p className="text-xs text-cream-dim mt-1">{c.character}</p>
+                  <p className="text-xs text-cream-dim mt-1 max-w-3xl">{c.notes}</p>
                 </div>
-                <div className="text-right font-mono text-xs text-orange">
-                  <span>Weights: {c.weight}</span>
+                <div className="text-right font-mono text-xs text-orange shrink-0">
+                  <span>Weight: {c.weight}</span>
+                </div>
+              </div>
+
+              {/* Sample Nav Row in this font */}
+              <div className="mb-6 p-4 rounded-xl bg-sage/20 border border-cream/10 flex flex-wrap items-center justify-between gap-4">
+                <span className="text-xs font-mono text-cream-dim/60">Nav row sample:</span>
+                <div className="flex items-center gap-6" style={{ fontFamily: c.family }}>
+                  <span className="text-base text-cream">Home</span>
+                  <span className="text-base text-cream">Menu</span>
+                  <span className="text-sm text-cream -rotate-6">click the stash</span>
+                  <span className="px-4 py-1.5 rounded-full bg-orange text-forest text-sm font-bold">
+                    Open MDstash
+                  </span>
                 </div>
               </div>
 
@@ -124,11 +170,14 @@ export const DevFonts: React.FC = () => {
               <div className="bg-sage/40 p-6 rounded-2xl border border-cream/10 mb-6">
                 <div
                   style={{ fontFamily: c.family, lineHeight: 0.95 }}
-                  className="text-4xl md:text-6xl text-cream tracking-tight max-w-3xl"
+                  className="text-4xl md:text-6xl text-cream tracking-tight max-w-4xl"
                 >
                   {headline}
                 </div>
-                <p className="mt-3 text-cream/90 text-sm md:text-base font-sans">
+                <p
+                  style={{ fontFamily: c.family }}
+                  className="mt-3 text-cream/90 text-lg md:text-xl"
+                >
                   {subline}
                 </p>
               </div>
@@ -136,14 +185,14 @@ export const DevFonts: React.FC = () => {
               {/* Lowercase Glyph & Character Inspection */}
               <div className="space-y-2 pt-2 border-t border-cream/10">
                 <div className="text-xs font-mono text-cream-dim flex justify-between">
-                  <span>Lowercase glyph test:</span>
-                  <span className="font-mono text-[11px] text-cream-dim/70">font-family: {c.family}</span>
+                  <span>Glyph check (wide-open C, low crossbars, real lowercase):</span>
+                  <span className="text-[11px] text-cream-dim/70">font-family: {c.family}</span>
                 </div>
                 <div
                   style={{ fontFamily: c.family }}
                   className="text-2xl text-cream-dim tracking-wider"
                 >
-                  abcdefghijklmnopqrstuvwxyz 0123456789 #.-_
+                  Aa Bb Cc Dd Ee Ff Gg Hh Ii Jj Kk Ll Mm Nn Oo Pp Qq Rr Ss Tt Uu Vv Ww Xx Yy Zz 0123456789
                 </div>
               </div>
             </div>

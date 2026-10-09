@@ -7,16 +7,20 @@ describe('Self-hosted font loading & design tokens', () => {
   const fontsCssPath = path.resolve(rootDir, 'src/styles/fonts.css');
   const tokensCssPath = path.resolve(rootDir, 'src/styles/tokens.css');
 
-  it('imports all 5 candidate display fonts and core fonts in fonts.css', () => {
+  it('imports candidate display fonts and core fonts in fonts.css', () => {
     expect(fs.existsSync(fontsCssPath)).toBe(true);
     const fontsCss = fs.readFileSync(fontsCssPath, 'utf8');
 
     const expectedPackages = [
-      '@fontsource/passion-one',
-      '@fontsource/londrina-solid',
+      '@fontsource/chelsea-market',
       '@fontsource/alumni-sans',
-      '@fontsource/bowlby-one',
-      '@fontsource/anton',
+      '@fontsource/londrina-solid',
+      '@fontsource/passion-one',
+      '@fontsource/lilita-one',
+      '@fontsource/gluten',
+      '@fontsource/sniglet',
+      '@fontsource/bagel-fat-one',
+      '@fontsource/limelight',
       '@fontsource/nunito',
       '@fontsource/jetbrains-mono',
     ];
@@ -28,11 +32,15 @@ describe('Self-hosted font loading & design tokens', () => {
 
   it('ensures each fontsource package exists and contains woff2 font files in node_modules', () => {
     const candidates = [
-      'passion-one',
-      'londrina-solid',
+      'chelsea-market',
       'alumni-sans',
-      'bowlby-one',
-      'anton',
+      'londrina-solid',
+      'passion-one',
+      'lilita-one',
+      'gluten',
+      'sniglet',
+      'bagel-fat-one',
+      'limelight',
       'nunito',
       'jetbrains-mono',
     ];
@@ -52,7 +60,7 @@ describe('Self-hosted font loading & design tokens', () => {
   it('defines --font-display with self-hosted candidate in tokens.css', () => {
     expect(fs.existsSync(tokensCssPath)).toBe(true);
     const tokens = fs.readFileSync(tokensCssPath, 'utf8');
-    expect(tokens).toMatch(/--font-display:\s*['"]Passion One['"]/);
+    expect(tokens).toMatch(/--font-display:\s*['"]Chelsea Market['"]/);
   });
 
   it('defines sunny sage, warm cream, and orange accent palette tokens in tokens.css', () => {

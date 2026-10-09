@@ -40,10 +40,10 @@ export const StampBadge: React.FC<StampBadgeProps> = ({
         </defs>
         <text
           fill="var(--cream)"
-          fontSize="8.2"
+          fontSize="9"
           letterSpacing="1.2"
           fontWeight="600"
-          className="select-none opacity-90 font-mono"
+          className="select-none opacity-90 font-display"
         >
           <textPath href="#textCircle" startOffset="0%" textLength={circumference} lengthAdjust="spacing">
             {text}

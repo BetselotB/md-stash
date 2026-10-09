@@ -38,12 +38,19 @@ The drag handle on file cards and file detail views sets both `text/plain` and C
 
 ---
 
-## 🎨 Design System
+## 🎨 Design System & Custom Display Font
 
 Inspired by the Brew District craft aesthetic:
-- **Palette:** Sunny Sage `#8A9A78`, Warm Cream `#F6F1DC`, Craft Orange `#F2A33A`, Deep Forest `#2F3A33`, and Ink `#26332A`.
-- **Typography:** Self-hosted Passion One display headline (with sentence-case craft glyphs), friendly rounded Nunito UI sans, and crisp JetBrains Mono for code.
-- **Craft Signature:** Seamless rotating circular badge, warm sun-glow radial hero gradient, analog grain overlay, fluid Lenis + ScrollTrigger cream curtain transition, and pinned scroll-story.
+- **Palette:** Muted Sage `#84937A`, Deep Sage `#748368`, Warm Cream `#F7F3E1`, Craft Orange `#EEAA45`, Deep Forest `#2F3A33`, and Ink `#26332A`.
+- **Typography:** Self-hosted Chelsea Market display font (medium-bold, near-monoline, round terminals, wide-open C, low crossbars, and real lowercase glyphs), friendly rounded Nunito for UI text, and crisp JetBrains Mono reserved strictly for raw code and markdown.
+- **Custom Display Font Drop-in:** To use any custom display font:
+  1. Drop your font file at `public/fonts/custom-display.woff2`.
+  2. Change a single line in [`src/styles/tokens.css`](file:///src/styles/tokens.css):
+     ```css
+     --font-display: 'CustomDisplay', 'Chelsea Market', sans-serif;
+     ```
+  That's it — the `@font-face` is already pre-configured in `fonts.css`.
+- **Craft Signature:** Seamless rotating circular badge, two-layer pre-rendered analog grain overlay (fine speckle + coarse mottling), subtle perimeter vignette, fluid Lenis + ScrollTrigger cream curtain transition, and pinned scroll-story.
 
 ---
 
