@@ -1,18 +1,23 @@
 :root {
-  /* Core brand palette */
-  --sage: #84937A;
-  --sage-deep: #748368;
-  --cream: #F7F3E1;
-  --cream-dim: #E5DEC6;
-  --orange: #EEAA45;
-  --orange-deep: #D68F2B;
+  /* Core brand palette - calibrated against reference/brewdistrict-hero.png */
+  --sage: #838D78;
+  --sage-deep: #74806A;
+  --cream: #F8F7E6;
+  --cream-dim: #E6E4D1;
+  --orange: #EEB257;
+  --orange-deep: #D99E41;
   --forest: #2F3A33;
   --forest-dark: #232B26;
   --ink: #26332A;
 
+  /* Paper grain texture tuning knobs */
+  --grain-opacity: 0.11;
+  --fleck-opacity: 0.04;
+  --grain-scale: 512px;
+
   /* Borders & Rules */
-  --line: rgba(247, 243, 225, 0.28);
-  --line-light: rgba(247, 243, 225, 0.15);
+  --line: rgba(248, 247, 230, 0.28);
+  --line-light: rgba(248, 247, 230, 0.15);
   --line-ink: rgba(38, 51, 42, 0.18);
 
   /* Display Font:

@@ -13,18 +13,10 @@
     min-height: 100vh;
   }
 
-  body {
-    background-color: var(--sage);
-    color: var(--cream);
-    font-family: 'Nunito', system-ui, -apple-system, sans-serif;
-    position: relative;
-    min-height: 100vh;
-  }
-
   /* Selection styling */
   ::selection {
     background-color: var(--orange);
-    color: var(--forest-dark);
+    color: var(--ink);
   }
 
   /* Custom scrollbars */
@@ -66,14 +58,9 @@
   .border-line-ink {
     border-color: var(--line-ink);
   }
-
-  /* Subtle vignette: edges ~8-10% darker than center */
-  .bg-vignette {
-    background: radial-gradient(ellipse at 50% 50%, var(--sage) 35%, var(--sage-deep) 100%);
-  }
 }
 
-/* Two-layer pre-rendered grain overlay: fine speckle + coarse mottling */
+/* Two-layer mean-neutral paper grain overlay: fine tooth + sparse fleck */
 .grain-overlay {
   position: fixed;
   inset: 0;
@@ -87,11 +74,13 @@
   content: '';
   position: absolute;
   inset: 0;
-  background-image: url('/textures/grain-fine.png');
+  background-image: url('/textures/paper-fine.png');
+  background-image: -webkit-image-set(url('/textures/paper-fine.png') 1x, url('/textures/paper-fine@2x.png') 2x);
+  background-image: image-set(url('/textures/paper-fine.png') 1x, url('/textures/paper-fine@2x.png') 2x);
   background-repeat: repeat;
-  background-size: 256px 256px;
-  opacity: 0.24; /* 0.2 - 0.3 */
-  mix-blend-mode: multiply;
+  background-size: var(--grain-scale, 512px) var(--grain-scale, 512px);
+  opacity: var(--grain-opacity, 0.32);
+  mix-blend-mode: soft-light;
   pointer-events: none;
 }
 
@@ -99,10 +88,12 @@
   content: '';
   position: absolute;
   inset: 0;
-  background-image: url('/textures/grain-coarse.png');
+  background-image: url('/textures/paper-fleck.png');
+  background-image: -webkit-image-set(url('/textures/paper-fleck.png') 1x, url('/textures/paper-fleck@2x.png') 2x);
+  background-image: image-set(url('/textures/paper-fleck.png') 1x, url('/textures/paper-fleck@2x.png') 2x);
   background-repeat: repeat;
-  background-size: 1024px 1024px;
-  opacity: 0.13; /* 0.10 - 0.18 */
+  background-size: var(--grain-scale, 512px) var(--grain-scale, 512px);
+  opacity: var(--fleck-opacity, 0.18);
   mix-blend-mode: soft-light;
   pointer-events: none;
 }

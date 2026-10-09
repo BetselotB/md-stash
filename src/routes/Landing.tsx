@@ -42,7 +42,7 @@ export const Landing: React.FC = () => {
       <LandingNav theme={navTheme} onNavigateSection={handleScrollTo} />
 
       {/* ================= 1. HERO ON MUTED SAGE ================= */}
-      <main id="main-content" ref={heroRef} className="pt-[clamp(76px,6.2vw,155px)] bg-vignette will-change-transform">
+      <main id="main-content" ref={heroRef} className="pt-[clamp(76px,6.2vw,155px)] will-change-transform">
         <HeroSection onScrollNext={() => handleScrollTo('#cream-curtain')} />
       </main>
 

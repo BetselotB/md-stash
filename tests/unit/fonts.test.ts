@@ -65,9 +65,9 @@ describe('Self-hosted font loading & design tokens', () => {
 
   it('defines sunny sage, warm cream, and orange accent palette tokens in tokens.css', () => {
     const tokens = fs.readFileSync(tokensCssPath, 'utf8');
-    expect(tokens).toContain('--sage: #84937A;');
-    expect(tokens).toContain('--cream: #F7F3E1;');
-    expect(tokens).toContain('--orange: #EEAA45;');
+    expect(tokens).toContain('--sage: #838D78;');
+    expect(tokens).toContain('--cream: #F8F7E6;');
+    expect(tokens).toContain('--orange: #EEB257;');
     expect(tokens).toContain('--ink: #26332A;');
   });
 
