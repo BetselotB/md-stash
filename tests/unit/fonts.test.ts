@@ -57,9 +57,9 @@ describe('Self-hosted font loading & design tokens', () => {
 
   it('defines sunny sage, warm cream, and orange accent palette tokens in tokens.css', () => {
     const tokens = fs.readFileSync(tokensCssPath, 'utf8');
-    expect(tokens).toContain('--sage: #8A9A78;');
-    expect(tokens).toContain('--cream: #F6F1DC;');
-    expect(tokens).toContain('--orange: #F2A33A;');
+    expect(tokens).toContain('--sage: #84937A;');
+    expect(tokens).toContain('--cream: #F7F3E1;');
+    expect(tokens).toContain('--orange: #EEAA45;');
     expect(tokens).toContain('--ink: #26332A;');
   });
 
@@ -85,8 +85,8 @@ describe('Self-hosted font loading & design tokens', () => {
       return (Math.max(l1, l2) + 0.05) / (Math.min(l1, l2) + 0.05);
     }
 
-    const sage = '#8A9A78';
-    const cream = '#F6F1DC';
+    const sage = '#84937A';
+    const cream = '#F7F3E1';
     const ink = '#26332A';
 
     // Cream on sage fails small text contrast (< 4.5:1)

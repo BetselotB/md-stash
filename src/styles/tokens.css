@@ -1,18 +1,18 @@
 :root {
   /* Core brand palette */
-  --sage: #8A9A78;
-  --sage-deep: #76866A;
-  --cream: #F6F1DC;
-  --cream-dim: #E3DDC2;
-  --orange: #F2A33A;
-  --orange-deep: #D98821;
+  --sage: #84937A;
+  --sage-deep: #748368;
+  --cream: #F7F3E1;
+  --cream-dim: #E5DEC6;
+  --orange: #EEAA45;
+  --orange-deep: #D68F2B;
   --forest: #2F3A33;
   --forest-dark: #232B26;
   --ink: #26332A;
 
   /* Borders & Rules */
-  --line: rgba(246, 241, 220, 0.28);
-  --line-light: rgba(246, 241, 220, 0.15);
+  --line: rgba(247, 243, 225, 0.28);
+  --line-light: rgba(247, 243, 225, 0.15);
   --line-ink: rgba(38, 51, 42, 0.18);
 
   /* Display Font Candidates:

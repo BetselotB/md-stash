@@ -41,8 +41,8 @@ export const Landing: React.FC = () => {
       {/* Fixed Reference-style Navigation with Dynamic Theme Flipping */}
       <LandingNav theme={navTheme} onNavigateSection={handleScrollTo} />
 
-      {/* ================= 1. HERO ON SUNNY SAGE ================= */}
-      <main id="main-content" ref={heroRef} className="pt-16 md:pt-20 bg-sun-glow will-change-transform">
+      {/* ================= 1. HERO ON MUTED SAGE ================= */}
+      <main id="main-content" ref={heroRef} className="pt-16 md:pt-20 bg-vignette will-change-transform">
         <HeroSection onScrollNext={() => handleScrollTo('#cream-curtain')} />
       </main>
 

@@ -14,6 +14,7 @@ import { ErrorBoundary } from './components/ui/ErrorBoundary';
 export const App: React.FC = () => {
   return (
     <ErrorBoundary>
+      <div className="grain-overlay" aria-hidden="true" />
       <BrowserRouter>
         <Routes>
           {/* Public Marketing Landing */}
