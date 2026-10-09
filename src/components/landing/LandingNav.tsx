@@ -52,8 +52,8 @@ export const LandingNav: React.FC<LandingNavProps> = ({
         aria-label="Main"
         className={`fixed top-0 left-0 right-0 z-40 transition-colors duration-300 ${
           isCream
-            ? 'bg-cream/95 text-ink shadow-sm backdrop-blur-md'
-            : 'bg-sage/95 text-cream backdrop-blur-md'
+            ? 'bg-cream/95 text-ink shadow-sm backdrop-blur-md border-b border-line-ink'
+            : 'bg-transparent text-cream'
         }`}
       >
         {/* Full-width container with ~1.7vw side padding */}
@@ -62,7 +62,7 @@ export const LandingNav: React.FC<LandingNavProps> = ({
           style={{
             paddingLeft: 'clamp(16px, 1.7vw, 44px)',
             paddingRight: 'clamp(16px, 1.7vw, 44px)',
-            height: 'clamp(72px, 5.5vw, 140px)',
+            height: 'clamp(76px, 5.8vw, 150px)',
           }}
         >
           {/* ================= ZONE 1: LEFT ================= */}
@@ -121,49 +121,52 @@ export const LandingNav: React.FC<LandingNavProps> = ({
           </div>
 
           {/* ================= TWO THIN RULES (Left and Right of Badge) ================= */}
-          {/* Left rule: from left padding to badge's left edge */}
+          {/* Left rule: from left padding to badge's left edge, positioned about 5.5vw from top */}
           <div
             className={`hidden md:block absolute h-[1px] transition-colors pointer-events-none ${
-              isCream ? 'bg-ink/25' : 'bg-cream/30'
+              isCream ? 'bg-ink/30' : 'bg-cream/40'
             }`}
             style={{
-              top: 'clamp(36px, 2.75vw, 70px)',
+              top: 'clamp(52px, 4.4vw, 112px)',
               left: 'clamp(16px, 1.7vw, 44px)',
-              width: 'calc(50% - clamp(16px, 1.7vw, 44px) - clamp(46px, 3.4vw, 88px))',
+              right: 'calc(50% + clamp(48px, 3.4vw, 90px))',
             }}
             aria-hidden="true"
           />
 
-          {/* Right rule: from badge's right edge to right padding */}
+          {/* Right rule: from badge's right edge to right padding, positioned about 5.5vw from top */}
           <div
             className={`hidden md:block absolute h-[1px] transition-colors pointer-events-none ${
-              isCream ? 'bg-ink/25' : 'bg-cream/30'
+              isCream ? 'bg-ink/30' : 'bg-cream/40'
             }`}
             style={{
-              top: 'clamp(36px, 2.75vw, 70px)',
+              top: 'clamp(52px, 4.4vw, 112px)',
+              left: 'calc(50% + clamp(48px, 3.4vw, 90px))',
               right: 'clamp(16px, 1.7vw, 44px)',
-              width: 'calc(50% - clamp(16px, 1.7vw, 44px) - clamp(46px, 3.4vw, 88px))',
             }}
             aria-hidden="true"
           />
 
           {/* ================= ZONE 2: CENTER (Hanging Framed Logo Badge) ================= */}
-          <div className="absolute left-1/2 -translate-x-1/2 top-[clamp(8px,0.6vw,16px)] z-20">
+          <div
+            className="absolute left-1/2 -translate-x-1/2 z-20"
+            style={{
+              top: 'clamp(8px, 0.6vw, 16px)',
+              width: 'clamp(86px, 6.2vw, 160px)',
+              height: 'clamp(96px, 7vw, 180px)',
+            }}
+          >
             <Link
               to="/"
               onClick={scrollToTop}
               title="MDstash Home"
               aria-label="MDstash Home"
-              className="group block relative select-none"
-              style={{
-                width: 'clamp(84px, 6vw, 155px)',
-                height: 'clamp(94px, 6.8vw, 175px)',
-              }}
+              className="group block relative w-full h-full select-none"
             >
               {/* Double-line transparent frame (no dark filled box) */}
               <div
                 className={`w-full h-full border rounded-sm p-[3px] transition-all group-hover:scale-105 ${
-                  isCream ? 'border-ink/50 bg-transparent' : 'border-cream/50 bg-transparent'
+                  isCream ? 'border-ink/50 bg-cream/20' : 'border-cream/50 bg-transparent'
                 }`}
               >
                 <div
@@ -183,7 +186,7 @@ export const LandingNav: React.FC<LandingNavProps> = ({
                     MD<span className="text-orange">stash</span>
                   </span>
 
-                  {/* Small notched ribbon tab at bottom edge reading "md" (hangs down below frame) */}
+                  {/* Small notched ribbon tab at bottom edge reading "md" (protrudes below frame) */}
                   <div
                     data-testid="badge-tab"
                     className={`absolute -bottom-[clamp(10px,0.8vw,20px)] left-1/2 -translate-x-1/2 border px-2 py-0.5 rounded-b-[2px] transition-colors ${

@@ -163,13 +163,13 @@ export const MenuOverlay: React.FC<MenuOverlayProps> = ({
       </nav>
 
       {/* Bottom Footer Info */}
-      <div className="pt-6 border-t border-line flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-xs font-mono text-cream-dim">
+      <div className="pt-6 border-t border-line flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-xs font-display text-cream-dim">
         <div className="flex items-center gap-2">
-          <span className="text-orange">#</span>
+          <span className="text-orange">●</span>
           <span>Zero cloud · 100% local-first markdown organizer</span>
         </div>
         <div>
-          <span>Press <kbd className="px-1.5 py-0.5 rounded bg-forest-dark border border-line text-cream">Esc</kbd> to close</span>
+          <span>Press <kbd className="px-1.5 py-0.5 rounded bg-forest-dark border border-line text-cream font-mono">Esc</kbd> to close</span>
         </div>
       </div>
     </div>
