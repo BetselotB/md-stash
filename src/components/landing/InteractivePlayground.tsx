@@ -1293,66 +1293,34 @@ export const InteractivePlayground: React.FC = () => {
     [cancelRunner, restoreHome, startRunnerLoop, updateDebugHook, reducedMotion]
   );
 
-  // IntersectionObserver & Visibility handling
+  // Shared IntersectionObserver & Visibility handling
   useEffect(() => {
     if (typeof window === 'undefined') return;
     const container = containerRef.current;
     if (!container) return;
 
-    const checkInView = () => {
-      const r = container.getBoundingClientRect();
-      return r.top < window.innerHeight && r.bottom > 0;
-    };
-
-    if (checkInView() && !document.hidden) {
-      isVisibleRef.current = true;
-      if (!userPausedRef.current && !interactionPausedRef.current && !reducedMotion) {
-        startRunnerLoop();
-      }
-    }
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting && !document.hidden) {
-            isVisibleRef.current = true;
-            if (!userPausedRef.current && !interactionPausedRef.current && !reducedMotion) {
-              if (!runAbortControllerRef.current) {
-                startRunnerLoop();
-              } else {
-                resumeInPlace();
-              }
+    let unsubscribe: (() => void) | null = null;
+    import('../../utils/sharedAnimationObserver').then(({ observeAnimationVisibility }) => {
+      if (!containerRef.current) return;
+      unsubscribe = observeAnimationVisibility(containerRef.current, (inView) => {
+        if (inView && !document.hidden) {
+          isVisibleRef.current = true;
+          if (!userPausedRef.current && !interactionPausedRef.current && !reducedMotion) {
+            if (!runAbortControllerRef.current) {
+              startRunnerLoop();
+            } else {
+              resumeInPlace();
             }
-          } else {
-            isVisibleRef.current = false;
-            pauseInPlace();
           }
-        });
-      },
-      { threshold: 0.12 }
-    );
-
-    observer.observe(container);
-
-    const handleVisibilityChange = () => {
-      if (document.hidden) {
-        pauseInPlace();
-      } else {
-        if (isVisibleRef.current && !userPausedRef.current && !interactionPausedRef.current && !reducedMotion) {
-          if (!runAbortControllerRef.current) {
-            startRunnerLoop();
-          } else {
-            resumeInPlace();
-          }
+        } else {
+          isVisibleRef.current = false;
+          pauseInPlace();
         }
-      }
-    };
-
-    document.addEventListener('visibilitychange', handleVisibilityChange);
+      });
+    });
 
     return () => {
-      observer.disconnect();
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      if (unsubscribe) unsubscribe();
       cancelRunner();
       if (takeoverTimerRef.current) clearTimeout(takeoverTimerRef.current);
     };
@@ -1532,7 +1500,7 @@ export const InteractivePlayground: React.FC = () => {
         <div className="flex flex-col sm:flex-row items-center justify-between gap-6 mb-16">
           <div className="text-center sm:text-left max-w-2xl">
             <Pill className="mb-3">Live product demo</Pill>
-            <h2 className="font-display text-4xl sm:text-5xl text-ink leading-tight">
+            <h2 className="font-display text-5xl sm:text-6xl md:text-7xl text-ink leading-tight">
               Try it right here.
             </h2>
             <p className="text-sm text-ink/75 mt-2 font-sans">

@@ -6,6 +6,8 @@ const VIEWPORTS = [
   { width: 2560, height: 1440, name: '2560x1440', isMobile: false },
   { width: 1920, height: 1080, name: '1920x1080', isMobile: false },
   { width: 1440, height: 900,  name: '1440x900',  isMobile: false },
+  { width: 1280, height: 800,  name: '1280x800',  isMobile: false },
+  { width: 1024, height: 768,  name: '1024x768',  isMobile: false },
   { width: 390,  height: 844,  name: '390x844',   isMobile: true  },
 ];
 
@@ -47,6 +49,18 @@ async function main() {
     await page.goto('http://localhost:5173/?nointro', { waitUntil: 'networkidle' });
     await page.evaluate(() => document.fonts.ready);
     await page.waitForTimeout(500);
+
+    if (vp.isMobile) {
+      const isGate = await page.evaluate(() => !!document.querySelector('[data-testid="desktop-gate"]'));
+      if (isGate) {
+        console.log(`✓ PASS: Desktop Gate verified on mobile viewport ${vp.name}`);
+      } else {
+        console.error(`FAIL: Gate not displayed on mobile viewport ${vp.name}`);
+        allPassed = false;
+      }
+      await page.close();
+      continue;
+    }
 
     // Scroll to #features section
     await page.evaluate(() => {

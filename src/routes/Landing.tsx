@@ -11,7 +11,10 @@ import { MarqueeUseCases } from '../components/landing/MarqueeUseCases';
 import { useLandingScroll } from '../hooks/useLandingScroll';
 import { useHeroIntro } from '../hooks/useHeroIntro';
 
+import { trackRender } from '../utils/perfFlags';
+
 export const Landing: React.FC = () => {
+  trackRender('Landing');
   const heroRef = useRef<HTMLDivElement>(null);
   const creamCurtainRef = useRef<HTMLDivElement>(null);
   const finalCtaRef = useRef<HTMLDivElement>(null);
@@ -141,7 +144,7 @@ export const Landing: React.FC = () => {
             <span className="font-display text-xl text-cream">
               MD<span className="text-orange">stash</span>
             </span>
-            <span>· Made with care for the craft community.</span>
+            <span>· Organize and stash your markdown locally.</span>
           </div>
 
           <div className="flex items-center gap-6">
@@ -156,12 +159,6 @@ export const Landing: React.FC = () => {
             >
               GitHub
             </a>
-            <button
-              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-              className="hover:text-cream transition-colors cursor-pointer"
-            >
-              Back to top ↑
-            </button>
           </div>
         </div>
 

@@ -158,8 +158,8 @@ async function main() {
     // 1. Initial layout check
     await checkGeometry('Initial Layout');
 
-    // 2. Viewport resize check
-    const resizedWidth = vp.width - 40;
+    // 2. Viewport resize check (ensure width stays >= 1024 to remain on desktop site)
+    const resizedWidth = vp.width === 1024 ? 1064 : vp.width - 40;
     await page.setViewportSize({ width: resizedWidth, height: vp.height });
     await page.waitForTimeout(250); // wait for 120ms debounce
     await checkGeometry(`After Resize to ${resizedWidth}x${vp.height}`);

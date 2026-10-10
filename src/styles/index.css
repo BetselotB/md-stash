@@ -60,7 +60,7 @@
   }
 }
 
-/* Two-layer mean-neutral paper grain overlay: fine tooth + sparse fleck */
+/* Normal-blend paper grain overlay: fine tooth + sparse fleck */
 .grain-overlay {
   position: fixed;
   inset: 0;
@@ -68,6 +68,7 @@
   height: 100vh;
   pointer-events: none;
   z-index: 25; /* above page content (z-10), below cursor overlay (z-35), nav (z-40), menu (z-60) */
+  contain: strict;
 }
 
 .grain-overlay::before {
@@ -79,8 +80,7 @@
   background-image: image-set(url('/textures/paper-fine.png') 1x, url('/textures/paper-fine@2x.png') 2x);
   background-repeat: repeat;
   background-size: var(--grain-scale, 512px) var(--grain-scale, 512px);
-  opacity: var(--grain-opacity, 0.32);
-  mix-blend-mode: soft-light;
+  mix-blend-mode: normal;
   pointer-events: none;
 }
 
@@ -93,8 +93,7 @@
   background-image: image-set(url('/textures/paper-fleck.png') 1x, url('/textures/paper-fleck@2x.png') 2x);
   background-repeat: repeat;
   background-size: var(--grain-scale, 512px) var(--grain-scale, 512px);
-  opacity: var(--fleck-opacity, 0.18);
-  mix-blend-mode: soft-light;
+  mix-blend-mode: normal;
   pointer-events: none;
 }
 
@@ -217,19 +216,131 @@ html.lenis body {
   animation: caret-blink 1.06s steps(1) infinite;
 }
 
-/* Frosted glass nav bar */
+/* Frosted glass nav bar: lighter blur 8px, no saturate, no filter when not scrolled */
 .nav-glass {
   background: color-mix(in srgb, var(--surface) 58%, transparent);
-  -webkit-backdrop-filter: blur(16px) saturate(1.25);
-  backdrop-filter: blur(16px) saturate(1.25);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
   border-bottom: 1px solid var(--line);
   box-shadow: 0 4px 20px -2px rgba(25, 32, 28, 0.12);
 }
 
-@supports not (backdrop-filter: blur(16px)) {
+@supports not (backdrop-filter: blur(8px)) {
   .nav-glass {
     background: color-mix(in srgb, var(--surface) 90%, transparent);
   }
+}
+
+/* Zero React re-renders: nav state driven entirely by data attributes */
+nav[data-scrolled="true"] .nav-glass {
+  opacity: 1;
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+}
+nav[data-scrolled="false"] .nav-glass {
+  opacity: 0;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+/* Nav shared color transitions driven by single tokens */
+nav[data-testid="landing-nav"],
+nav[data-testid="landing-nav"] a,
+nav[data-testid="landing-nav"] button,
+nav[data-testid="landing-nav"] .nav-glass,
+nav[data-testid="landing-nav"] .nav-badge svg,
+nav[data-testid="landing-nav"] .badge-numeral {
+  transition-duration: var(--nav-color-duration) !important;
+  transition-timing-function: var(--nav-color-ease) !important;
+  transition-delay: 0s !important;
+}
+
+nav[data-testid="landing-nav"] {
+  transition-property: color;
+}
+
+nav[data-testid="landing-nav"] .nav-glass {
+  transition-property: background-color, border-color, background;
+}
+
+nav[data-testid="landing-nav"] .nav-badge svg {
+  transition-property: color, fill, stroke;
+}
+
+nav[data-testid="landing-nav"] .badge-numeral {
+  transition-property: fill;
+}
+
+nav[data-testid="landing-nav"] .nav-left > a {
+  transition-property: color;
+}
+
+nav[data-testid="landing-nav"] .nav-right button {
+  transition-property: color, background-color, border-color;
+}
+
+nav[data-testid="landing-nav"] .nav-github-link,
+nav[data-testid="landing-nav"] .nav-top-btn,
+nav[data-testid="landing-nav"] .nav-privacy-btn,
+nav[data-testid="landing-nav"] .nav-menu-btn {
+  transition-property: color, border-color, background-color;
+}
+
+/* Nav theme driven by data-theme */
+nav[data-theme="cream"] {
+  --surface: var(--cream);
+  --line: var(--line-ink);
+  color: var(--ink);
+}
+nav[data-theme="cream"] .nav-glass {
+  background: color-mix(in srgb, var(--cream) 58%, transparent);
+  border-bottom: 1px solid var(--line-ink);
+}
+nav[data-theme="cream"] .nav-badge svg {
+  color: var(--ink);
+}
+nav[data-theme="cream"] .badge-numeral {
+  fill: var(--cream);
+}
+nav[data-theme="cream"] .nav-left > a,
+nav[data-theme="cream"] .nav-right button {
+  color: var(--ink);
+}
+nav[data-theme="cream"] .nav-github-link,
+nav[data-theme="cream"] .nav-top-btn,
+nav[data-theme="cream"] .nav-privacy-btn,
+nav[data-theme="cream"] .nav-menu-btn {
+  border-color: var(--line-ink);
+  color: var(--ink);
+  background-color: rgba(247, 244, 238, 0.4);
+}
+
+nav[data-theme="sage"] {
+  --surface: var(--sage);
+  --line: rgba(248, 247, 230, 0.28);
+  color: var(--cream);
+}
+nav[data-theme="sage"] .nav-glass {
+  background: color-mix(in srgb, var(--sage) 58%, transparent);
+  border-bottom: 1px solid var(--line);
+}
+nav[data-theme="sage"] .nav-badge svg {
+  color: var(--cream);
+}
+nav[data-theme="sage"] .badge-numeral {
+  fill: var(--sage);
+}
+nav[data-theme="sage"] .nav-left > a,
+nav[data-theme="sage"] .nav-right button {
+  color: var(--cream);
+}
+nav[data-theme="sage"] .nav-github-link,
+nav[data-theme="sage"] .nav-top-btn,
+nav[data-theme="sage"] .nav-privacy-btn,
+nav[data-theme="sage"] .nav-menu-btn {
+  border-color: var(--line);
+  color: var(--cream);
+  background-color: transparent;
 }
 
 mark.hl {

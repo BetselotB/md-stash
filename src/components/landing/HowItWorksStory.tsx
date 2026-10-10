@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useLayoutEffect, useRef, useCallback } from 'react';
-import { Check, Copy, FileText, RotateCcw, Sparkles } from 'lucide-react';
+import { Check, Copy, FileText, RotateCcw } from 'lucide-react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { formatFileForCopy } from '../../domain/copyFormats';
@@ -11,6 +11,18 @@ gsap.registerPlugin(ScrollTrigger);
 const SAMPLE_MD_CONTENT = `# Claude Project Memory & Rules
 - Local-first architecture
 - Zero telemetry or cloud sync`;
+
+interface Box {
+  left: number;
+  top: number;
+  width: number;
+  height: number;
+}
+
+interface LUTPoint {
+  x: number;
+  y: number;
+}
 
 interface SegmentGeometry {
   width: number;
@@ -27,7 +39,11 @@ interface SegmentGeometry {
   d2: string;
   len1: number;
   len2: number;
+  s1Box: Box;
+  s2Box: Box;
 }
+
+const DEFAULT_BOX: Box = { left: 0, top: 0, width: 1200, height: 900 };
 
 const DEFAULT_GEOMETRY: SegmentGeometry = {
   width: 1200,
@@ -44,7 +60,24 @@ const DEFAULT_GEOMETRY: SegmentGeometry = {
   d2: '',
   len1: 0,
   len2: 0,
+  s1Box: DEFAULT_BOX,
+  s2Box: DEFAULT_BOX,
 };
+
+function getPointFromLUT(lut: LUTPoint[], p: number): LUTPoint | null {
+  if (!lut.length) return null;
+  const clamped = Math.max(0, Math.min(1, p));
+  const rawIdx = clamped * (lut.length - 1);
+  const i0 = Math.floor(rawIdx);
+  const i1 = Math.min(i0 + 1, lut.length - 1);
+  const frac = rawIdx - i0;
+  const p0 = lut[i0];
+  const p1 = lut[i1];
+  return {
+    x: p0.x + (p1.x - p0.x) * frac,
+    y: p0.y + (p1.y - p0.y) * frac,
+  };
+}
 
 export const HowItWorksStory: React.FC = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -64,7 +97,11 @@ export const HowItWorksStory: React.FC = () => {
   const path2Ref = useRef<SVGPathElement>(null);
   const mask1Ref = useRef<SVGPathElement>(null);
   const mask2Ref = useRef<SVGPathElement>(null);
-  const markerRef = useRef<SVGGElement>(null);
+  const markerRef = useRef<HTMLDivElement>(null);
+
+  // LUT point precomputations (200 samples per segment)
+  const lut1Ref = useRef<LUTPoint[]>([]);
+  const lut2Ref = useRef<LUTPoint[]>([]);
 
   // Geometry state and ref
   const [geometry, setGeometry] = useState<SegmentGeometry>(DEFAULT_GEOMETRY);
@@ -137,6 +174,18 @@ export const HowItWorksStory: React.FC = () => {
     const d2_ctrl = +(gap2 * 0.45).toFixed(1);
     const d2 = `M ${x2_bot},${y2_bot} C ${x2_bot},${y2_bot + d2_ctrl} ${x3},${y3 - d2_ctrl} ${x3},${y3}`;
 
+    // Localized bounding boxes for the two small SVGs
+    const PAD = 24;
+    const s1_minX = Math.floor(Math.min(x1, x2) - PAD);
+    const s1_maxX = Math.ceil(Math.max(x1, x2) + PAD);
+    const s1_minY = Math.floor(Math.min(y1, y2) - PAD);
+    const s1_maxY = Math.ceil(Math.max(y1, y2) + PAD);
+
+    const s2_minX = Math.floor(Math.min(x2_bot, x3) - PAD);
+    const s2_maxX = Math.ceil(Math.max(x2_bot, x3) + PAD);
+    const s2_minY = Math.floor(Math.min(y2_bot, y3) - PAD);
+    const s2_maxY = Math.ceil(Math.max(y2_bot, y3) + PAD);
+
     return {
       width,
       height,
@@ -152,6 +201,18 @@ export const HowItWorksStory: React.FC = () => {
       d2,
       len1: 0,
       len2: 0,
+      s1Box: {
+        left: s1_minX,
+        top: s1_minY,
+        width: Math.max(1, s1_maxX - s1_minX),
+        height: Math.max(1, s1_maxY - s1_minY),
+      },
+      s2Box: {
+        left: s2_minX,
+        top: s2_minY,
+        width: Math.max(1, s2_maxX - s2_minX),
+        height: Math.max(1, s2_maxY - s2_minY),
+      },
     };
   }, []);
 
@@ -165,7 +226,15 @@ export const HowItWorksStory: React.FC = () => {
         prev.d1 === next.d1 &&
         prev.d2 === next.d2 &&
         prev.width === next.width &&
-        prev.height === next.height
+        prev.height === next.height &&
+        prev.s1Box.left === next.s1Box.left &&
+        prev.s1Box.top === next.s1Box.top &&
+        prev.s1Box.width === next.s1Box.width &&
+        prev.s1Box.height === next.s1Box.height &&
+        prev.s2Box.left === next.s2Box.left &&
+        prev.s2Box.top === next.s2Box.top &&
+        prev.s2Box.width === next.s2Box.width &&
+        prev.s2Box.height === next.s2Box.height
       ) {
         return prev;
       }
@@ -221,13 +290,28 @@ export const HowItWorksStory: React.FC = () => {
     };
   }, [updateGeometry]);
 
-  // Measure path lengths once paths are set
+  // Measure path lengths and precompute LUT once paths are set (never in scroll loop)
   useEffect(() => {
     if (!path1Ref.current || !path2Ref.current) return;
     try {
       const l1 = path1Ref.current.getTotalLength() || 0;
       const l2 = path2Ref.current.getTotalLength() || 0;
       if (l1 > 0 || l2 > 0) {
+        const samples = 200;
+        const pts1: LUTPoint[] = [];
+        for (let i = 0; i <= samples; i++) {
+          const pt = path1Ref.current.getPointAtLength((i / samples) * l1);
+          pts1.push({ x: +pt.x.toFixed(1), y: +pt.y.toFixed(1) });
+        }
+        lut1Ref.current = pts1;
+
+        const pts2: LUTPoint[] = [];
+        for (let i = 0; i <= samples; i++) {
+          const pt = path2Ref.current.getPointAtLength((i / samples) * l2);
+          pts2.push({ x: +pt.x.toFixed(1), y: +pt.y.toFixed(1) });
+        }
+        lut2Ref.current = pts2;
+
         setGeometry((prev) => ({
           ...prev,
           len1: Math.round(l1),
@@ -240,7 +324,7 @@ export const HowItWorksStory: React.FC = () => {
   }, [geometry.d1, geometry.d2]);
 
   // ----------------------------------------------------
-  // DRAWING AND TRAVELLING MARKER RENDER LOOP
+  // DRAWING AND TRAVELLING MARKER RENDER LOOP (ZERO getPointAtLength)
   // ----------------------------------------------------
   const updateDrawingAndMarker = useCallback(() => {
     const p1 = p1ProgressRef.current;
@@ -251,84 +335,60 @@ export const HowItWorksStory: React.FC = () => {
     const mask1El = mask1Ref.current;
     const mask2El = mask2Ref.current;
     const markerEl = markerRef.current;
+    const geom = geomRef.current;
 
-    // Segment 1 Drawing
-    if (path1El && mask1El) {
-      const len1 = path1El.getTotalLength() || 1;
-      const offset1 = prefersReducedMotion ? 0 : len1 * (1 - p1);
+    // Segment 1 Drawing (using cached length, zero getTotalLength in scroll)
+    if (mask1El && geom.len1 > 0) {
+      const offset1 = prefersReducedMotion ? 0 : geom.len1 * (1 - p1);
       mask1El.style.strokeDashoffset = `${offset1}`;
-      path1El.style.strokeDashoffset = `${offset1}`;
+      if (path1El) path1El.style.strokeDashoffset = `${offset1}`;
     }
 
-    // Segment 2 Drawing
-    if (path2El && mask2El) {
-      const len2 = path2El.getTotalLength() || 1;
-      const offset2 = prefersReducedMotion ? 0 : len2 * (1 - p2);
+    // Segment 2 Drawing (using cached length, zero getTotalLength in scroll)
+    if (mask2El && geom.len2 > 0) {
+      const offset2 = prefersReducedMotion ? 0 : geom.len2 * (1 - p2);
       mask2El.style.strokeDashoffset = `${offset2}`;
-      path2El.style.strokeDashoffset = `${offset2}`;
+      if (path2El) path2El.style.strokeDashoffset = `${offset2}`;
     }
 
-    // Travelling Marker logic
-    if (markerEl && path1El && path2El) {
+    // Travelling Marker logic using LUT
+    if (markerEl) {
       if (prefersReducedMotion || p1 <= 0.001) {
-        // Outside the segments: completely hidden
         markerEl.style.opacity = '0';
         hasPulsedRef.current = false;
       } else if (p1 < 0.999) {
-        // Travelling along Segment 1
-        const len1 = path1El.getTotalLength() || 1;
-        const pt = path1El.getPointAtLength(p1 * len1);
-        markerEl.style.opacity = '1';
-        gsap.set(markerEl, {
-          x: pt.x,
-          y: pt.y,
-          scale: 1,
-          transformOrigin: 'center center',
-        });
+        const pt = getPointFromLUT(lut1Ref.current, p1);
+        if (pt) {
+          markerEl.style.opacity = '1';
+          markerEl.style.transform = `translate3d(${pt.x}px, ${pt.y}px, 0)`;
+        }
         hasPulsedRef.current = false;
       } else if (p2 <= 0.001) {
-        // Segment 1 complete, resting at top of panel 2 before Segment 2 begins
-        const len1 = path1El.getTotalLength() || 1;
-        const pt = path1El.getPointAtLength(len1);
+        const lut1 = lut1Ref.current;
+        const pt = lut1.length ? lut1[lut1.length - 1] : { x: geom.x2, y: geom.y2 };
         markerEl.style.opacity = '1';
-        gsap.set(markerEl, {
-          x: pt.x,
-          y: pt.y,
-          scale: 1,
-          transformOrigin: 'center center',
-        });
+        markerEl.style.transform = `translate3d(${pt.x}px, ${pt.y}px, 0)`;
         hasPulsedRef.current = false;
       } else if (p2 < 0.999) {
-        // Handed off, travelling along Segment 2
-        const len2 = path2El.getTotalLength() || 1;
-        const pt = path2El.getPointAtLength(p2 * len2);
-        markerEl.style.opacity = '1';
-        gsap.set(markerEl, {
-          x: pt.x,
-          y: pt.y,
-          scale: 1,
-          transformOrigin: 'center center',
-        });
+        const pt = getPointFromLUT(lut2Ref.current, p2);
+        if (pt) {
+          markerEl.style.opacity = '1';
+          markerEl.style.transform = `translate3d(${pt.x}px, ${pt.y}px, 0)`;
+        }
         hasPulsedRef.current = false;
       } else {
-        // Settled at end of Segment 2 at top of panel 3
-        const len2 = path2El.getTotalLength() || 1;
-        const pt = path2El.getPointAtLength(len2);
+        const lut2 = lut2Ref.current;
+        const pt = lut2.length ? lut2[lut2.length - 1] : { x: geom.x3, y: geom.y3 };
         markerEl.style.opacity = '1';
-        gsap.set(markerEl, {
-          x: pt.x,
-          y: pt.y,
-          transformOrigin: 'center center',
-        });
-
-        // Trigger settle pulse once upon landing
         if (!hasPulsedRef.current) {
           hasPulsedRef.current = true;
           gsap.fromTo(
             markerEl,
-            { scale: 1.35 },
-            { scale: 1.0, duration: 0.35, ease: 'back.out(2)' }
+            { transform: `translate3d(${pt.x}px, ${pt.y}px, 0) scale(1.35)` },
+            { transform: `translate3d(${pt.x}px, ${pt.y}px, 0) scale(1.0)`, duration: 0.35, ease: 'back.out(2)' }
           );
+        } else {
+          markerEl.style.transform = `translate3d(${pt.x}px, ${pt.y}px, 0)`;
         }
       }
     }
@@ -646,47 +706,36 @@ export const HowItWorksStory: React.FC = () => {
     >
       {/* ================= CONNECTING RE-ANCHORED TWO-SEGMENT PATHS (Desktop only, NO PIN) ================= */}
       <div className="absolute inset-0 pointer-events-none hidden md:block overflow-visible z-0" aria-hidden="true">
-        <svg
-          className="w-full h-full overflow-visible"
-          viewBox={`0 0 ${geometry.width} ${geometry.height}`}
-          style={{ width: `${geometry.width}px`, height: `${geometry.height}px` }}
-        >
-          <defs>
-            {/* Mask for Segment 1 drawing */}
-            <mask id="hiw-mask-1" maskUnits="userSpaceOnUse">
-              <path
-                ref={mask1Ref}
-                d={geometry.d1}
-                fill="none"
-                stroke="white"
-                strokeWidth="10"
-                strokeLinecap="round"
-                style={{
-                  strokeDasharray: geometry.len1 > 0 ? `${geometry.len1} ${geometry.len1}` : undefined,
-                  strokeDashoffset: prefersReducedMotion ? 0 : geometry.len1,
-                }}
-              />
-            </mask>
+        {/* Localized SVG Segment 1: Bounded to Segment 1 bounding box */}
+        {geometry.d1 && (
+          <svg
+            id="hiw-svg-1"
+            className="absolute pointer-events-none overflow-visible will-change-transform"
+            style={{
+              left: `${geometry.s1Box.left}px`,
+              top: `${geometry.s1Box.top}px`,
+              width: `${geometry.s1Box.width}px`,
+              height: `${geometry.s1Box.height}px`,
+            }}
+            viewBox={`${geometry.s1Box.left} ${geometry.s1Box.top} ${geometry.s1Box.width} ${geometry.s1Box.height}`}
+          >
+            <defs>
+              <mask id="hiw-mask-1" maskUnits="userSpaceOnUse">
+                <path
+                  ref={mask1Ref}
+                  d={geometry.d1}
+                  fill="none"
+                  stroke="white"
+                  strokeWidth="10"
+                  strokeLinecap="round"
+                  style={{
+                    strokeDasharray: geometry.len1 > 0 ? `${geometry.len1} ${geometry.len1}` : undefined,
+                    strokeDashoffset: prefersReducedMotion ? 0 : geometry.len1,
+                  }}
+                />
+              </mask>
+            </defs>
 
-            {/* Mask for Segment 2 drawing */}
-            <mask id="hiw-mask-2" maskUnits="userSpaceOnUse">
-              <path
-                ref={mask2Ref}
-                d={geometry.d2}
-                fill="none"
-                stroke="white"
-                strokeWidth="10"
-                strokeLinecap="round"
-                style={{
-                  strokeDasharray: geometry.len2 > 0 ? `${geometry.len2} ${geometry.len2}` : undefined,
-                  strokeDashoffset: prefersReducedMotion ? 0 : geometry.len2,
-                }}
-              />
-            </mask>
-          </defs>
-
-          {/* Segment 1: Bottom center of panel 1 -> Top center of panel 2 */}
-          {geometry.d1 && (
             <path
               id="hiw-line-1"
               ref={path1Ref}
@@ -699,10 +748,51 @@ export const HowItWorksStory: React.FC = () => {
               strokeLinecap="round"
               mask="url(#hiw-mask-1)"
             />
-          )}
 
-          {/* Segment 2: Bottom center of panel 2 -> Top center of panel 3 */}
-          {geometry.d2 && (
+            <g className="hiw-markers-1">
+              <circle cx={geometry.x1} cy={geometry.y1} r="5" fill="var(--orange)" />
+              <circle
+                cx={geometry.x2}
+                cy={geometry.y2}
+                r="5"
+                fill="var(--forest)"
+                stroke="var(--orange)"
+                strokeWidth="2"
+              />
+            </g>
+          </svg>
+        )}
+
+        {/* Localized SVG Segment 2: Bounded to Segment 2 bounding box */}
+        {geometry.d2 && (
+          <svg
+            id="hiw-svg-2"
+            className="absolute pointer-events-none overflow-visible will-change-transform"
+            style={{
+              left: `${geometry.s2Box.left}px`,
+              top: `${geometry.s2Box.top}px`,
+              width: `${geometry.s2Box.width}px`,
+              height: `${geometry.s2Box.height}px`,
+            }}
+            viewBox={`${geometry.s2Box.left} ${geometry.s2Box.top} ${geometry.s2Box.width} ${geometry.s2Box.height}`}
+          >
+            <defs>
+              <mask id="hiw-mask-2" maskUnits="userSpaceOnUse">
+                <path
+                  ref={mask2Ref}
+                  d={geometry.d2}
+                  fill="none"
+                  stroke="white"
+                  strokeWidth="10"
+                  strokeLinecap="round"
+                  style={{
+                    strokeDasharray: geometry.len2 > 0 ? `${geometry.len2} ${geometry.len2}` : undefined,
+                    strokeDashoffset: prefersReducedMotion ? 0 : geometry.len2,
+                  }}
+                />
+              </mask>
+            </defs>
+
             <path
               id="hiw-line-2"
               ref={path2Ref}
@@ -715,25 +805,7 @@ export const HowItWorksStory: React.FC = () => {
               strokeLinecap="round"
               mask="url(#hiw-mask-2)"
             />
-          )}
 
-          {/* Small end markers for Segment 1 (Solid orange dot at start, hollow ring at end) */}
-          {geometry.d1 && (
-            <g className="hiw-markers-1">
-              <circle cx={geometry.x1} cy={geometry.y1} r="5" fill="var(--orange)" />
-              <circle
-                cx={geometry.x2}
-                cy={geometry.y2}
-                r="5"
-                fill="var(--forest)"
-                stroke="var(--orange)"
-                strokeWidth="2"
-              />
-            </g>
-          )}
-
-          {/* Small end markers for Segment 2 (Solid orange dot at start, hollow ring at end) */}
-          {geometry.d2 && (
             <g className="hiw-markers-2">
               <circle cx={geometry.x2_bot} cy={geometry.y2_bot} r="5" fill="var(--orange)" />
               <circle
@@ -745,28 +817,53 @@ export const HowItWorksStory: React.FC = () => {
                 strokeWidth="2"
               />
             </g>
-          )}
+          </svg>
+        )}
 
-          {/* Travelling marker: Small crate glyph riding along the leading edge */}
-          <g
-            ref={markerRef}
-            id="hiw-marker"
-            className="origin-center pointer-events-none"
-            style={{ opacity: 0 }}
-            aria-hidden="true"
-          >
+        {/* Dedicated isolated transform-only travelling marker element */}
+        <div
+          ref={markerRef}
+          id="hiw-marker"
+          className="absolute top-0 left-0 pointer-events-none z-20 will-change-transform"
+          style={{
+            opacity: 0,
+            transform: 'translate3d(0, 0, 0)',
+            width: '28px',
+            height: '28px',
+            marginLeft: '-14px',
+            marginTop: '-14px',
+          }}
+          aria-hidden="true"
+        >
+          <svg width="28" height="28" viewBox="-14 -14 28 28" className="overflow-visible">
             <circle r="14" fill="var(--orange)" opacity="0.2" />
             <circle r="9" fill="var(--forest-dark)" stroke="var(--orange)" strokeWidth="1.5" />
             <image href="/logo.svg" x="-5.5" y="-5.5" width="11" height="11" />
-          </g>
-        </svg>
+          </svg>
+        </div>
       </div>
 
       {/* ================= SIMPLE CLEAN HEADER ================= */}
       <div className="text-center mb-16 md:mb-24 relative z-10">
         <Pill className="mb-3">How it works</Pill>
-        <h2 className="font-display text-4xl sm:text-5xl md:text-6xl text-ink tracking-tight">
-          Drop, sort, drag out.
+        <h2 className="font-display text-5xl sm:text-6xl md:text-7xl text-ink tracking-tight">
+          <span className="relative inline-block">
+            Drop, sort, drag out.
+            <svg
+              className="absolute left-0 -bottom-2 md:-bottom-3.5 w-full h-3 md:h-4.5 text-orange pointer-events-none"
+              viewBox="0 0 300 14"
+              fill="none"
+              preserveAspectRatio="none"
+              aria-hidden="true"
+            >
+              <path
+                d="M 2 8 C 75 14, 225 14, 298 5"
+                stroke="currentColor"
+                strokeWidth="4"
+                strokeLinecap="round"
+              />
+            </svg>
+          </span>
         </h2>
       </div>
 
@@ -786,7 +883,7 @@ export const HowItWorksStory: React.FC = () => {
                 Ingest
               </span>
             </div>
-            <h3 className="font-display text-3xl sm:text-4xl text-ink tracking-tight">
+            <h3 className="font-display text-3xl sm:text-4xl md:text-5xl text-ink tracking-tight">
               Drop your markdown in.
             </h3>
             <p className="text-base text-ink/80 mt-3 font-sans leading-relaxed">
@@ -803,7 +900,7 @@ export const HowItWorksStory: React.FC = () => {
                 className="relative rounded-3xl bg-forest border-2 border-line-ink p-6 sm:p-8 text-cream shadow-card overflow-hidden group hover:-translate-y-1 transition-transform duration-300"
               >
                 {/* Paper grain overlay inside panel */}
-                <div className="absolute inset-0 bg-repeat opacity-15 pointer-events-none mix-blend-soft-light bg-[url('/textures/paper-fine.png')]" />
+                <div className="absolute inset-0 bg-repeat opacity-25 pointer-events-none mix-blend-normal bg-[url('/textures/paper-fine.png')]" />
 
                 {/* Replay Control */}
                 <button
@@ -873,7 +970,7 @@ export const HowItWorksStory: React.FC = () => {
                 className="relative rounded-3xl bg-forest border-2 border-line-ink p-6 sm:p-8 text-cream shadow-card overflow-hidden group hover:-translate-y-1 transition-transform duration-300"
               >
                 {/* Paper grain overlay inside panel */}
-                <div className="absolute inset-0 bg-repeat opacity-15 pointer-events-none mix-blend-soft-light bg-[url('/textures/paper-fine.png')]" />
+                <div className="absolute inset-0 bg-repeat opacity-25 pointer-events-none mix-blend-normal bg-[url('/textures/paper-fine.png')]" />
 
                 {/* Replay Control */}
                 <button
@@ -956,7 +1053,7 @@ export const HowItWorksStory: React.FC = () => {
                 Organize
               </span>
             </div>
-            <h3 className="font-display text-3xl sm:text-4xl text-ink tracking-tight">
+            <h3 className="font-display text-3xl sm:text-4xl md:text-5xl text-ink tracking-tight">
               Sort into drawers.
             </h3>
             <p className="text-base text-ink/80 mt-3 font-sans leading-relaxed">
@@ -979,7 +1076,7 @@ export const HowItWorksStory: React.FC = () => {
                 Export
               </span>
             </div>
-            <h3 className="font-display text-3xl sm:text-4xl text-ink tracking-tight">
+            <h3 className="font-display text-3xl sm:text-4xl md:text-5xl text-ink tracking-tight">
               Drop or copy anywhere.
             </h3>
             <p className="text-base text-ink/80 mt-3 font-sans leading-relaxed">
@@ -996,7 +1093,7 @@ export const HowItWorksStory: React.FC = () => {
                 className="relative rounded-3xl bg-forest border-2 border-line-ink p-6 sm:p-8 text-cream shadow-card overflow-hidden group hover:-translate-y-1 transition-transform duration-300"
               >
                 {/* Paper grain overlay inside panel */}
-                <div className="absolute inset-0 bg-repeat opacity-15 pointer-events-none mix-blend-soft-light bg-[url('/textures/paper-fine.png')]" />
+                <div className="absolute inset-0 bg-repeat opacity-25 pointer-events-none mix-blend-normal bg-[url('/textures/paper-fine.png')]" />
 
                 {/* Replay Control */}
                 <button
@@ -1060,7 +1157,6 @@ export const HowItWorksStory: React.FC = () => {
                   {/* Mock Chat Input Window */}
                   <div className="s3-chat-input p-3.5 rounded-2xl bg-cream border border-line-ink shadow-sm flex items-center justify-between gap-3 text-ink">
                     <div className="flex items-center gap-2 truncate">
-                      <Sparkles className="w-4 h-4 text-orange shrink-0" />
                       {/* Chat Chip landing in input */}
                       <span className="s3-chat-chip inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-forest text-cream font-display text-xs shrink-0">
                         <FileText className="w-3 h-3 text-orange" />

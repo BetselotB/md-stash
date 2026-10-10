@@ -22,12 +22,22 @@
   --line: rgba(248, 247, 230, 0.28);
   --line-light: rgba(248, 247, 230, 0.15);
   --line-ink: rgba(38, 51, 42, 0.18);
+
+  /* Nav color transition timing (single source of truth for all nav items) */
+  --nav-color-duration: 150ms;
+  --nav-color-ease: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 [data-theme="cream"],
 .theme-cream {
   --surface: var(--cream);
   --line: var(--line-ink);
+}
+
+[data-theme="sage"],
+.theme-sage {
+  --surface: var(--sage);
+  --line: rgba(248, 247, 230, 0.28);
 }
 
 :root {

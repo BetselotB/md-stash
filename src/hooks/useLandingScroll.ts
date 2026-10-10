@@ -3,6 +3,8 @@ import Lenis from 'lenis';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
+import { getPerfFlags, trackRender } from '../utils/perfFlags';
+
 gsap.registerPlugin(ScrollTrigger);
 
 interface UseLandingScrollProps {
@@ -16,14 +18,27 @@ export function useLandingScroll({
   creamCurtainRef,
   finalCtaRef,
 }: UseLandingScrollProps) {
-  const [navTheme, setNavTheme] = useState<'sage' | 'cream'>('sage');
+  trackRender('useLandingScroll');
   const lenisRef = useRef<Lenis | null>(null);
 
+  const updateNavTheme = (theme: 'sage' | 'cream') => {
+    const nav = document.querySelector('[data-testid="landing-nav"]') as HTMLElement | null;
+    if (nav && nav.getAttribute('data-theme') !== theme) {
+      nav.setAttribute('data-theme', theme);
+    }
+  };
+
   useEffect(() => {
+    const flags = getPerfFlags();
     // Check prefers-reduced-motion
     const prefersReducedMotion =
       typeof window !== 'undefined' &&
       window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (flags.has('nolenis')) {
+      // Native scroll ablation: skip Lenis
+      return;
+    }
 
     if (prefersReducedMotion) {
       // For reduced motion: instant section color changes on scroll via IntersectionObserver
@@ -31,11 +46,11 @@ export function useLandingScroll({
         (entries) => {
           entries.forEach((entry) => {
             if (entry.target === creamCurtainRef.current && entry.isIntersecting) {
-              setNavTheme('cream');
+              updateNavTheme('cream');
             } else if (entry.target === heroRef.current && entry.isIntersecting) {
-              setNavTheme('sage');
+              updateNavTheme('sage');
             } else if (entry.target === finalCtaRef.current && entry.isIntersecting) {
-              setNavTheme('sage');
+              updateNavTheme('sage');
             }
           });
         },
@@ -104,16 +119,18 @@ export function useLandingScroll({
         });
       }
 
-      // Nav theme switch: flips to 'cream' when entering cream curtain
-      ScrollTrigger.create({
-        trigger: creamCurtainRef.current,
-        start: 'top 60px',
-        end: 'bottom 60px',
-        onEnter: () => setNavTheme('cream'),
-        onLeaveBack: () => setNavTheme('sage'),
-        onLeave: () => setNavTheme('sage'),
-        onEnterBack: () => setNavTheme('cream'),
-      });
+      // Nav theme switch: flips data-theme attribute directly (zero React re-renders)
+      if (!flags.has('nostate')) {
+        ScrollTrigger.create({
+          trigger: creamCurtainRef.current,
+          start: 'top 60px',
+          end: 'bottom 60px',
+          onEnter: () => updateNavTheme('cream'),
+          onLeaveBack: () => updateNavTheme('sage'),
+          onLeave: () => updateNavTheme('sage'),
+          onEnterBack: () => updateNavTheme('cream'),
+        });
+      }
     });
 
     return () => {
@@ -128,6 +145,7 @@ export function useLandingScroll({
   }, [heroRef, creamCurtainRef, finalCtaRef]);
 
   const stopLenis = () => {
+    lenisRef.current?.scrollTo(0, { immediate: true });
     lenisRef.current?.stop();
   };
 
@@ -136,5 +154,5 @@ export function useLandingScroll({
     ScrollTrigger.refresh();
   };
 
-  return { navTheme, lenis: lenisRef.current, stopLenis, startLenis };
+  return { navTheme: 'sage' as const, lenis: lenisRef.current, stopLenis, startLenis };
 }

@@ -58,12 +58,15 @@ export const PrivacyProofPanel: React.FC = () => {
       <div className="max-w-5xl mx-auto px-6">
         {/* Container */}
         <div className="rounded-3xl bg-cream-dim/70 border-2 border-line-ink p-8 sm:p-12 shadow-sm relative overflow-hidden">
-          {/* Subtle vintage watermark */}
-          <div className="absolute -right-12 -bottom-12 w-64 h-64 border-[16px] border-line-ink/10 rounded-full pointer-events-none select-none flex items-center justify-center font-display text-line-ink/10 text-9xl">
+          {/* Subtle vintage watermark # tilted toward top-right */}
+          <div
+            className="absolute left-5 bottom-3 sm:left-8 sm:bottom-4 pointer-events-none select-none font-display text-line-ink leading-none text-7xl sm:text-8xl lg:text-[120px] -rotate-[18deg] transform origin-center z-0"
+            aria-hidden="true"
+          >
             #
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative z-10">
             {/* Left info column (7 cols) */}
             <div className="lg:col-span-7 space-y-6">
               <Pill>Network transparency</Pill>
@@ -91,8 +94,14 @@ export const PrivacyProofPanel: React.FC = () => {
                 </div>
               </div>
 
-              <div className="pt-2 flex items-center gap-4 text-xs font-mono text-ink/75">
+              <div className="pt-2 flex flex-wrap items-center gap-4 text-xs font-mono text-ink/75">
                 <span className="font-bold">Open DevTools &gt; Network and try it yourself.</span>
+                <a
+                  href="/privacy"
+                  className="font-display text-forest hover:text-orange font-bold underline transition-colors"
+                >
+                  See live proof &amp; privacy audit &rarr;
+                </a>
               </div>
             </div>
 

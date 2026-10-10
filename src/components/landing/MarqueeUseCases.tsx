@@ -25,8 +25,25 @@ const ROW_2_FILES = [
 ];
 
 export const MarqueeUseCases: React.FC = () => {
+  const sectionRef = React.useRef<HTMLElement>(null);
+  const [isInView, setIsInView] = React.useState(false);
+
+  React.useEffect(() => {
+    if (!sectionRef.current) return;
+    let unsubscribe: (() => void) | null = null;
+    import('../../utils/sharedAnimationObserver').then(({ observeAnimationVisibility }) => {
+      if (!sectionRef.current) return;
+      unsubscribe = observeAnimationVisibility(sectionRef.current, (inView) => {
+        setIsInView(inView);
+      });
+    });
+    return () => {
+      if (unsubscribe) unsubscribe();
+    };
+  }, []);
+
   return (
-    <section id="use-cases" className="py-20 bg-cream border-t border-line-ink/40 overflow-hidden relative">
+    <section ref={sectionRef} id="use-cases" className="py-20 bg-cream border-t border-line-ink/40 overflow-hidden relative">
       <div className="max-w-7xl mx-auto px-6 mb-10 text-center">
         <Pill className="mb-3">Every markdown pattern</Pill>
         <h2 className="font-display text-4xl sm:text-5xl text-ink leading-tight">
@@ -39,7 +56,10 @@ export const MarqueeUseCases: React.FC = () => {
 
       {/* Marquee Row 1: Scrolling Left */}
       <div className="w-full overflow-hidden py-2 mask-linear">
-        <div className="animate-marquee-left flex gap-4">
+        <div
+          className="animate-marquee-left flex gap-4"
+          style={{ animationPlayState: isInView ? 'running' : 'paused' }}
+        >
           {/* Double list for smooth infinite looping */}
           {[...ROW_1_FILES, ...ROW_1_FILES].map((file, idx) => (
             <div
@@ -62,7 +82,10 @@ export const MarqueeUseCases: React.FC = () => {
 
       {/* Marquee Row 2: Scrolling Right */}
       <div className="w-full overflow-hidden py-3 mt-2">
-        <div className="animate-marquee-right flex gap-4">
+        <div
+          className="animate-marquee-right flex gap-4"
+          style={{ animationPlayState: isInView ? 'running' : 'paused' }}
+        >
           {/* Double list for smooth infinite looping */}
           {[...ROW_2_FILES, ...ROW_2_FILES].map((file, idx) => (
             <div
@@ -83,10 +106,20 @@ export const MarqueeUseCases: React.FC = () => {
         </div>
       </div>
 
-      <div className="text-center mt-6">
-        <span className="text-[11px] font-mono text-ink/60">
-          Hover over any row to pause scrolling
-        </span>
+      <div className="flex justify-center mt-8">
+        <svg
+          className="w-48 sm:w-64 h-3 text-ink/30 pointer-events-none"
+          viewBox="0 0 240 10"
+          fill="none"
+          aria-hidden="true"
+        >
+          <path
+            d="M 2 5 C 60 8, 180 8, 238 4"
+            stroke="currentColor"
+            strokeWidth="3"
+            strokeLinecap="round"
+          />
+        </svg>
       </div>
     </section>
   );

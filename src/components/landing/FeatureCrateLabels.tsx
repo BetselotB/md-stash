@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Layers, Copy, Search, History, Wifi, WifiOff, Check, Pause, Play } from 'lucide-react';
+import { Layers, Copy, Search, History, Wifi, WifiOff, Check } from 'lucide-react';
 import gsap from 'gsap';
 import { Pill } from '../ui/Pill';
 
@@ -168,7 +168,7 @@ export const FeatureCrateLabels: React.FC = () => {
     });
   };
 
-  // IntersectionObserver & Document visibility
+  // Shared IntersectionObserver & Document visibility
   useEffect(() => {
     if (!sectionRef.current) return;
 
@@ -192,33 +192,21 @@ export const FeatureCrateLabels: React.FC = () => {
       tl5Ref.current?.play();
     };
 
-    const io = new IntersectionObserver(
-      ([entry]) => {
-        isSectionInViewRef.current = entry.isIntersecting;
-        if (entry.isIntersecting) {
+    let unsubscribe: (() => void) | null = null;
+    import('../../utils/sharedAnimationObserver').then(({ observeAnimationVisibility }) => {
+      if (!sectionRef.current) return;
+      unsubscribe = observeAnimationVisibility(sectionRef.current, (inView) => {
+        isSectionInViewRef.current = inView;
+        if (inView) {
           resumeAll();
         } else {
           pauseAll();
         }
-      },
-      { rootMargin: '100% 0px 100% 0px' }
-    );
-
-    io.observe(sectionRef.current);
-
-    const handleVisibility = () => {
-      if (document.hidden) {
-        pauseAll();
-      } else if (isSectionInViewRef.current) {
-        resumeAll();
-      }
-    };
-
-    document.addEventListener('visibilitychange', handleVisibility);
+      });
+    });
 
     return () => {
-      io.disconnect();
-      document.removeEventListener('visibilitychange', handleVisibility);
+      if (unsubscribe) unsubscribe();
     };
   }, []);
 
@@ -560,9 +548,8 @@ export const FeatureCrateLabels: React.FC = () => {
             </div>
           </div>
 
-          <div className="text-xs font-display text-ink/75 flex items-center justify-between border-t border-line-ink/30 pt-3">
-            <span>Promise:</span>
-            <span className="font-display text-ink text-right">Zero copy-paste fragmentation</span>
+          <div className="text-xs font-display text-ink/75 border-t border-line-ink/30 pt-3">
+            <span className="font-display text-ink">Zero copy-paste fragmentation</span>
           </div>
         </div>
 
@@ -651,9 +638,8 @@ You are an expert engineer.
             </button>
           </div>
 
-          <div className="text-xs font-display text-ink/75 flex items-center justify-between border-t border-line-ink/30 pt-3">
-            <span>Promise:</span>
-            <span className="font-display text-ink text-right">Ready for every chat prompt</span>
+          <div className="text-xs font-display text-ink/75 border-t border-line-ink/30 pt-3">
+            <span className="font-display text-ink">Ready for every chat prompt</span>
           </div>
         </div>
 
@@ -757,9 +743,8 @@ You are an expert engineer.
             </div>
           </div>
 
-          <div className="text-xs font-display text-ink/75 flex items-center justify-between border-t border-line-ink/30 pt-3">
-            <span>Promise:</span>
-            <span className="font-display text-ink text-right">Sub-millisecond fuzzy search</span>
+          <div className="text-xs font-display text-ink/75 border-t border-line-ink/30 pt-3">
+            <span className="font-display text-ink">Sub-millisecond fuzzy search</span>
           </div>
         </div>
 
@@ -830,9 +815,8 @@ You are an expert engineer.
             </div>
           </div>
 
-          <div className="text-xs font-display text-ink/75 flex items-center justify-between border-t border-line-ink/30 pt-3">
-            <span>Promise:</span>
-            <span className="font-display text-ink text-right">Zero lost changes, ever</span>
+          <div className="text-xs font-display text-ink/75 border-t border-line-ink/30 pt-3">
+            <span className="font-display text-ink">Zero lost changes, ever</span>
           </div>
         </div>
 
@@ -894,9 +878,8 @@ You are an expert engineer.
             </div>
           </div>
 
-          <div className="text-xs font-display text-ink/75 flex items-center justify-between border-t border-line-ink/30 pt-3">
-            <span>Promise:</span>
-            <span className="font-display text-ink text-right">Runs on airplanes and cabins</span>
+          <div className="text-xs font-display text-ink/75 border-t border-line-ink/30 pt-3">
+            <span className="font-display text-ink">Runs on airplanes and cabins</span>
           </div>
         </div>
       </>
@@ -910,32 +893,13 @@ You are an expert engineer.
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
           <div>
             <Pill className="mb-3">The crate label lineup</Pill>
-            <h2 className="font-display text-4xl sm:text-5xl text-ink leading-tight">
+            <h2 className="font-display text-5xl sm:text-6xl md:text-7xl text-ink leading-tight">
               Small batch tools, built for markdown.
             </h2>
             <p className="text-sm text-ink/75 max-w-lg mt-2 font-sans">
               Every feature is stamped like a vintage craft label. No bloat, no subscription traps, purely local craft.
             </p>
           </div>
-
-          {/* Single Circular Pause/Play Button (Hidden in reduced motion) */}
-          {!prefersReducedMotion && (
-            <div className="flex items-center gap-2">
-              <button
-                type="button"
-                onClick={handleTogglePause}
-                aria-pressed={isManuallyPaused}
-                aria-label={isManuallyPaused ? 'Play feature marquee' : 'Pause feature marquee'}
-                className="w-10 h-10 rounded-full border border-line-ink bg-cream-dim/60 hover:bg-cream hover:border-orange text-ink flex items-center justify-center transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-orange cursor-pointer"
-              >
-                {isManuallyPaused ? (
-                  <Play className="w-4 h-4 ml-0.5 text-orange" />
-                ) : (
-                  <Pause className="w-4 h-4 text-ink" />
-                )}
-              </button>
-            </div>
-          )}
         </div>
       </div>
 

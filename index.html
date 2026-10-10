@@ -2,9 +2,10 @@
 <html lang="en" class="is-loading">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/logo.svg" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>MDstash — Your markdown, stashed & ready</title>
+    <title>MDstash</title>
     <meta name="description" content="A local-first organizer for Markdown files. Drag files in, sort them into collections, copy or drag them back out into your IDE or AI chat. Nothing leaves your device." />
     <style>
       html, body {
@@ -49,6 +50,17 @@
       </style>
     </noscript>
     <script>
+      // Force scroll to top on reload so hero intro always starts from top of page
+      if ('scrollRestoration' in history) {
+        history.scrollRestoration = 'manual';
+      }
+      window.scrollTo(0, 0);
+
+      // Immediately remove is-loading if not on landing root, or if nointro / reduced-motion is requested
+      if (window.location.pathname !== '/' || new URLSearchParams(window.location.search).has('nointro') || (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)) {
+        document.documentElement.classList.remove('is-loading');
+      }
+
       // 3s failsafe timeout so content is never stuck hidden if JS stalls
       setTimeout(function() {
         document.documentElement.classList.remove('is-loading');

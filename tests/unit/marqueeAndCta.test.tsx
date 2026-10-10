@@ -23,7 +23,6 @@ describe('MarqueeUseCases & Final CTA', () => {
 
     expect(screen.getByText('Stash your first file.')).toBeInTheDocument();
     expect(screen.getAllByText('Open MDstash').length).toBeGreaterThanOrEqual(1);
-    expect(screen.getByText('Back to top ↑')).toBeInTheDocument();
-    expect(screen.getByText(/Made with care for the craft community/)).toBeInTheDocument();
+    expect(screen.getByText(/Organize and stash your markdown locally/)).toBeInTheDocument();
   });
 });

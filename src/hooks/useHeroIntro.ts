@@ -1,5 +1,37 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
+
+export interface HeroHighlightConfig {
+  firstCaretStart: number;
+  firstCaretBlinkPeriod: number;
+  firstSelectionDuration: number;
+  firstCaretFadeDuration: number;
+  secondCaretOverlap: number;
+  secondCaretBlinkPeriod: number;
+  secondSelectionDuration: number;
+  secondCaretFadeDuration: number;
+  selectionEase?: string;
+}
+
+export const HERO_HIGHLIGHT_CONFIG: HeroHighlightConfig = {
+  // Start caret after headline lines finish landing (headline lands at ~1.49s)
+  // 1.84s + 2.65s = 4.49s; 4.49s - 1.49s = ~3.0s total after headline landing
+  firstCaretStart: 1.84,
+  // First phrase ("markdown,"):
+  firstCaretBlinkPeriod: 0.8, // 1 blink, ~0.8s period, steps(1)
+  firstSelectionDuration: 0.6, // selection grows in ~0.6s
+  firstCaretFadeDuration: 0.15,
+  // Second phrase ("ready to drop."):
+  secondCaretOverlap: 0.2, // starts ~0.2s before first selection finishes
+  secondCaretBlinkPeriod: 0.7, // 1 blink, ~0.7s period, steps(1)
+  secondSelectionDuration: 0.75, // selection grows in ~0.75s
+  secondCaretFadeDuration: 0.15,
+  selectionEase: 'power2.inOut',
+};
+
+// In-memory module-level session flag: resets on full page reload/refresh,
+// persists across in-app client-side navigation (e.g. / -> /app -> /).
+let hasPlayedInSession = false;
 
 interface UseHeroIntroProps {
   onStopLenis?: () => void;
@@ -8,19 +40,54 @@ interface UseHeroIntroProps {
 
 export function useHeroIntro({ onStopLenis, onStartLenis }: UseHeroIntroProps = {}) {
   const isIntroCompleteRef = useRef(false);
+  const [bfCacheTick, setBfCacheTick] = useState(0);
+
+  // Store callbacks in refs to avoid recreating useEffect on parent re-renders
+  const onStopLenisRef = useRef(onStopLenis);
+  onStopLenisRef.current = onStopLenis;
+  const onStartLenisRef = useRef(onStartLenis);
+  onStartLenisRef.current = onStartLenis;
+
+  // Handle bfcache restores (pageshow event with persisted = true)
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const handlePageShow = (event: PageTransitionEvent) => {
+      if (event.persisted) {
+        hasPlayedInSession = false;
+        if ('scrollRestoration' in history) {
+          history.scrollRestoration = 'manual';
+        }
+        window.scrollTo(0, 0);
+        setBfCacheTick((c) => c + 1);
+      }
+    };
+
+    window.addEventListener('pageshow', handlePageShow);
+    return () => {
+      window.removeEventListener('pageshow', handlePageShow);
+    };
+  }, []);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
-    const HAS_PLAYED_KEY = 'mdstash_hero_intro_played';
+    // Clean up any legacy sessionStorage key from previous implementation
+    try {
+      sessionStorage.removeItem('mdstash_hero_intro_played');
+    } catch {
+      // ignore
+    }
+
     const isReducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
     const urlParams = new URLSearchParams(window.location.search);
     const noIntro = urlParams.has('nointro');
-    const alreadyPlayed = sessionStorage.getItem(HAS_PLAYED_KEY) === 'true';
     const isTest = typeof process !== 'undefined' && process.env?.NODE_ENV === 'test';
 
     // Failsafe / skip condition:
-    if (isReducedMotion || noIntro || alreadyPlayed || isTest) {
+    // Plays on every fresh page load/reload because hasPlayedInSession starts false.
+    // Skips only on in-app client-side navigation back to "/" in same session.
+    if (isReducedMotion || noIntro || hasPlayedInSession || isTest) {
       document.documentElement.classList.remove('is-loading');
       isIntroCompleteRef.current = true;
       // Immediately set final settled states
@@ -48,19 +115,26 @@ export function useHeroIntro({ onStopLenis, onStartLenis }: UseHeroIntroProps = 
         (el as HTMLElement).style.opacity = '';
         (el as HTMLElement).style.transform = 'none';
       });
-      document.querySelectorAll('.nav-rule-left, .nav-rule-right').forEach((el) => {
-        (el as HTMLElement).style.transform = 'scaleX(1)';
-      });
+
       document.querySelectorAll('.nav-badge').forEach((el) => {
         (el as HTMLElement).style.opacity = '1';
         (el as HTMLElement).style.transform = 'none';
       });
-      onStartLenis?.();
+      onStartLenisRef.current?.();
       return;
     }
 
+    // Scroll to top and lock scroll before intro starts
+    if ('scrollRestoration' in history) {
+      history.scrollRestoration = 'manual';
+    }
+    window.scrollTo(0, 0);
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+
     let isCancelled = false;
     let resizeCtx: gsap.Context | null = null;
+    const mountTime = Date.now();
 
     const runTimeline = async () => {
       // 1. Wait for document.fonts.ready
@@ -74,8 +148,9 @@ export function useHeroIntro({ onStopLenis, onStartLenis }: UseHeroIntroProps = 
 
       if (isCancelled) return;
 
-      // Stop Lenis during intro
-      onStopLenis?.();
+      // Lock Lenis at scroll 0 during intro
+      onStopLenisRef.current?.();
+      window.scrollTo(0, 0);
 
       const ctx = gsap.context(() => {
         // Remove .is-loading class so hero is visible for GSAP
@@ -84,6 +159,7 @@ export function useHeroIntro({ onStopLenis, onStartLenis }: UseHeroIntroProps = 
         const tl = gsap.timeline({
           onComplete: () => {
             isIntroCompleteRef.current = true;
+            hasPlayedInSession = true;
             document.querySelectorAll('.hero-line').forEach((el) => {
               const line = el as HTMLElement;
               line.style.overflow = 'visible';
@@ -91,11 +167,7 @@ export function useHeroIntro({ onStopLenis, onStartLenis }: UseHeroIntroProps = 
               line.style.padding = '';
               line.style.margin = '';
             });
-            try {
-              sessionStorage.setItem(HAS_PLAYED_KEY, 'true');
-            } catch {
-              // ignore storage errors
-            }
+            onStartLenisRef.current?.();
           },
         });
 
@@ -112,8 +184,6 @@ export function useHeroIntro({ onStopLenis, onStartLenis }: UseHeroIntroProps = 
         };
 
         // 0.0s: Initial states
-        safeSet('.nav-rule-left', { scaleX: 0, transformOrigin: 'right center' });
-        safeSet('.nav-rule-right', { scaleX: 0, transformOrigin: 'left center' });
         safeSet('.nav-badge', { y: -20, opacity: 0 });
         safeSet('.nav-left > *', { y: -10, opacity: 0 });
         safeSet('.nav-right > *', { y: -10, opacity: 0 });
@@ -130,8 +200,7 @@ export function useHeroIntro({ onStopLenis, onStartLenis }: UseHeroIntroProps = 
         safeSet('.hl-caret', { opacity: 0, left: '0%' });
         safeSet('.hl-char', { color: 'var(--cream)' });
 
-        // 0.1s: Nav rules scaleX outward, badge drops 20px with fade
-        safeTo('.nav-rule-left, .nav-rule-right', { scaleX: 1, duration: 0.8, ease: 'power2.out' }, 0.1);
+        // 0.1s: Badge drops 20px with fade
         safeTo('.nav-badge', { y: 0, opacity: 1, duration: 0.7, ease: 'power2.out' }, 0.1);
 
         // 0.2s: Nav items fade up staggered
@@ -155,6 +224,9 @@ export function useHeroIntro({ onStopLenis, onStartLenis }: UseHeroIntroProps = 
                 line.style.padding = '';
                 line.style.margin = '';
               });
+              if (typeof window !== 'undefined') {
+                (window as unknown as { __headlineLandedAt?: number }).__headlineLandedAt = performance.now();
+              }
             },
           },
           0.4
@@ -179,7 +251,7 @@ export function useHeroIntro({ onStopLenis, onStartLenis }: UseHeroIntroProps = 
           1.4
         );
 
-        // 1.6s: Scroll cue fades in as last element of intro timeline
+        // 1.6s: Scroll cue fades in
         safeTo(
           '.hero-scroll-cue',
           {
@@ -197,118 +269,137 @@ export function useHeroIntro({ onStopLenis, onStartLenis }: UseHeroIntroProps = 
           1.6
         );
 
-        // 1.9s: Intro settles, Lenis starts
-        tl.add(() => {
-          onStartLenis?.();
-        }, 1.9);
+        // ================= HIGHLIGHT SEQUENCE =================
+        const cfg = HERO_HIGHLIGHT_CONFIG;
 
-        // ================= MILESTONE 2: CARET THEN GRADUAL SELECTION HIGHLIGHT =================
-        // 1. Caret appears at start of "markdown" and blinks for exactly 3 blinks (~1.6s, period 1.06s: 530ms on, 530ms off)
-        safeSet('.hl-markdown .hl-caret', { opacity: 1, left: '0%' });
+        // Phrase 1: "markdown"
+        const t1CaretStart = cfg.firstCaretStart;
+        const t1SelectStart = t1CaretStart + cfg.firstCaretBlinkPeriod;
+        const t1SelectEnd = t1SelectStart + cfg.firstSelectionDuration;
+
+        // Caret 1 appears & blinks once (period cfg.firstCaretBlinkPeriod, steps(1))
+        tl.add(() => {
+          gsap.set('.hl-markdown .hl-caret', { opacity: 1, left: '0%' });
+        }, t1CaretStart);
+
         safeTo(
           '.hl-markdown .hl-caret',
           {
             opacity: 0,
-            duration: 0.53,
-            repeat: 2,
+            duration: cfg.firstCaretBlinkPeriod / 2,
+            repeat: 1,
             yoyo: true,
             ease: 'steps(1)',
           },
-          2.0
+          t1CaretStart
         );
 
-        // 2. Selection grows gradually left-to-right in character steps (~0.9s, 8 chars)
-        // Caret stays at leading edge until selection finishes
+        const selectionEase = cfg.selectionEase || 'power2.inOut';
+
+        // Selection 1 grows in cfg.firstSelectionDuration (8 chars)
         tl.add(() => {
           gsap.set('.hl-markdown .hl-caret', { opacity: 1 });
-        }, 3.6);
+        }, t1SelectStart);
 
         safeTo(
           '.hl-markdown .hl-bg',
           {
             width: '100%',
-            duration: 0.9,
-            ease: 'steps(8)',
+            duration: cfg.firstSelectionDuration,
+            ease: selectionEase,
           },
-          3.6
+          t1SelectStart
         );
         safeTo(
           '.hl-markdown .hl-caret',
           {
             left: '100%',
-            duration: 0.9,
-            ease: 'steps(8)',
+            duration: cfg.firstSelectionDuration,
+            ease: selectionEase,
           },
-          3.6
+          t1SelectStart
         );
         safeTo(
           '.hl-markdown .hl-char',
           {
             color: 'var(--ink)',
-            duration: 0.05,
-            stagger: 0.9 / 8,
-            ease: 'none',
+            duration: 0.04,
+            stagger: {
+              amount: cfg.firstSelectionDuration,
+              ease: selectionEase,
+            },
           },
-          3.6
+          t1SelectStart
         );
 
-        // Caret fades
-        safeTo('.hl-markdown .hl-caret', { opacity: 0, duration: 0.15 }, 4.5);
+        // Caret 1 fades
+        safeTo('.hl-markdown .hl-caret', { opacity: 0, duration: cfg.firstCaretFadeDuration }, t1SelectEnd);
 
-        // 3. Caret reappears at start of "ready to drop." (line 3)
-        // Blinks 2 times (~1.06s, 530ms on, 530ms off)
+        // Phrase 2: "ready to drop."
+        // Starts during the first selection's last cfg.secondCaretOverlap
+        const t2CaretStart = t1SelectEnd - cfg.secondCaretOverlap;
+        const t2SelectStart = t2CaretStart + cfg.secondCaretBlinkPeriod;
+        const t2SelectEnd = t2SelectStart + cfg.secondSelectionDuration;
+
         tl.add(() => {
           gsap.set('.hl-ready .hl-caret', { opacity: 1, left: '0%' });
-        }, 4.7);
+        }, t2CaretStart);
 
         safeTo(
           '.hl-ready .hl-caret',
           {
             opacity: 0,
-            duration: 0.53,
+            duration: cfg.secondCaretBlinkPeriod / 2,
             repeat: 1,
             yoyo: true,
             ease: 'steps(1)',
           },
-          4.7
+          t2CaretStart
         );
 
-        // 4. "ready to drop." selection grows in character steps (~1.1s, 14 chars)
+        // Selection 2 grows in cfg.secondSelectionDuration (14 chars)
         tl.add(() => {
           gsap.set('.hl-ready .hl-caret', { opacity: 1 });
-        }, 5.76);
+        }, t2SelectStart);
 
         safeTo(
           '.hl-ready .hl-bg',
           {
             width: '100%',
-            duration: 1.1,
-            ease: 'steps(14)',
+            duration: cfg.secondSelectionDuration,
+            ease: selectionEase,
+            onComplete: () => {
+              if (typeof window !== 'undefined') {
+                (window as unknown as { __highlightsDoneAt?: number }).__highlightsDoneAt = performance.now();
+              }
+            },
           },
-          5.76
+          t2SelectStart
         );
         safeTo(
           '.hl-ready .hl-caret',
           {
             left: '100%',
-            duration: 1.1,
-            ease: 'steps(14)',
+            duration: cfg.secondSelectionDuration,
+            ease: selectionEase,
           },
-          5.76
+          t2SelectStart
         );
         safeTo(
           '.hl-ready .hl-char',
           {
             color: 'var(--ink)',
-            duration: 0.05,
-            stagger: 1.1 / 14,
-            ease: 'none',
+            duration: 0.04,
+            stagger: {
+              amount: cfg.secondSelectionDuration,
+              ease: selectionEase,
+            },
           },
-          5.76
+          t2SelectStart
         );
 
-        // Caret fades
-        safeTo('.hl-ready .hl-caret', { opacity: 0, duration: 0.15 }, 6.86);
+        // Caret 2 fades
+        safeTo('.hl-ready .hl-caret', { opacity: 0, duration: cfg.secondCaretFadeDuration }, t2SelectEnd);
       });
 
       resizeCtx = ctx;
@@ -323,9 +414,13 @@ export function useHeroIntro({ onStopLenis, onStartLenis }: UseHeroIntroProps = 
     return () => {
       isCancelled = true;
       document.documentElement.classList.remove('is-loading');
+      // If unmounting after more than 150ms, this is real user navigation away, not React StrictMode
+      if (Date.now() - mountTime > 150) {
+        hasPlayedInSession = true;
+      }
       resizeCtx?.revert();
     };
-  }, [onStopLenis, onStartLenis]);
+  }, [bfCacheTick]);
 
   return { isIntroComplete: isIntroCompleteRef.current };
 }

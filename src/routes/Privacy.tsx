@@ -1,93 +1,152 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { Logo } from '../components/ui/Logo';
-import { Button } from '../components/ui/Button';
-import { ArrowLeft, Shield, Lock, HardDrive, EyeOff } from 'lucide-react';
+import React, { useEffect, useRef } from 'react';
+import Lenis from 'lenis';
+import { LandingNav } from '../components/landing/LandingNav';
+import { PrivacyHero } from '../components/privacy/PrivacyHero';
+import { FollowYourFile } from '../components/privacy/FollowYourFile';
+import { LiveProofPanel } from '../components/privacy/LiveProofPanel';
+import { CollectionReceipt } from '../components/privacy/CollectionReceipt';
+import { VerificationSteps } from '../components/privacy/VerificationSteps';
+import { PrivacyFaq } from '../components/privacy/PrivacyFaq';
+import { PrivacyFinalCta } from '../components/privacy/PrivacyFinalCta';
 
 export const Privacy: React.FC = () => {
+  const creamCurtainRef = useRef<HTMLDivElement>(null);
+  const lenisRef = useRef<Lenis | null>(null);
+
+  // Update Page Title and Meta Description for SEO
+  useEffect(() => {
+    const originalTitle = document.title;
+    document.title = 'Privacy & Transparency — MDstash';
+
+    let metaDesc = document.querySelector('meta[name="description"]');
+    const originalDesc = metaDesc?.getAttribute('content') || '';
+
+    if (!metaDesc) {
+      metaDesc = document.createElement('meta');
+      metaDesc.setAttribute('name', 'description');
+      document.head.appendChild(metaDesc);
+    }
+    metaDesc.setAttribute(
+      'content',
+      'MDstash privacy proof: zero cloud storage, zero tracking, zero document telemetry. Your markdown never leaves your device.'
+    );
+
+    return () => {
+      document.title = originalTitle;
+      if (metaDesc && originalDesc) {
+        metaDesc.setAttribute('content', originalDesc);
+      }
+    };
+  }, []);
+
+  // Ensure is-loading class is cleared on privacy page
+  useEffect(() => {
+    document.documentElement.classList.remove('is-loading');
+  }, []);
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const prefersReducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+
+    if (!prefersReducedMotion) {
+      const lenis = new Lenis({
+        duration: 1.05,
+        wheelMultiplier: 1,
+        smoothWheel: true,
+        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      });
+      lenisRef.current = lenis;
+
+      const raf = (time: number) => {
+        lenis.raf(time);
+        requestAnimationFrame(raf);
+      };
+      const rafId = requestAnimationFrame(raf);
+
+      return () => {
+        cancelAnimationFrame(rafId);
+        lenis.destroy();
+        lenisRef.current = null;
+      };
+    }
+  }, []);
+
+  const handleScrollTo = (id: string) => {
+    if (lenisRef.current) {
+      lenisRef.current.scrollTo(id, { duration: 1.2, offset: -60 });
+    } else {
+      const el = document.querySelector(id);
+      el?.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-sage text-cream">
-      {/* Top Bar */}
-      <header className="px-6 py-5 border-b border-line flex items-center justify-between max-w-5xl mx-auto">
-        <Link to="/" className="flex items-center gap-2">
-          <Logo size="sm" />
-        </Link>
-        <Link to="/app">
-          <Button size="sm" variant="primary">
-            Open MDstash
-          </Button>
-        </Link>
-      </header>
+    <div className="min-h-screen bg-sage text-cream selection:bg-orange selection:text-forest overflow-x-hidden relative">
+      {/* Skip to Main Content Link for A11y */}
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-orange focus:text-forest focus:font-bold focus:rounded-xl focus:shadow-lg focus:outline-none focus:ring-2 focus:ring-forest"
+      >
+        Skip to main content
+      </a>
 
-      <main className="max-w-3xl mx-auto px-6 py-12 space-y-8">
-        <Link
-          to="/"
-          className="inline-flex items-center gap-1.5 text-xs text-cream-dim hover:text-cream transition-colors"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          <span>Back to Home</span>
-        </Link>
+      {/* Reusable Landing Nav with Dynamic Theme Flipping */}
+      <LandingNav theme="sage" onNavigateSection={handleScrollTo} />
 
-        <div>
-          <h1 className="font-display text-5xl sm:text-6xl tracking-normal text-cream mb-2">
-            Plain-Language Privacy
-          </h1>
-          <p className="text-cream-dim text-sm">
-            Last updated: October 2026. Zero fluff, zero legalese.
-          </p>
-        </div>
-
-        <div className="p-6 rounded-2xl bg-forest border border-line space-y-4">
-          <div className="flex items-center gap-3 text-orange">
-            <Shield className="w-6 h-6" />
-            <h2 className="font-display text-2xl tracking-normal text-cream">
-              The Fundamental Promise
-            </h2>
-          </div>
-          <p className="text-sm leading-relaxed text-cream-dim">
-            <strong className="text-cream">MDstash has no backend server.</strong> There are no accounts, no analytics tracking pixels, no telemetry scripts, and no database in the cloud. Every single markdown file, collection name, and tag exists exclusively inside your local browser via IndexedDB.
-          </p>
-        </div>
-
-        <div className="space-y-6 text-sm text-cream-dim leading-relaxed">
-          <div className="space-y-2">
-            <h3 className="font-bold text-lg text-cream flex items-center gap-2">
-              <HardDrive className="w-5 h-5 text-orange" />
-              1. Where does your data go?
-            </h3>
-            <p>
-              Nowhere. All data is saved inside your browser’s local IndexedDB engine. If you disconnect from the internet completely, MDstash continues to work without interruption.
-            </p>
-          </div>
-
-          <div className="space-y-2">
-            <h3 className="font-bold text-lg text-cream flex items-center gap-2">
-              <EyeOff className="w-5 h-5 text-orange" />
-              2. Do we track your activity?
-            </h3>
-            <p>
-              No. We do not use Google Analytics, PostHog, Mixpanel, cookies, or any tracking identifiers.
-            </p>
-          </div>
-
-          <div className="space-y-2">
-            <h3 className="font-bold text-lg text-cream flex items-center gap-2">
-              <Lock className="w-5 h-5 text-orange" />
-              3. Who can read your notes?
-            </h3>
-            <p>
-              Only you and anyone with access to your device. When you copy markdown or export a zip archive, you maintain 100% control over where that text is pasted.
-            </p>
-          </div>
-        </div>
-
-        <div className="pt-8 border-t border-line flex justify-between items-center text-xs text-cream-dim">
-          <span>Crafted with care. Free & open.</span>
-          <Link to="/app" className="text-orange font-bold hover:underline">
-            Launch MDstash App →
-          </Link>
-        </div>
+      {/* ================= 1. HERO ON MUTED SAGE ================= */}
+      <main id="main-content" data-nav-theme="sage" className="will-change-transform">
+        <PrivacyHero />
       </main>
+
+      {/* ================= 2. THE CREAM CURTAIN ================= */}
+      <div
+        id="cream-curtain"
+        ref={creamCurtainRef}
+        data-nav-theme="cream"
+        className="relative bg-cream text-ink transition-colors duration-300"
+      >
+        {/* Curved Elliptical Top Arch: Sage into Cream */}
+        <div className="curtain-arch overflow-hidden w-full leading-none -mt-1 pointer-events-none">
+          <svg
+            viewBox="0 0 1440 100"
+            preserveAspectRatio="none"
+            className="w-full h-16 sm:h-24 md:h-32 text-cream fill-current block"
+            aria-hidden="true"
+          >
+            <path d="M0 100C360 0 1080 0 1440 100V100H0Z" />
+          </svg>
+        </div>
+
+        {/* 2a. Follow Your File: One-shot animated SVG scene */}
+        <FollowYourFile />
+
+        {/* 2b. Don't Trust Us, Check: DevTools-style Live Proof Panel */}
+        <LiveProofPanel />
+
+        {/* 2c. What We Collect: Paper-style receipt with stamped rows */}
+        <CollectionReceipt />
+
+        {/* 2d. Three Ways to Verify: Practical DevTools verification steps */}
+        <VerificationSteps />
+
+        {/* 2e. Short FAQ Accordions */}
+        <PrivacyFaq />
+
+        {/* Reverse Arch: Cream Transitioning into Sage */}
+        <div className="curtain-arch-reverse overflow-hidden w-full leading-none -mb-1 pointer-events-none">
+          <svg
+            viewBox="0 0 1440 100"
+            preserveAspectRatio="none"
+            className="w-full h-16 sm:h-24 md:h-32 text-sage fill-current block"
+            aria-hidden="true"
+          >
+            <path d="M0 0C360 100 1080 100 1440 0V100H0Z" />
+          </svg>
+        </div>
+      </div>
+
+      {/* ================= 3. FINAL CTA BACK ON SUNNY SAGE & FOOTER ================= */}
+      <PrivacyFinalCta />
     </div>
   );
 };

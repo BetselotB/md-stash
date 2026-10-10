@@ -16,10 +16,10 @@ export default defineConfig({
         theme_color: '#F2A33A',
         background_color: '#8A9A78',
         display: 'standalone',
-        orientation: 'portrait-primary',
+        orientation: 'any',
         icons: [
           {
-            src: '/logo.svg',
+            src: '/favicon.svg',
             sizes: '192x192 512x512',
             type: 'image/svg+xml',
             purpose: 'any maskable'
@@ -28,7 +28,8 @@ export default defineConfig({
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,svg,png,woff2}'],
-        maximumFileSizeToCacheInBytes: 4 * 1024 * 1024
+        globIgnores: ['**/qa-screenshots/**'],
+        maximumFileSizeToCacheInBytes: 8 * 1024 * 1024
       }
     })
   ],
@@ -36,7 +37,8 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: {
-          vendor: ['react', 'react-dom', 'react-router-dom'],
+          vendor: ['react', 'react-dom'],
+          router: ['react-router-dom'],
           markdown: ['react-markdown', 'remark-gfm', 'rehype-sanitize'],
           db: ['dexie', 'dexie-react-hooks', 'minisearch', 'fflate'],
         },

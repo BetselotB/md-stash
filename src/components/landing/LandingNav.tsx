@@ -20,14 +20,13 @@ const GitHubIcon: React.FC<{ className?: string }> = ({ className = 'w-4 h-4' })
 );
 
 // Rebuilt Nav Badge in Brew District reference style
-export const BrewDistrictBadge: React.FC<{ isCream: boolean }> = ({ isCream }) => {
+export const BrewDistrictBadge: React.FC<{ isCream?: boolean }> = () => {
   return (
     <svg
       viewBox="0 0 100 114"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      className="w-full h-full overflow-visible transition-colors duration-300"
-      style={{ color: isCream ? 'var(--ink)' : 'var(--cream)' }}
+      className="w-full h-full overflow-visible"
       aria-hidden="true"
     >
       {/* Outer Frame: Solid outline frame, stroke ~4% (4px) */}
@@ -114,6 +113,7 @@ export const BrewDistrictBadge: React.FC<{ isCream: boolean }> = ({ isCream }) =
         fontSize="13"
         fontWeight="bold"
         fill="var(--surface)"
+        className="badge-numeral"
       >
         26
       </text>
@@ -131,29 +131,53 @@ export const LandingNav: React.FC<LandingNavProps> = ({
   onNavigateSection,
 }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
+  const navRef = React.useRef<HTMLElement>(null);
 
-  // Scroll listener with hysteresis: past 24px active, under 8px inactive
+  // Scroll listener via GSAP ticker: updates data-scrolled directly with ZERO React re-renders
   useEffect(() => {
-    let rafId: number | null = null;
+    const nav = navRef.current;
+    if (!nav) return;
+
+    let scrolled = false;
     const checkScroll = () => {
-      if (rafId !== null) return;
-      rafId = requestAnimationFrame(() => {
-        const y = window.scrollY || document.documentElement.scrollTop || 0;
-        setIsScrolled((prev) => {
-          if (!prev && y > 24) return true;
-          if (prev && y < 8) return false;
-          return prev;
-        });
-        rafId = null;
-      });
+      const y = window.scrollY || document.documentElement.scrollTop || 0;
+      const next = (!scrolled && y > 24) ? true : (scrolled && y < 8 ? false : scrolled);
+      if (next !== scrolled) {
+        scrolled = next;
+        nav.setAttribute('data-scrolled', scrolled ? 'true' : 'false');
+      }
+
+      // Check sections declaring data-nav-theme at nav's vertical center line
+      const sections = document.querySelectorAll<HTMLElement>('[data-nav-theme]');
+      if (sections.length > 0) {
+        const glassEl = nav.querySelector('.nav-glass') as HTMLElement | null;
+        const navRect = nav.getBoundingClientRect();
+        const navCenterY = navRect.top + (glassEl?.offsetHeight || 60) / 2;
+        let activeTheme: 'sage' | 'cream' = 'sage';
+
+        for (let i = 0; i < sections.length; i++) {
+          const rect = sections[i].getBoundingClientRect();
+          if (rect.top <= navCenterY && rect.bottom > navCenterY) {
+            activeTheme = (sections[i].getAttribute('data-nav-theme') as 'sage' | 'cream') || 'sage';
+            break;
+          }
+        }
+
+        if (nav.getAttribute('data-theme') !== activeTheme) {
+          nav.setAttribute('data-theme', activeTheme);
+        }
+      }
     };
 
-    window.addEventListener('scroll', checkScroll, { passive: true });
+    import('gsap').then(({ default: gsap }) => {
+      gsap.ticker.add(checkScroll);
+    });
     checkScroll();
+
     return () => {
-      window.removeEventListener('scroll', checkScroll);
-      if (rafId !== null) cancelAnimationFrame(rafId);
+      import('gsap').then(({ default: gsap }) => {
+        gsap.ticker.remove(checkScroll);
+      });
     };
   }, []);
 
@@ -176,48 +200,21 @@ export const LandingNav: React.FC<LandingNavProps> = ({
   return (
     <>
       <nav
+        ref={navRef}
         aria-label="Main"
         data-testid="landing-nav"
         data-theme={theme}
-        data-scrolled={isScrolled ? 'true' : 'false'}
-        className={`fixed top-0 left-0 right-0 z-40 transition-colors duration-300 pointer-events-none ${
-          isCream ? 'text-ink theme-cream' : 'text-cream'
-        }`}
+        data-scrolled="false"
+        className="fixed top-0 left-0 right-0 z-40 pointer-events-none"
       >
         {/* ================= FROSTED GLASS BAR SIBLING ================= */}
         {/* Direct child of fixed container, no backdrop-root ancestors */}
         <div
           data-testid="nav-glass-bar"
-          className={`nav-glass absolute top-0 left-0 right-0 pointer-events-auto transition-opacity duration-250 ${
-            isScrolled ? 'opacity-100' : 'opacity-0'
-          }`}
+          className="nav-glass absolute top-0 left-0 right-0 pointer-events-auto transition-opacity duration-250 opacity-0"
           style={{
             height: 'clamp(68px, 5.2vw, 110px)',
           }}
-        />
-
-        <div
-          className={`hidden md:block absolute h-[1px] pointer-events-none nav-rule-left transition-opacity duration-300 ${
-            isCream ? 'bg-ink/60' : 'bg-cream/80'
-          } ${isScrolled ? 'opacity-0' : 'opacity-100'}`}
-          style={{
-            top: 'calc(clamp(8px, 1.1vw, 28px) + clamp(82px, 5.9vw, 150px) * 0.54)',
-            left: 'clamp(16px, 1.7vw, 44px)',
-            right: 'calc(50% + clamp(41px, 2.95vw, 75px) + clamp(20px, 4.6vw, 118px))',
-          }}
-          aria-hidden="true"
-        />
-
-        <div
-          className={`hidden md:block absolute h-[1px] pointer-events-none nav-rule-right transition-opacity duration-300 ${
-            isCream ? 'bg-ink/60' : 'bg-cream/80'
-          } ${isScrolled ? 'opacity-0' : 'opacity-100'}`}
-          style={{
-            top: 'calc(clamp(8px, 1.1vw, 28px) + clamp(82px, 5.9vw, 150px) * 0.54)',
-            left: 'calc(50% + clamp(41px, 2.95vw, 75px) + clamp(20px, 4.6vw, 118px))',
-            right: 'clamp(16px, 1.7vw, 44px)',
-          }}
-          aria-hidden="true"
         />
 
         <div
@@ -227,7 +224,6 @@ export const LandingNav: React.FC<LandingNavProps> = ({
             width: 'clamp(52px, 5.9vw, 150px)',
             height: 'calc(clamp(52px, 5.9vw, 150px) * 1.14)',
             transformOrigin: 'top center',
-            transform: isScrolled ? 'scale(0.58)' : 'scale(1)',
             transition: 'transform 300ms cubic-bezier(0.16, 1, 0.3, 1), opacity 300ms ease',
           }}
         >
@@ -257,9 +253,7 @@ export const LandingNav: React.FC<LandingNavProps> = ({
             <Link
               to="/"
               onClick={scrollToTop}
-              className={`font-display text-[clamp(14px,1.1vw,28px)] transition-colors hover:text-orange ${
-                isCream ? 'text-ink' : 'text-cream'
-              }`}
+              className="font-display text-[clamp(14px,1.1vw,28px)] transition-colors hover:text-orange"
             >
               Home
             </Link>
@@ -273,11 +267,7 @@ export const LandingNav: React.FC<LandingNavProps> = ({
                 rel="noopener noreferrer"
                 title="GitHub repository"
                 aria-label="GitHub repository"
-                className={`rounded-full border flex items-center justify-center transition-colors cursor-pointer hover:border-orange hover:text-orange ${
-                  isCream
-                    ? 'border-line-ink text-ink bg-cream/40'
-                    : 'border-line text-cream bg-transparent'
-                }`}
+                className="nav-github-link rounded-full border flex items-center justify-center transition-colors cursor-pointer hover:border-orange hover:text-orange"
                 style={{
                   width: 'clamp(34px, 2.5vw, 64px)',
                   height: 'clamp(34px, 2.5vw, 64px)',
@@ -292,17 +282,13 @@ export const LandingNav: React.FC<LandingNavProps> = ({
                 onClick={scrollToTop}
                 title="Back to top"
                 aria-label="Scroll back to top"
-                className={`hidden sm:flex rounded-full border items-center justify-center transition-colors cursor-pointer hover:border-orange hover:text-orange ${
-                  isCream
-                    ? 'border-line-ink text-ink bg-cream/40'
-                    : 'border-line text-cream bg-transparent'
-                }`}
+                className="nav-top-btn hidden sm:flex rounded-full border items-center justify-center transition-colors cursor-pointer hover:border-orange hover:text-orange"
                 style={{
                   width: 'clamp(34px, 2.5vw, 64px)',
                   height: 'clamp(34px, 2.5vw, 64px)',
                 }}
               >
-                <ArrowUp className="w-[clamp(15px,0.9vw,24px)] h-[clamp(15px,0.9vw,24px)]" />
+                <ArrowUp className="w-[clamp(21px,1.4vw,34px)] h-[clamp(21px,1.4vw,34px)]" />
               </button>
             </div>
           </div>
@@ -328,17 +314,13 @@ export const LandingNav: React.FC<LandingNavProps> = ({
               to="/privacy"
               title="Privacy policy"
               aria-label="Privacy policy"
-              className={`hidden sm:flex rounded-full border items-center justify-center transition-colors cursor-pointer hover:border-orange hover:text-orange ${
-                isCream
-                  ? 'border-line-ink text-ink bg-cream/40'
-                  : 'border-line text-cream bg-transparent'
-              }`}
+              className="nav-privacy-btn hidden sm:flex rounded-full border items-center justify-center transition-colors cursor-pointer hover:border-orange hover:text-orange"
               style={{
                 width: 'clamp(34px, 2.5vw, 64px)',
                 height: 'clamp(34px, 2.5vw, 64px)',
               }}
             >
-              <Shield className="w-[clamp(15px,0.9vw,24px)] h-[clamp(15px,0.9vw,24px)]" />
+              <Shield className="w-[clamp(21px,1.4vw,34px)] h-[clamp(21px,1.4vw,34px)]" />
             </Link>
 
             {/* Menu Trigger Button */}
@@ -347,11 +329,7 @@ export const LandingNav: React.FC<LandingNavProps> = ({
               onClick={() => setIsMenuOpen(true)}
               title="Open navigation menu"
               aria-label="Open navigation menu"
-              className={`rounded-full border flex items-center justify-center gap-1.5 transition-colors cursor-pointer hover:border-orange hover:text-orange px-[clamp(12px,1vw,20px)] ${
-                isCream
-                  ? 'border-line-ink text-ink bg-cream/40'
-                  : 'border-line text-cream bg-transparent'
-              }`}
+              className="nav-menu-btn rounded-full border flex items-center justify-center gap-1.5 transition-colors cursor-pointer hover:border-orange hover:text-orange px-[clamp(12px,1vw,20px)]"
               style={{
                 height: 'clamp(36px, 2.5vw, 64px)',
                 fontSize: 'clamp(13px, 1vw, 22px)',

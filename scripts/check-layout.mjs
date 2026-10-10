@@ -23,6 +23,8 @@ async function runCheck() {
     { name: '2560x1440', width: 2560, height: 1440, isDesktop: true },
     { name: '1920x1080', width: 1920, height: 1080, isDesktop: true },
     { name: '1440x900',  width: 1440, height: 900,  isDesktop: true },
+    { name: '1280x800',  width: 1280, height: 800,  isDesktop: true },
+    { name: '1024x768',  width: 1024, height: 768,  isDesktop: true },
     { name: '390x844',   width: 390,  height: 844,  isDesktop: false },
   ];
 
@@ -37,6 +39,18 @@ async function runCheck() {
 
     await page.goto('http://localhost:5173/?nointro', { waitUntil: 'networkidle' });
     await page.waitForTimeout(600);
+
+    if (!vp.isDesktop) {
+      const isGate = await page.evaluate(() => !!document.querySelector('[data-testid="desktop-gate"]'));
+      if (isGate) {
+        console.log(`✓ PASS: Gate page verified at ${vp.name}`);
+      } else {
+        console.error(`FAIL: Gate not displayed at ${vp.name}`);
+        allPassed = false;
+      }
+      await page.close();
+      continue;
+    }
 
     // 1. Measure headline and longest line span
     const headlineMetrics = await page.evaluate(() => {
