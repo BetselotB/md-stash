@@ -1,14 +1,17 @@
 :root {
-  /* Core brand palette - calibrated against reference/brewdistrict-hero.png */
-  --sage: #838D78;
-  --sage-deep: #74806A;
-  --cream: #F8F7E6;
+  /* Core brand palette - calibrated against landing hero & mid-tone craft palette */
+  --sage: #838D78;         /* Canvas mid-tone (L ~ 51.2%) */
+  --sage-deep: #5E6A54;    /* Sidebar deeper sage (L ~ 37.3%), contrast with cream > 5.3:1 */
+  --cream: #F8F7E6;        /* Cream text & highlights (L ~ 92.3%) */
   --cream-dim: #E6E4D1;
-  --orange: #EEB257;
+  --cream-card: #FDFAF2;
+  --oat: #D8D3BC;          /* Muted warm oat paper cards (L ~ 79.2%), contrast with ink > 8.7:1 */
+  --oat-light: #E2DEC9;    /* Slightly lighter oat shade for label strips (L ~ 83.7%) */
+  --orange: #EEB257;       /* Single craft accent */
   --orange-deep: #D99E41;
   --forest: #2F3A33;
   --forest-dark: #232B26;
-  --ink: #26332A;
+  --ink: #26332A;          /* Ink text for high contrast on oat paper */
 
   /* Paper grain texture tuning knobs */
   --grain-opacity: 0.11;

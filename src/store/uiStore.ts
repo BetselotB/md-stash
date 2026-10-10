@@ -31,6 +31,10 @@ interface UIStore {
   isWindowDragOver: boolean;
   setIsWindowDragOver: (over: boolean) => void;
 
+  // Card drag state for collection targeting
+  isDraggingCard: boolean;
+  setIsDraggingCard: (dragging: boolean) => void;
+
   // Quick-add paste modal
   pastedText: string | null;
   setPastedText: (text: string | null) => void;
@@ -75,6 +79,10 @@ export const useUIStore = create<UIStore>((set) => ({
   isWindowDragOver: false,
   setIsWindowDragOver: (isWindowDragOver) => set({ isWindowDragOver }),
 
+  isDraggingCard: false,
+  setIsDraggingCard: (isDraggingCard) => set({ isDraggingCard }),
+
   pastedText: null,
   setPastedText: (pastedText) => set({ pastedText }),
 }));
+

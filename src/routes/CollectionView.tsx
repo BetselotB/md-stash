@@ -6,6 +6,7 @@ import { searchService } from '../services/search';
 import { FileCard } from '../components/library/FileCard';
 import { CollectionModal } from '../components/collections/CollectionModal';
 import { StashFile, Collection } from '../domain/types';
+import { CrateGlyph } from '../components/ui/CrateGlyph';
 import { Folder, Inbox, Edit2, FileQuestion, ArrowLeft } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 
@@ -80,7 +81,7 @@ export const CollectionView: React.FC = () => {
               color: isUnsorted ? 'var(--cream)' : collection?.color,
             }}
           >
-            {isUnsorted ? <Inbox className="w-6 h-6" /> : <Folder className="w-6 h-6" />}
+            {isUnsorted ? <Inbox className="w-6 h-6" /> : <CrateGlyph color={collection?.color || '#7D9671'} size={28} />}
           </div>
           <div>
             <div className="flex items-center gap-2">
@@ -125,17 +126,18 @@ export const CollectionView: React.FC = () => {
         <div
           className={
             viewMode === 'grid'
-              ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4'
+              ? 'grid grid-cols-[repeat(auto-fill,minmax(320px,1fr))] gap-[clamp(16px,1.5vw,28px)] w-full'
               : 'space-y-2.5'
           }
         >
-          {filteredFiles.map((file) => (
+          {filteredFiles.map((file, idx) => (
             <FileCard
               key={file.id}
               file={file}
               collection={file.collectionId ? collectionMap.get(file.collectionId) : undefined}
               onOpen={(f) => navigate(`/app/f/${f.id}`)}
               viewMode={viewMode}
+              index={idx}
             />
           ))}
         </div>

@@ -2,7 +2,7 @@ import React from 'react';
 
 interface LogoProps {
   className?: string;
-  size?: 'sm' | 'md' | 'lg' | 'xl';
+  size?: 'sm' | 'md' | 'lg' | 'xl' | 'sidebar';
   showText?: boolean;
 }
 
@@ -14,6 +14,7 @@ export const Logo: React.FC<LogoProps> = ({
   const iconSizes = {
     sm: 'w-6 h-6',
     md: 'w-8 h-8',
+    sidebar: 'w-10 h-10',
     lg: 'w-12 h-12',
     xl: 'w-20 h-20',
   };
@@ -21,6 +22,7 @@ export const Logo: React.FC<LogoProps> = ({
   const textSizes = {
     sm: 'text-xl',
     md: 'text-2xl',
+    sidebar: 'text-[34px] leading-none',
     lg: 'text-4xl',
     xl: 'text-6xl',
   };

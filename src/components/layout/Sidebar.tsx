@@ -1,27 +1,40 @@
 import React, { useState, useEffect } from 'react';
-import { NavLink, useNavigate, useParams } from 'react-router-dom';
+import { NavLink, useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+  useSortable,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 import { Logo } from '../ui/Logo';
 import { useCollections, useFiles, usePinnedFiles, useAllTags } from '../../hooks/useDb';
 import { filesRepo } from '../../db/files.repo';
 import { collectionsRepo } from '../../db/collections.repo';
 import { persistenceService } from '../../services/persistence';
+import { importExportService } from '../../services/importExport';
 import { useUIStore } from '../../store/uiStore';
 import { Collection } from '../../domain/types';
+import { CrateGlyph } from '../ui/CrateGlyph';
+import { PaperPinGlyph } from '../ui/OrangePushpin';
 import {
-  Folder,
-  Bookmark,
-  Code,
-  Terminal,
-  Sparkles,
-  Compass,
-  Tag as TagIcon,
   Files,
-  Pin,
   Inbox,
+  Pin,
   Plus,
   Edit2,
   HardDrive,
-  ShieldCheck,
+  Download,
   ChevronRight,
   X,
 } from 'lucide-react';
@@ -33,15 +46,116 @@ interface SidebarProps {
   onCloseMobile?: () => void;
 }
 
-const ICON_MAP: Record<string, React.ElementType> = {
-  folder: Folder,
-  bookmark: Bookmark,
-  code: Code,
-  terminal: Terminal,
-  sparkles: Sparkles,
-  compass: Compass,
-  tag: TagIcon,
+interface SortableCollectionRowProps {
+  collection: Collection;
+  count: number;
+  isCurrent: boolean;
+  isHoveredDrop: boolean;
+  isDropped: boolean;
+  isDraggingCard: boolean;
+  onEdit: (c: Collection) => void;
+  onSelect: (id: string) => void;
+  onDragOverCol: (e: React.DragEvent, id: string) => void;
+  onDragLeaveCol: (e: React.DragEvent, id: string) => void;
+  onDropCol: (e: React.DragEvent, id: string) => void;
+}
+
+const SortableCollectionRow: React.FC<SortableCollectionRowProps> = ({
+  collection,
+  count,
+  isCurrent,
+  isHoveredDrop,
+  isDropped,
+  isDraggingCard,
+  onEdit,
+  onSelect,
+  onDragOverCol,
+  onDragLeaveCol,
+  onDropCol,
+}) => {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+    over,
+  } = useSortable({ id: collection.id });
+
+  const style: React.CSSProperties = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
+
+  const isInsertionTarget = over?.id === collection.id && !isDragging;
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      {...attributes}
+      {...listeners}
+      onDragOver={(e) => onDragOverCol(e, collection.id)}
+      onDragLeave={(e) => onDragLeaveCol(e, collection.id)}
+      onDrop={(e) => onDropCol(e, collection.id)}
+      onClick={() => onSelect(collection.id)}
+      className={`group relative flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+        isDragging ? 'opacity-40 z-20 scale-[0.98]' : ''
+      } ${
+        isCurrent
+          ? 'bg-cream text-ink shadow-sm'
+          : 'text-cream hover:bg-[rgba(248,247,230,0.14)]'
+      } ${
+        isDraggingCard
+          ? 'border border-dashed border-[rgba(248,247,230,0.5)]'
+          : 'border border-transparent'
+      } ${
+        isHoveredDrop
+          ? 'bg-[rgba(248,247,230,0.3)] !border-orange !border-dashed'
+          : ''
+      } ${isDropped ? 'animate-thunk' : ''}`}
+    >
+      {/* Thin orange insertion line showing drop target */}
+      {isInsertionTarget && (
+        <div className="absolute -top-1 inset-x-2 h-0.5 bg-orange rounded-full pointer-events-none z-30 shadow-[0_0_4px_rgba(238,178,87,0.8)]" />
+      )}
+
+      <div className="flex items-center gap-2.5 truncate">
+        {/* Small flat matte crate glyph tinted in collection color */}
+        <CrateGlyph
+          color={collection.color}
+          isOpen={isHoveredDrop}
+          size={18}
+        />
+        <span className="truncate tracking-tight font-sans text-[12.5px]">
+          {collection.name}
+        </span>
+      </div>
+
+      <div className="flex items-center gap-1.5 shrink-0">
+        {/* Count badge stays visible, edit pencil appears on hover */}
+        <span className="text-[11px] font-mono px-1.5 py-0.2 rounded bg-[rgba(38,51,42,0.1)] text-inherit font-medium group-hover:hidden">
+          {count}
+        </span>
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            onEdit(collection);
+          }}
+          className="hidden group-hover:flex p-1 text-cream/70 hover:text-orange rounded transition-colors cursor-pointer"
+          title="Edit collection"
+          aria-label="Edit collection"
+        >
+          <Edit2 className="w-3 h-3" />
+        </button>
+      </div>
+    </div>
+  );
 };
+
+let hasLoadedSidebarOnce = false;
 
 export const Sidebar: React.FC<SidebarProps> = ({
   onNewCollection,
@@ -51,19 +165,47 @@ export const Sidebar: React.FC<SidebarProps> = ({
 }) => {
   const navigate = useNavigate();
   const { collectionId: activeCollectionId } = useParams<{ collectionId?: string }>();
+  const [searchParams] = useSearchParams();
+  const isPinnedFilter = searchParams.get('filter') === 'pinned';
+
   const collections = useCollections();
   const allFiles = useFiles();
   const pinnedFiles = usePinnedFiles();
   const tags = useAllTags();
-  const { activeTag, setActiveTag, showToast } = useUIStore();
+  const { activeTag, setActiveTag, showToast, isDraggingCard, setIsDraggingCard } = useUIStore();
 
   const [persisted, setPersisted] = useState(false);
-  const [quotaUsage, setQuotaUsage] = useState<string>('0 B');
+  const [usageBytes, setUsageBytes] = useState(0);
+  const [quotaBytes, setQuotaBytes] = useState(0);
+  const [hoveredDropId, setHoveredDropId] = useState<string | null>(null);
+  const [droppingColId, setDroppingColId] = useState<string | null>(null);
+  const [isInitialMount, setIsInitialMount] = useState(!hasLoadedSidebarOnce);
+
+  // DnD-kit sensors with 5px distance constraint to preserve click navigation
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 5,
+      },
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
+  useEffect(() => {
+    if (!hasLoadedSidebarOnce) {
+      hasLoadedSidebarOnce = true;
+      const t = setTimeout(() => setIsInitialMount(false), 800);
+      return () => clearTimeout(t);
+    }
+  }, []);
 
   useEffect(() => {
     persistenceService.getQuota().then((info) => {
       setPersisted(info.persisted);
-      setQuotaUsage(persistenceService.formatBytes(info.usage));
+      setUsageBytes(info.usage);
+      setQuotaBytes(info.quota);
     });
   }, [allFiles.length]);
 
@@ -72,22 +214,72 @@ export const Sidebar: React.FC<SidebarProps> = ({
   const handleCollectionDrop = async (e: React.DragEvent, colId: string | null) => {
     e.preventDefault();
     e.stopPropagation();
+    setHoveredDropId(null);
+    setIsDraggingCard(false);
+
     const plainText = e.dataTransfer.getData('text/plain');
-    const matchingFile = allFiles.find((f) => f.content === plainText);
+    const customId = e.dataTransfer.getData('application/x-mdstash-file');
+    const matchingFile = customId
+      ? allFiles.find((f) => f.id === customId)
+      : allFiles.find((f) => f.content === plainText);
+
     if (matchingFile) {
+      setDroppingColId(colId || '__unsorted');
+      setTimeout(() => setDroppingColId(null), 400);
+
       await filesRepo.moveToCollection(matchingFile.id, colId);
-      showToast(`Moved "${matchingFile.filename}" to collection`, 'success');
+      const targetCol = collections.find((c) => c.id === colId);
+      showToast(
+        `Moved "${matchingFile.filename}" to ${targetCol ? targetCol.name : 'Unsorted'}`,
+        'success'
+      );
     }
   };
 
-  const handleDragOver = (e: React.DragEvent) => {
+  const handleDragOver = (e: React.DragEvent, targetId: string) => {
     e.preventDefault();
     e.dataTransfer.dropEffect = 'move';
+    if (hoveredDropId !== targetId) {
+      setHoveredDropId(targetId);
+    }
+  };
+
+  const handleDragLeave = (e: React.DragEvent, targetId: string) => {
+    if (hoveredDropId === targetId) {
+      setHoveredDropId(null);
+    }
+  };
+
+  const handleBackupExport = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    try {
+      await importExportService.exportZip(allFiles, collections);
+      showToast('Exported backup zip archive!', 'success');
+    } catch {
+      showToast('Failed to export backup', 'error');
+    }
   };
 
   const handleNavClick = () => {
     if (onCloseMobile) onCloseMobile();
   };
+
+  const handleSortEnd = async (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (over && active.id !== over.id) {
+      const oldIndex = collections.findIndex((c) => c.id === active.id);
+      const newIndex = collections.findIndex((c) => c.id === over.id);
+      if (oldIndex !== -1 && newIndex !== -1) {
+        const newCols = arrayMove(collections, oldIndex, newIndex);
+        await collectionsRepo.reorder(newCols.map((c) => c.id));
+      }
+    }
+  };
+
+  // Used / Quota ratio
+  const usageRatio = quotaBytes > 0 ? usageBytes / quotaBytes : 0;
+  const visualFillPercent = Math.min(100, Math.max(usageBytes > 0 ? 8 : 2, Math.round(usageRatio * 100)));
 
   return (
     <>
@@ -99,18 +291,22 @@ export const Sidebar: React.FC<SidebarProps> = ({
         />
       )}
 
-      {/* Sidebar Aside */}
+      {/* Sidebar Aside in deep sage */}
       <aside
         data-lenis-prevent
-        className={`fixed inset-y-0 left-0 z-50 w-72 md:w-64 md:static md:flex flex-col justify-between shrink-0 h-screen select-none border-r border-line bg-forest-dark transition-transform duration-200 ease-in-out ${
-          isMobileOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
-        }`}
+        className={`fixed inset-y-0 left-0 z-50 w-72 md:w-64 md:static md:flex flex-col justify-between shrink-0 h-screen select-none border-r border-[rgba(248,247,230,0.22)] bg-sage-deep text-cream transition-transform duration-200 ease-in-out ${
+          isInitialMount ? 'animate-sidebar-slide' : ''
+        } ${isMobileOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}
       >
         <div className="flex flex-col h-full overflow-hidden">
-          {/* Brand header */}
-          <div className="p-5 border-b border-line flex items-center justify-between">
-            <NavLink to="/" onClick={handleNavClick} className="group flex items-center gap-2">
-              <Logo size="sm" />
+          {/* Brand header: bigger logo (40px mark, 34px wordmark), aligned with sidebar left padding */}
+          <div className="px-5 py-6 border-b border-[rgba(248,247,230,0.18)] flex items-center justify-between">
+            <NavLink
+              to="/"
+              onClick={handleNavClick}
+              className="group flex items-center gap-2.5 focus-visible:ring-2 focus-visible:ring-orange rounded-lg"
+            >
+              <Logo size="sidebar" />
             </NavLink>
 
             {/* Mobile close button */}
@@ -128,71 +324,102 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <div className="flex-1 overflow-y-auto p-4 space-y-6">
             {/* Main Navigation */}
             <div className="space-y-1">
+              {/* All files */}
               <NavLink
                 to="/app"
                 end
                 onClick={handleNavClick}
-                className={({ isActive }) =>
-                  `flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold transition-colors cursor-pointer ${
-                    isActive && !activeCollectionId
-                      ? 'bg-orange text-forest shadow-sm'
-                      : 'text-cream-dim hover:text-cream hover:bg-forest'
-                  }`
-                }
-                onDragOver={handleDragOver}
+                className={({ isActive }) => {
+                  const current = isActive && !activeCollectionId && !isPinnedFilter;
+                  return `flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                    current
+                      ? 'bg-cream text-ink shadow-sm'
+                      : 'text-cream hover:bg-[rgba(248,247,230,0.12)]'
+                  } ${
+                    isDraggingCard
+                      ? 'border border-dashed border-[rgba(248,247,230,0.45)]'
+                      : 'border border-transparent'
+                  }`;
+                }}
+                onDragOver={(e) => handleDragOver(e, '__all')}
+                onDragLeave={(e) => handleDragLeave(e, '__all')}
                 onDrop={(e) => handleCollectionDrop(e, null)}
               >
                 <div className="flex items-center gap-2.5">
-                  <Files className="w-4 h-4" />
-                  <span>All Files</span>
+                  <Files className="w-5 h-5 stroke-[1.75] shrink-0" />
+                  <span className="tracking-tight text-[13px]">All files</span>
                 </div>
-                <span className="text-[11px] opacity-75 font-mono">{allFiles.length}</span>
+                <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-[rgba(38,51,42,0.1)] text-inherit font-semibold">
+                  {allFiles.length}
+                </span>
               </NavLink>
 
+              {/* Pinned */}
               <NavLink
                 to="/app?filter=pinned"
                 onClick={handleNavClick}
-                className="flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold text-cream-dim hover:text-cream hover:bg-forest transition-colors cursor-pointer"
+                className={() =>
+                  `flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                    isPinnedFilter
+                      ? 'bg-cream text-ink shadow-sm'
+                      : 'text-cream hover:bg-[rgba(248,247,230,0.12)]'
+                  }`
+                }
               >
                 <div className="flex items-center gap-2.5">
-                  <Pin className="w-4 h-4 text-orange" />
-                  <span>Pinned Favorites</span>
+                  <Pin className="w-5 h-5 stroke-[1.75] fill-orange text-orange shrink-0" />
+                  <span className="tracking-tight text-[13px]">Pinned</span>
                 </div>
-                <span className="text-[11px] opacity-75 font-mono">{pinnedFiles.length}</span>
+                <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-[rgba(38,51,42,0.1)] text-inherit font-semibold">
+                  {pinnedFiles.length}
+                </span>
               </NavLink>
 
+              {/* Unsorted */}
               <NavLink
                 to="/app/c/unsorted"
                 onClick={handleNavClick}
-                className={({ isActive }) =>
-                  `flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold transition-colors cursor-pointer ${
+                className={({ isActive }) => {
+                  const isHovered = hoveredDropId === '__unsorted';
+                  const isDropped = droppingColId === '__unsorted';
+                  return `flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                     isActive
-                      ? 'bg-orange text-forest shadow-sm'
-                      : 'text-cream-dim hover:text-cream hover:bg-forest'
-                  }`
-                }
-                onDragOver={handleDragOver}
+                      ? 'bg-cream text-ink shadow-sm'
+                      : 'text-cream hover:bg-[rgba(248,247,230,0.12)]'
+                  } ${
+                    isDraggingCard
+                      ? 'border border-dashed border-[rgba(248,247,230,0.45)]'
+                      : 'border border-transparent'
+                  } ${isHovered ? 'bg-[rgba(248,247,230,0.25)] border-orange' : ''} ${
+                    isDropped ? 'animate-thunk' : ''
+                  }`;
+                }}
+                onDragOver={(e) => handleDragOver(e, '__unsorted')}
+                onDragLeave={(e) => handleDragLeave(e, '__unsorted')}
                 onDrop={(e) => handleCollectionDrop(e, null)}
               >
                 <div className="flex items-center gap-2.5">
-                  <Inbox className="w-4 h-4" />
-                  <span>Unsorted</span>
+                  <Inbox className="w-5 h-5 stroke-[1.75] shrink-0" />
+                  <span className="tracking-tight text-[13px]">Unsorted</span>
                 </div>
-                <span className="text-[11px] opacity-75 font-mono">{unsortedFiles.length}</span>
+                <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-[rgba(38,51,42,0.1)] text-inherit font-semibold">
+                  {unsortedFiles.length}
+                </span>
               </NavLink>
             </div>
 
-            {/* Collections List */}
+            {/* Collections List with DnD-kit sortable drag reordering */}
             <div>
               <div className="flex items-center justify-between px-2 mb-2">
-                <span className="text-[11px] font-bold tracking-normal text-cream-dim/70">
+                <span className="text-xs font-bold tracking-tight text-cream/90 font-display">
                   Collections
                 </span>
                 <button
                   type="button"
                   onClick={onNewCollection}
-                  className="p-1 rounded-md text-cream-dim hover:text-orange hover:bg-forest transition-colors cursor-pointer"
-                  title="New Collection"
+                  className="p-1 rounded-md text-cream hover:text-orange hover:bg-[rgba(248,247,230,0.15)] transition-colors cursor-pointer"
+                  title="New collection"
+                  aria-label="New collection"
                 >
                   <Plus className="w-3.5 h-3.5" />
                 </button>
@@ -200,90 +427,47 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
               <div className="space-y-1">
                 {collections.length === 0 ? (
-                  <p className="text-xs text-cream-dim/50 px-3 py-1 italic">
+                  <p className="text-xs text-cream/60 px-3 py-1 italic font-sans">
                     No collections yet.
                   </p>
                 ) : (
-                  collections.map((col, idx) => {
-                    const IconComp = ICON_MAP[col.icon] || Folder;
-                    const count = allFiles.filter((f) => f.collectionId === col.id).length;
-                    const isCurrent = activeCollectionId === col.id;
+                  <DndContext
+                    sensors={sensors}
+                    collisionDetection={closestCenter}
+                    onDragEnd={handleSortEnd}
+                  >
+                    <SortableContext
+                      items={collections.map((c) => c.id)}
+                      strategy={verticalListSortingStrategy}
+                    >
+                      {collections.map((col) => {
+                        const count = allFiles.filter((f) => f.collectionId === col.id).length;
+                        const isCurrent = activeCollectionId === col.id;
+                        const isHovered = hoveredDropId === col.id;
+                        const isDropped = droppingColId === col.id;
 
-                    return (
-                      <div
-                        key={col.id}
-                        onDragOver={handleDragOver}
-                        onDrop={(e) => handleCollectionDrop(e, col.id)}
-                        className={`group flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium transition-colors cursor-pointer ${
-                          isCurrent
-                            ? 'bg-forest border border-orange text-cream'
-                            : 'text-cream-dim hover:text-cream hover:bg-forest border border-transparent'
-                        }`}
-                        onClick={() => {
-                          navigate(`/app/c/${col.id}`);
-                          handleNavClick();
-                        }}
-                      >
-                        <div className="flex items-center gap-2.5 truncate">
-                          <span
-                            className="w-2.5 h-2.5 rounded-full shrink-0"
-                            style={{ backgroundColor: col.color }}
+                        return (
+                          <SortableCollectionRow
+                            key={col.id}
+                            collection={col}
+                            count={count}
+                            isCurrent={isCurrent}
+                            isHoveredDrop={isHovered}
+                            isDropped={isDropped}
+                            isDraggingCard={isDraggingCard}
+                            onEdit={onEditCollection}
+                            onSelect={(id) => {
+                              navigate(`/app/c/${id}`);
+                              handleNavClick();
+                            }}
+                            onDragOverCol={handleDragOver}
+                            onDragLeaveCol={handleDragLeave}
+                            onDropCol={handleCollectionDrop}
                           />
-                          <IconComp className="w-3.5 h-3.5 shrink-0" />
-                          <span className="truncate">{col.name}</span>
-                        </div>
-
-                        <div className="flex items-center gap-1.5 shrink-0">
-                          <span className="text-[11px] font-mono opacity-70 group-hover:hidden">
-                            {count}
-                          </span>
-                          <div className="hidden group-hover:flex items-center gap-0.5">
-                            <button
-                              type="button"
-                              disabled={idx === 0}
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                const newCols = [...collections];
-                                const [removed] = newCols.splice(idx, 1);
-                                newCols.splice(idx - 1, 0, removed);
-                                collectionsRepo.reorder(newCols.map((c) => c.id));
-                              }}
-                              className="p-1 text-cream-dim hover:text-cream disabled:opacity-20 transition-colors"
-                              title="Move up"
-                            >
-                              <span className="text-[10px]">▲</span>
-                            </button>
-                            <button
-                              type="button"
-                              disabled={idx === collections.length - 1}
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                const newCols = [...collections];
-                                const [removed] = newCols.splice(idx, 1);
-                                newCols.splice(idx + 1, 0, removed);
-                                collectionsRepo.reorder(newCols.map((c) => c.id));
-                              }}
-                              className="p-1 text-cream-dim hover:text-cream disabled:opacity-20 transition-colors"
-                              title="Move down"
-                            >
-                              <span className="text-[10px]">▼</span>
-                            </button>
-                            <button
-                              type="button"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                onEditCollection(col);
-                              }}
-                              className="p-1 text-cream-dim hover:text-orange rounded transition-colors"
-                              title="Edit collection"
-                            >
-                              <Edit2 className="w-3 h-3" />
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })
+                        );
+                      })}
+                    </SortableContext>
+                  </DndContext>
                 )}
               </div>
             </div>
@@ -292,7 +476,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             {tags.length > 0 && (
               <div>
                 <div className="px-2 mb-2">
-                  <span className="text-[11px] font-bold tracking-normal text-cream-dim/70">
+                  <span className="text-xs font-bold tracking-tight text-cream/90 font-display">
                     Tags
                   </span>
                 </div>
@@ -305,10 +489,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
                         setActiveTag(activeTag === t ? null : t);
                         handleNavClick();
                       }}
-                      className={`text-[11px] px-2.5 py-1 rounded-full border transition-all cursor-pointer ${
+                      className={`text-xs px-2.5 py-1 rounded-lg transition-all cursor-pointer font-medium tracking-tight ${
                         activeTag === t
-                          ? 'bg-orange text-forest border-orange font-bold shadow-sm'
-                          : 'bg-forest text-cream-dim border-line hover:text-cream hover:border-cream/40'
+                          ? 'bg-cream text-ink font-bold shadow-sm'
+                          : 'bg-[rgba(248,247,230,0.15)] text-cream hover:bg-cream hover:text-ink'
                       }`}
                     >
                       #{t}
@@ -319,24 +503,62 @@ export const Sidebar: React.FC<SidebarProps> = ({
             )}
           </div>
 
-          {/* Bottom Persistence Badge */}
-          <div className="p-4 border-t border-line bg-forest-dark/90">
-            <NavLink
-              to="/app/settings"
-              onClick={handleNavClick}
-              className="flex items-center justify-between p-2.5 rounded-xl bg-forest border border-line hover:border-orange/50 transition-colors text-xs text-cream"
-            >
-              <div className="flex items-center gap-2">
-                <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
-                <div>
-                  <div className="font-semibold text-cream">Local-first Storage</div>
-                  <div className="text-[10px] text-cream-dim font-mono">
-                    {quotaUsage} • {persisted ? 'Persisted' : 'Default'}
+          {/* Bottom Storage Crate Card */}
+          <div className="p-3.5 border-t border-[rgba(248,247,230,0.18)] bg-sage-deep">
+            <div className="p-3 rounded-2xl bg-[rgba(248,247,230,0.1)] border border-[rgba(248,247,230,0.2)] flex flex-col gap-2.5">
+              <div className="flex items-start justify-between gap-2">
+                <div className="flex items-center gap-2.5 min-w-0">
+                  {/* Small storage crate glyph with visual fill */}
+                  <div className="relative w-8 h-8 rounded-lg bg-[rgba(38,51,42,0.25)] border border-[rgba(248,247,230,0.28)] flex items-end justify-center overflow-hidden shrink-0">
+                    <div
+                      className="w-full bg-orange transition-all duration-300"
+                      style={{ height: `${visualFillPercent}%` }}
+                    />
+                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                      <HardDrive className="w-4 h-4 text-cream/90" />
+                    </div>
+                  </div>
+
+                  <div className="min-w-0">
+                    <div className="text-[12px] font-bold text-cream font-display leading-tight">
+                      Storage
+                    </div>
+                    <div className="text-[10.5px] font-mono text-cream/80 truncate">
+                      {persistenceService.formatBytes(usageBytes)} /{' '}
+                      {quotaBytes > 0 ? persistenceService.formatBytes(quotaBytes) : 'Quota'}
+                    </div>
                   </div>
                 </div>
+
+                {persisted && (
+                  <span className="text-[11px] font-display text-orange shrink-0">
+                    Persisted
+                  </span>
+                )}
               </div>
-              <ChevronRight className="w-3.5 h-3.5 text-cream-dim" />
-            </NavLink>
+
+              <div className="flex items-center gap-2 pt-1 border-t border-[rgba(248,247,230,0.14)]">
+                <button
+                  type="button"
+                  onClick={handleBackupExport}
+                  className="flex-1 py-1.5 px-3 rounded-xl border border-cream/70 hover:border-orange text-cream hover:text-orange hover:bg-orange/10 font-display text-xs tracking-wide transition-all cursor-pointer flex items-center justify-center gap-1.5"
+                  title="Export zip backup"
+                >
+                  <Download className="w-3.5 h-3.5" />
+                  <span>Back up</span>
+                </button>
+
+                <NavLink
+                  to="/app/settings"
+                  onClick={handleNavClick}
+                  className="p-1.5 rounded-lg text-cream/80 hover:text-cream hover:bg-[rgba(248,247,230,0.15)] transition-colors cursor-pointer"
+                  title="Storage settings"
+                  aria-label="Storage settings"
+                >
+                  <ChevronRight className="w-3.5 h-3.5" />
+                </NavLink>
+              </div>
+            </div>
           </div>
         </div>
       </aside>

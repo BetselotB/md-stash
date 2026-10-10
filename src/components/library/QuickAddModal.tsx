@@ -79,14 +79,14 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
     <Dialog
       isOpen={isOpen}
       onClose={onClose}
-      title="Create / Stash Markdown File"
+      title="Create or stash markdown file"
       description="Save markdown text directly into your local library"
       maxWidth="lg"
     >
       <form onSubmit={handleSave} className="flex flex-col gap-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-xs font-semibold text-cream-dim mb-1">
+            <label className="block text-xs font-bold text-ink/80 mb-1">
               Filename
             </label>
             <Input
@@ -98,13 +98,13 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-cream-dim mb-1">
+            <label className="block text-xs font-bold text-ink/80 mb-1">
               Collection
             </label>
             <select
               value={collectionId}
               onChange={(e) => setCollectionId(e.target.value)}
-              className="w-full bg-forest text-cream border border-line rounded-lg py-2 px-3 text-sm focus:outline-none focus:border-orange focus:ring-1 focus:ring-orange"
+              className="w-full bg-[#F8F7E6] text-ink border border-[rgba(38,51,42,0.2)] rounded-xl py-2 px-3 text-sm focus:outline-none focus:border-orange focus:ring-2 focus:ring-orange/30 font-sans"
             >
               <option value="">(Unsorted)</option>
               {collections.map((c) => (
@@ -117,7 +117,7 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
         </div>
 
         <div>
-          <label className="block text-xs font-semibold text-cream-dim mb-1">
+          <label className="block text-xs font-bold text-ink/80 mb-1">
             Tags (comma separated)
           </label>
           <Input
@@ -128,25 +128,25 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
         </div>
 
         <div>
-          <label className="block text-xs font-semibold text-cream-dim mb-1">
-            Markdown Content
+          <label className="block text-xs font-bold text-ink/80 mb-1">
+            Markdown content
           </label>
           <textarea
             value={content}
             onChange={(e) => setContent(e.target.value)}
             rows={10}
-            className="w-full bg-forest-dark text-cream font-mono text-sm border border-line rounded-lg p-3 focus:outline-none focus:border-orange focus:ring-1 focus:ring-orange resize-y"
+            className="w-full bg-[#F8F7E6] text-ink font-mono text-sm border border-[rgba(38,51,42,0.2)] rounded-xl p-3 focus:outline-none focus:border-orange focus:ring-2 focus:ring-orange/30 resize-y"
             placeholder="# Stash your markdown here..."
             required
           />
         </div>
 
-        <div className="flex items-center justify-end gap-3 pt-2 border-t border-line">
-          <Button type="button" variant="ghost" onClick={onClose}>
+        <div className="flex items-center justify-end gap-3 pt-3 border-t border-[rgba(38,51,42,0.12)]">
+          <Button type="button" variant="ghost" onClick={onClose} className="text-ink/70 hover:text-ink">
             Cancel
           </Button>
           <Button type="submit" variant="primary" disabled={isSaving}>
-            {isSaving ? 'Stashing...' : 'Save to Stash'}
+            {isSaving ? 'Stashing...' : 'Save to stash'}
           </Button>
         </div>
       </form>

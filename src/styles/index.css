@@ -414,6 +414,66 @@ mark.hl:hover .hl-bg {
   animation: arrow-bob 1.6s ease-in-out infinite;
 }
 
+/* Library UI animations */
+@keyframes sidebarSlideIn {
+  from {
+    transform: translateX(-100%);
+    opacity: 0.8;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes cardRise {
+  from {
+    transform: translateY(16px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes pushpinThunk {
+  0% {
+    transform: scale(1.4) translateY(-4px);
+    opacity: 0.7;
+  }
+  70% {
+    transform: scale(0.92) translateY(1px);
+  }
+  100% {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes crateThunk {
+  0% { transform: scale(1); }
+  35% { transform: scale(0.93); }
+  70% { transform: scale(1.06); }
+  100% { transform: scale(1); }
+}
+
+.animate-sidebar-slide {
+  animation: sidebarSlideIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-card-rise {
+  animation: cardRise 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.animate-pushpin-thunk {
+  animation: pushpinThunk 0.25s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+.animate-thunk {
+  animation: crateThunk 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .animate-spin-slow,
   .animate-bob,
@@ -421,7 +481,11 @@ mark.hl:hover .hl-bg {
   .animate-marquee-left,
   .animate-marquee-right,
   .animate-cue-ripple,
-  .animate-arrow-bob {
+  .animate-arrow-bob,
+  .animate-sidebar-slide,
+  .animate-card-rise,
+  .animate-pushpin-thunk,
+  .animate-thunk {
     animation: none !important;
   }
   * {
@@ -430,3 +494,4 @@ mark.hl:hover .hl-bg {
     transition-duration: 0.01ms !important;
   }
 }
+

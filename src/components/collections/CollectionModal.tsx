@@ -5,7 +5,8 @@ import { Input } from '../ui/Input';
 import { Collection } from '../../domain/types';
 import { collectionsRepo } from '../../db/collections.repo';
 import { useUIStore } from '../../store/uiStore';
-import { Folder, Bookmark, Code, Terminal, Sparkles, Compass, Tag, Trash2 } from 'lucide-react';
+import { CrateGlyph } from '../ui/CrateGlyph';
+import { Trash2 } from 'lucide-react';
 
 interface CollectionModalProps {
   isOpen: boolean;
@@ -13,25 +14,14 @@ interface CollectionModalProps {
   collection?: Collection | null;
 }
 
-const PRESET_COLORS = [
-  '#F2A33A', // Orange
-  '#D98821', // Orange Deep
-  '#8A9A78', // Sunny Sage
-  '#76866A', // Sage Deep
-  '#E6AF2E', // Retro Gold
-  '#3D84A8', // Slate Ocean
-  '#D76F6F', // Retro Terra
-  '#A084E8', // Lavender
-];
-
-const PRESET_ICONS = [
-  { key: 'folder', icon: Folder, label: 'Folder' },
-  { key: 'bookmark', icon: Bookmark, label: 'Bookmark' },
-  { key: 'code', icon: Code, label: 'Code' },
-  { key: 'terminal', icon: Terminal, label: 'Terminal' },
-  { key: 'sparkles', icon: Sparkles, label: 'Sparkles' },
-  { key: 'compass', icon: Compass, label: 'Compass' },
-  { key: 'tag', icon: Tag, label: 'Tag' },
+// Muted craft paper tones that sit calmly on sage: orange, mustard, clay, sage-green, slate blue, plum
+export const PRESET_COLORS = [
+  '#E28B38', // Orange
+  '#D4A234', // Mustard
+  '#C8745E', // Clay
+  '#7D9671', // Sage-green
+  '#6B8B9B', // Slate blue
+  '#9B6F89', // Plum
 ];
 
 export const CollectionModal: React.FC<CollectionModalProps> = ({
@@ -42,18 +32,15 @@ export const CollectionModal: React.FC<CollectionModalProps> = ({
   const { showToast } = useUIStore();
   const [name, setName] = useState('');
   const [color, setColor] = useState(PRESET_COLORS[0]);
-  const [icon, setIcon] = useState('folder');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     if (collection) {
       setName(collection.name);
       setColor(collection.color || PRESET_COLORS[0]);
-      setIcon(collection.icon || 'folder');
     } else {
       setName('');
       setColor(PRESET_COLORS[0]);
-      setIcon('folder');
     }
   }, [collection, isOpen]);
 
@@ -64,10 +51,10 @@ export const CollectionModal: React.FC<CollectionModalProps> = ({
     setIsSubmitting(true);
     try {
       if (collection) {
-        await collectionsRepo.update(collection.id, { name, color, icon });
+        await collectionsRepo.update(collection.id, { name, color, icon: 'folder' });
         showToast(`Updated collection "${name}"`, 'success');
       } else {
-        await collectionsRepo.create({ name, color, icon, order: 0 });
+        await collectionsRepo.create({ name, color, icon: 'folder', order: 0 });
         showToast(`Created collection "${name}"`, 'success');
       }
       onClose();
@@ -92,13 +79,13 @@ export const CollectionModal: React.FC<CollectionModalProps> = ({
     <Dialog
       isOpen={isOpen}
       onClose={onClose}
-      title={collection ? 'Edit Collection' : 'New Collection'}
+      title={collection ? 'Edit collection' : 'New collection'}
       description="Organize your markdown files by topic, tool, or project"
     >
       <form onSubmit={handleSubmit} className="flex flex-col gap-5">
         <div>
-          <label className="block text-xs font-semibold text-cream-dim mb-1">
-            Collection Name
+          <label className="block text-xs font-bold text-ink/80 mb-1">
+            Collection name
           </label>
           <Input
             value={name}
@@ -110,8 +97,8 @@ export const CollectionModal: React.FC<CollectionModalProps> = ({
         </div>
 
         <div>
-          <label className="block text-xs font-semibold text-cream-dim mb-2">
-            Badge Color
+          <label className="block text-xs font-bold text-ink/80 mb-2">
+            Craft color
           </label>
           <div className="flex items-center gap-3 flex-wrap">
             {PRESET_COLORS.map((c) => (
@@ -120,7 +107,7 @@ export const CollectionModal: React.FC<CollectionModalProps> = ({
                 type="button"
                 onClick={() => setColor(c)}
                 className={`w-7 h-7 rounded-full border-2 transition-transform cursor-pointer ${
-                  color === c ? 'border-cream scale-110 shadow-glow' : 'border-transparent hover:scale-105'
+                  color === c ? 'border-ink scale-110 shadow-sm' : 'border-transparent hover:scale-105'
                 }`}
                 style={{ backgroundColor: c }}
                 aria-label={`Select color ${c}`}
@@ -129,40 +116,31 @@ export const CollectionModal: React.FC<CollectionModalProps> = ({
           </div>
         </div>
 
+        {/* Paper-feel silhouette preview */}
         <div>
-          <label className="block text-xs font-semibold text-cream-dim mb-2">
-            Icon
+          <label className="block text-xs font-bold text-ink/80 mb-1.5">
+            Mark preview
           </label>
-          <div className="grid grid-cols-7 gap-2">
-            {PRESET_ICONS.map((item) => {
-              const IconComp = item.icon;
-              const isSelected = icon === item.key;
-              return (
-                <button
-                  key={item.key}
-                  type="button"
-                  onClick={() => setIcon(item.key)}
-                  className={`p-2.5 rounded-xl border flex items-center justify-center transition-colors cursor-pointer ${
-                    isSelected
-                      ? 'border-orange bg-orange/20 text-orange'
-                      : 'border-line bg-forest hover:bg-forest-light text-cream-dim'
-                  }`}
-                  aria-label={item.label}
-                >
-                  <IconComp className="w-5 h-5" />
-                </button>
-              );
-            })}
+          <div className="flex items-center gap-3 p-3 rounded-2xl bg-[#D8D3BC] border border-[rgba(38,51,42,0.22)]">
+            <CrateGlyph color={color} size={26} />
+            <div className="min-w-0">
+              <div className="text-sm font-bold font-display text-ink leading-tight truncate">
+                {name.trim() || 'Collection preview'}
+              </div>
+              <div className="text-[11px] font-sans text-ink/70">
+                Paper-craft index card silhouette
+              </div>
+            </div>
           </div>
         </div>
 
-        <div className="flex items-center justify-between pt-4 border-t border-line mt-2">
+        <div className="flex items-center justify-between pt-4 border-t border-[rgba(38,51,42,0.12)] mt-2">
           {collection ? (
             <Button
               type="button"
               variant="ghost"
               onClick={handleDelete}
-              className="text-rose-400 hover:text-rose-300"
+              className="text-red-700 hover:text-red-800"
               icon={<Trash2 className="w-4 h-4" />}
             >
               Delete
@@ -170,11 +148,11 @@ export const CollectionModal: React.FC<CollectionModalProps> = ({
           ) : <div />}
 
           <div className="flex items-center gap-2">
-            <Button type="button" variant="ghost" onClick={onClose}>
+            <Button type="button" variant="ghost" onClick={onClose} className="text-ink/70 hover:text-ink">
               Cancel
             </Button>
             <Button type="submit" variant="primary" disabled={isSubmitting}>
-              {collection ? 'Save Changes' : 'Create Collection'}
+              {collection ? 'Save changes' : 'Create collection'}
             </Button>
           </div>
         </div>

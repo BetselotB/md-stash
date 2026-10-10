@@ -12,22 +12,22 @@ export async function seedInitialDataIfNeeded(): Promise<void> {
   // 1. Create collections
   const aiCollection = await collectionsRepo.create({
     name: 'AI Context',
-    color: '#F2A33A',
-    icon: 'sparkles',
+    color: '#E28B38',
+    icon: 'folder',
     order: 0,
   });
 
   const rulesCollection = await collectionsRepo.create({
     name: 'Rules & Configs',
-    color: '#E6AF2E',
-    icon: 'code',
+    color: '#D4A234',
+    icon: 'folder',
     order: 1,
   });
 
   const startersCollection = await collectionsRepo.create({
     name: 'Starters & Templates',
-    color: '#3D84A8',
-    icon: 'bookmark',
+    color: '#6B8B9B',
+    icon: 'folder',
     order: 2,
   });
 
@@ -76,12 +76,12 @@ You are an expert full-stack developer working on high-performance web applicati
 
 > A concise one-liner describing the core value proposition.
 
-## ✨ Features
+## Features
 - **Local-first**: Stored on your device.
 - **Fast**: Minimal footprint and snappy reactivity.
 - **Craft Design**: Thoughtful aesthetic and smooth interactions.
 
-## 🚀 Quick Start
+## Quick Start
 \`\`\`bash
 npm install
 npm run dev

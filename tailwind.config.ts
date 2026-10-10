@@ -6,26 +6,30 @@ export default {
     extend: {
       colors: {
         sage: {
-          DEFAULT: 'var(--sage)',
-          deep: 'var(--sage-deep)',
+          DEFAULT: '#838D78',
+          deep: '#5E6A54',
         },
         forest: {
-          DEFAULT: 'var(--forest)',
+          DEFAULT: '#2F3A33',
           light: '#3A4840',
           dark: '#242C27',
         },
         cream: {
-          DEFAULT: 'var(--cream)',
-          dim: 'var(--cream-dim)',
+          DEFAULT: '#F8F7E6',
+          dim: '#E6E4D1',
           faint: 'rgba(246, 241, 220, 0.1)',
         },
+        oat: {
+          DEFAULT: '#D8D3BC',
+          light: '#E2DEC9',
+        },
         orange: {
-          DEFAULT: 'var(--orange)',
-          deep: 'var(--orange-deep)',
+          DEFAULT: '#EEB257',
+          deep: '#D99E41',
           light: '#F5B85D',
         },
         ink: {
-          DEFAULT: 'var(--ink)',
+          DEFAULT: '#26332A',
         },
         // Legacy fallback mapping to ensure no breakage during migration
         pink: {
