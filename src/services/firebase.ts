@@ -22,12 +22,12 @@ import {
 } from 'firebase/firestore';
 
 export const firebaseConfig = {
-  apiKey: "AIzaSyBjXJsIpr0fHJWrUvEqOU0iWJjNMc_K3A4",
-  authDomain: "md-stash.firebaseapp.com",
-  projectId: "md-stash",
-  storageBucket: "md-stash.firebasestorage.app",
-  messagingSenderId: "269950943966",
-  appId: "1:269950943966:web:116e3e55a321c6dab3f84f",
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "AIzaSyBjXJsIpr0fHJWrUvEqOU0iWJjNMc_K3A4",
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "md-stash.firebaseapp.com",
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || "md-stash",
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || "md-stash.firebasestorage.app",
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "269950943966",
+  appId: import.meta.env.VITE_FIREBASE_APP_ID || "1:269950943966:web:116e3e55a321c6dab3f84f",
 };
 
 export const app = initializeApp(firebaseConfig);
