@@ -1,5 +1,6 @@
 import { db } from './schema';
 import { Collection } from '../domain/types';
+import { cloudSync } from '../services/cloudSync';
 
 export const collectionsRepo = {
   async getAll(): Promise<Collection[]> {
@@ -20,11 +21,13 @@ export const collectionsRepo = {
       createdAt: Date.now(),
     };
     await db.collections.put(newCollection);
+    cloudSync.pushCollection(newCollection).catch(console.error);
     return newCollection;
   },
 
   async update(id: string, updates: Partial<Omit<Collection, 'id' | 'createdAt'>>): Promise<void> {
     await db.collections.update(id, updates);
+    cloudSync.pushCollectionUpdate(id, updates).catch(console.error);
   },
 
   async delete(id: string, moveFilesToUnsorted = true): Promise<void> {
@@ -36,6 +39,7 @@ export const collectionsRepo = {
         await db.files.where('collectionId').equals(id).delete();
       }
     });
+    cloudSync.removeCollection(id).catch(console.error);
   },
 
   async reorder(orderedIds: string[]): Promise<void> {
@@ -44,6 +48,7 @@ export const collectionsRepo = {
         await db.collections.update(orderedIds[i], { order: i });
       }
     });
+    cloudSync.pushCollectionsReorder(orderedIds).catch(console.error);
   },
 
   async clearAll(): Promise<void> {

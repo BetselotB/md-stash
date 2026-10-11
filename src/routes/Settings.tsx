@@ -16,10 +16,15 @@ import {
   Upload,
   AlertTriangle,
   Heart,
-  RefreshCw,
   FolderArchive,
   Info,
+  Cloud,
+  LogIn,
+  LogOut,
+  RefreshCw,
 } from 'lucide-react';
+import { useSync } from '../hooks/useSync';
+import { AuthModal } from '../components/auth/AuthModal';
 
 export const Settings: React.FC = () => {
   const files = useFiles();
@@ -33,7 +38,10 @@ export const Settings: React.FC = () => {
   });
   const [isExporting, setIsExporting] = useState(false);
   const [isImporting, setIsImporting] = useState(false);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const zipInputRef = useRef<HTMLInputElement>(null);
+
+  const { user, status: syncStatus, syncNow, signOut } = useSync();
 
   const refreshStorage = async () => {
     const info = await persistenceService.getQuota();
@@ -120,9 +128,112 @@ export const Settings: React.FC = () => {
           Settings & Storage
         </h1>
         <p className="text-xs text-cream-dim mt-1">
-          Manage your local IndexedDB storage, backups, and privacy controls.
+          Manage your cloud sync, multi-device sessions, backups, and privacy controls.
         </p>
       </div>
+
+      {/* Cloud Sync & Multi-PC Account Section */}
+      <section className="p-6 bg-forest rounded-2xl border border-line space-y-5">
+        <div className="flex items-center justify-between flex-wrap gap-4">
+          <div className="flex items-center gap-3">
+            <div className="p-2.5 rounded-xl bg-forest-dark border border-line text-orange">
+              <Cloud className="w-5 h-5" />
+            </div>
+            <div>
+              <h2 className="text-base font-bold text-cream">Multi-PC Cloud Sync</h2>
+              <p className="text-xs text-cream-dim">
+                Firebase Firestore synchronization across all your computers in real-time.
+              </p>
+            </div>
+          </div>
+
+          {!user ? (
+            <Button
+              variant="primary"
+              onClick={() => setIsAuthModalOpen(true)}
+              icon={<LogIn className="w-4 h-4 text-forest" />}
+            >
+              Sign In / Create Account
+            </Button>
+          ) : (
+            <div className="flex items-center gap-2">
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={() => {
+                  syncNow()
+                    .then(() => showToast('Cloud sync complete!', 'success'))
+                    .catch(() => showToast('Cloud sync failed', 'error'));
+                }}
+                disabled={syncStatus === 'syncing'}
+                icon={<RefreshCw className={`w-3.5 h-3.5 ${syncStatus === 'syncing' ? 'animate-spin' : ''}`} />}
+              >
+                {syncStatus === 'syncing' ? 'Syncing...' : 'Sync Now'}
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => {
+                  signOut().then(() => showToast('Signed out of cloud sync', 'info'));
+                }}
+                icon={<LogOut className="w-3.5 h-3.5 text-red-300" />}
+              >
+                Sign Out
+              </Button>
+            </div>
+          )}
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
+          <div className="p-4 bg-forest-dark rounded-xl border border-line">
+            <span className="text-xs text-cream-dim">Account Status</span>
+            <div className="text-sm font-bold text-cream mt-1 truncate" title={user?.email || 'Not connected'}>
+              {user ? user.email : 'Not signed in'}
+            </div>
+            <span className="text-[10px] text-cream-dim/60 font-mono">
+              {user ? 'Cloud sync active' : 'Local only'}
+            </span>
+          </div>
+
+          <div className="p-4 bg-forest-dark rounded-xl border border-line">
+            <span className="text-xs text-cream-dim">Realtime Sync</span>
+            <div className="flex items-center gap-1.5 mt-1">
+              <span
+                className={`w-2 h-2 rounded-full ${
+                  syncStatus === 'synced'
+                    ? 'bg-emerald-400'
+                    : syncStatus === 'syncing'
+                    ? 'bg-yellow-400 animate-pulse'
+                    : 'bg-red-400'
+                }`}
+              />
+              <span className="text-sm font-bold text-cream">
+                {syncStatus === 'synced'
+                  ? 'All PCs in Sync'
+                  : syncStatus === 'syncing'
+                  ? 'Syncing changes...'
+                  : syncStatus === 'disconnected'
+                  ? 'Offline / Logged out'
+                  : 'Sync Error'}
+              </span>
+            </div>
+            <span className="text-[10px] text-cream-dim/60 font-mono">
+              Firebase Firestore
+            </span>
+          </div>
+
+          <div className="p-4 bg-forest-dark rounded-xl border border-line">
+            <span className="text-xs text-cream-dim">Session Persistence</span>
+            <div className="flex items-center gap-1.5 mt-1">
+              <ShieldCheck className="w-4 h-4 text-emerald-400" />
+              <span className="text-sm font-bold text-emerald-400">Remembered Forever</span>
+            </div>
+            <span className="text-[10px] text-cream-dim/60 font-mono">
+              Persists across reboots
+            </span>
+          </div>
+        </div>
+      </section>
 
       {/* Storage & Persistence Section */}
       <section className="p-6 bg-forest rounded-2xl border border-line space-y-5">
@@ -268,6 +379,8 @@ export const Settings: React.FC = () => {
           No external tracking, no telemetry, no remote storage. Everything runs on your machine.
         </p>
       </section>
+
+      <AuthModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} />
     </div>
   );
 };

@@ -1,6 +1,7 @@
 import { db } from './schema';
 import { StashFile } from '../domain/types';
 import { hashContent } from '../domain/titleFromContent';
+import { cloudSync } from '../services/cloudSync';
 
 export const filesRepo = {
   async getAll(): Promise<StashFile[]> {
@@ -32,14 +33,17 @@ export const filesRepo = {
       updatedAt: now,
     };
     await db.files.put(newFile);
+    cloudSync.pushFile(newFile).catch(console.error);
     return newFile;
   },
 
   async update(id: string, updates: Partial<Omit<StashFile, 'id' | 'createdAt'>>): Promise<void> {
+    const updatedAt = Date.now();
     await db.files.update(id, {
       ...updates,
-      updatedAt: Date.now(),
+      updatedAt,
     });
+    cloudSync.pushFileUpdate(id, { ...updates, updatedAt }).catch(console.error);
   },
 
   async delete(id: string): Promise<void> {
@@ -47,6 +51,7 @@ export const filesRepo = {
       await db.files.delete(id);
       await db.versions.where('fileId').equals(id).delete();
     });
+    cloudSync.removeFile(id).catch(console.error);
   },
 
   async deleteMany(ids: string[]): Promise<void> {
@@ -56,22 +61,31 @@ export const filesRepo = {
         await db.versions.where('fileId').equals(id).delete();
       }
     });
+    cloudSync.removeFiles(ids).catch(console.error);
   },
 
   async togglePin(id: string): Promise<boolean> {
     const file = await db.files.get(id);
     if (!file) return false;
     const nextPinned = !file.pinned;
-    await db.files.update(id, { pinned: nextPinned, updatedAt: Date.now() });
+    const updatedAt = Date.now();
+    await db.files.update(id, { pinned: nextPinned, updatedAt });
+    cloudSync.pushFileUpdate(id, { pinned: nextPinned, updatedAt }).catch(console.error);
     return nextPinned;
   },
 
   async moveToCollection(id: string, collectionId: string | null): Promise<void> {
-    await db.files.update(id, { collectionId, updatedAt: Date.now() });
+    const updatedAt = Date.now();
+    await db.files.update(id, { collectionId, updatedAt });
+    cloudSync.pushFileUpdate(id, { collectionId, updatedAt }).catch(console.error);
   },
 
   async moveManyToCollection(ids: string[], collectionId: string | null): Promise<void> {
-    await db.files.where('id').anyOf(ids).modify({ collectionId, updatedAt: Date.now() });
+    const updatedAt = Date.now();
+    await db.files.where('id').anyOf(ids).modify({ collectionId, updatedAt });
+    for (const id of ids) {
+      cloudSync.pushFileUpdate(id, { collectionId, updatedAt }).catch(console.error);
+    }
   },
 
   async findDuplicate(filename: string, content: string): Promise<StashFile | undefined> {

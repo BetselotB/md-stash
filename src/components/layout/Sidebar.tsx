@@ -37,7 +37,13 @@ import {
   Download,
   ChevronRight,
   X,
+  Cloud,
+  LogIn,
+  LogOut,
+  RefreshCw,
 } from 'lucide-react';
+import { useSync } from '../../hooks/useSync';
+import { AuthModal } from '../auth/AuthModal';
 
 interface SidebarProps {
   onNewCollection: () => void;
@@ -185,6 +191,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
   const pinnedFiles = usePinnedFiles();
   const tags = useAllTags();
   const { activeTag, setActiveTag, showToast, isDraggingCard, setIsDraggingCard } = useUIStore();
+  const { user, status: syncStatus, syncNow, signOut } = useSync();
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
   const [persisted, setPersisted] = useState(false);
   const [usageBytes, setUsageBytes] = useState(0);
@@ -528,8 +536,92 @@ export const Sidebar: React.FC<SidebarProps> = ({
             )}
           </div>
 
-          {/* Bottom Storage Crate Card */}
+          {/* Bottom Cloud Sync & Storage Area */}
           <div className="p-3.5 border-t border-[rgba(248,247,230,0.18)] bg-sage-deep">
+            {/* Cloud Sync Account Card */}
+            <div className="p-3 rounded-2xl bg-[rgba(248,247,230,0.1)] border border-[rgba(248,247,230,0.2)] flex flex-col gap-2 mb-2.5">
+              {!user ? (
+                <>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Cloud className="w-4 h-4 text-orange" />
+                      <span className="text-xs font-display text-cream font-bold">Cloud Sync</span>
+                    </div>
+                    <span className="text-[10px] font-mono text-cream/60">Offline</span>
+                  </div>
+                  <p className="text-[11px] text-cream/70 font-sans leading-tight">
+                    Sync your stash across computers in real-time.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => setIsAuthModalOpen(true)}
+                    className="w-full py-1.5 px-3 rounded-xl bg-orange hover:bg-orange-deep text-forest font-display text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1.5 shadow-xs"
+                  >
+                    <LogIn className="w-3.5 h-3.5 text-forest" />
+                    <span>Sign In to Sync</span>
+                  </button>
+                </>
+              ) : (
+                <>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <div className="relative shrink-0">
+                        <Cloud className="w-4 h-4 text-orange" />
+                        <span
+                          className={`absolute -bottom-0.5 -right-0.5 w-2 h-2 rounded-full border border-sage-deep ${
+                            syncStatus === 'synced'
+                              ? 'bg-emerald-400'
+                              : syncStatus === 'syncing'
+                              ? 'bg-yellow-400 animate-pulse'
+                              : 'bg-red-400'
+                          }`}
+                        />
+                      </div>
+                      <span
+                        className="text-xs font-display text-cream font-bold truncate max-w-[130px]"
+                        title={user.email || ''}
+                      >
+                        {user.email}
+                      </span>
+                    </div>
+                    <span className="text-[10px] font-mono text-cream/70">
+                      {syncStatus === 'synced'
+                        ? 'Synced'
+                        : syncStatus === 'syncing'
+                        ? 'Syncing'
+                        : 'Alert'}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between pt-1 border-t border-[rgba(248,247,230,0.12)]">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        syncNow().then(() => showToast('Sync complete', 'success')).catch(() => showToast('Sync error', 'error'));
+                      }}
+                      disabled={syncStatus === 'syncing'}
+                      className="py-1 px-2.5 rounded-lg border border-cream/50 hover:border-orange text-cream hover:text-orange text-[11px] font-display flex items-center gap-1.5 transition-colors cursor-pointer disabled:opacity-50"
+                      title="Sync now"
+                    >
+                      <RefreshCw className={`w-3 h-3 ${syncStatus === 'syncing' ? 'animate-spin' : ''}`} />
+                      <span>Sync</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        signOut().then(() => showToast('Signed out of cloud sync', 'info'));
+                      }}
+                      className="py-1 px-2 rounded-lg text-cream/70 hover:text-red-300 hover:bg-red-500/20 text-[11px] font-display flex items-center gap-1 transition-colors cursor-pointer"
+                      title="Sign out"
+                    >
+                      <LogOut className="w-3 h-3" />
+                      <span>Sign out</span>
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
+
+            {/* Bottom Storage Crate Card */}
             <div className="p-3 rounded-2xl bg-[rgba(248,247,230,0.1)] border border-[rgba(248,247,230,0.2)] flex flex-col gap-2.5">
               <div className="flex items-start justify-between gap-2">
                 <div className="flex items-center gap-2.5 min-w-0">
@@ -587,6 +679,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
           </div>
         </div>
       </aside>
+
+      <AuthModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} />
     </>
   );
 };
