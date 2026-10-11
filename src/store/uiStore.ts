@@ -86,3 +86,7 @@ export const useUIStore = create<UIStore>((set) => ({
   setPastedText: (pastedText) => set({ pastedText }),
 }));
 
+if (typeof window !== 'undefined') {
+  (window as unknown as { __uiStore: typeof useUIStore }).__uiStore = useUIStore;
+}
+

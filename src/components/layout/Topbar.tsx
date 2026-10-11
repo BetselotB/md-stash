@@ -2,7 +2,7 @@ import React, { useRef, useEffect } from 'react';
 import { Link, useLocation, useParams, useSearchParams } from 'react-router-dom';
 import { useUIStore } from '../../store/uiStore';
 import { useFiles, usePinnedFiles, useCollections, useCollection } from '../../hooks/useDb';
-import { importFilesList } from '../../services/fileImport';
+import { importFiles, getRouteCollectionId } from '../../services/fileImport';
 import {
   Search,
   LayoutGrid,
@@ -62,11 +62,9 @@ export const Topbar: React.FC<TopbarProps> = ({ onNewFile, onToggleMobileMenu })
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       const filesArray = Array.from(e.target.files);
-      const res = await importFilesList(filesArray);
-      showToast(
-        `Imported ${res.added} file(s)${res.skipped > 0 ? ` (${res.skipped} skipped)` : ''}`,
-        'success'
-      );
+      const targetColId = getRouteCollectionId();
+      const res = await importFiles(filesArray, { collectionId: targetColId });
+      showToast(res.message, res.added > 0 ? 'success' : 'info');
       e.target.value = '';
     }
   };

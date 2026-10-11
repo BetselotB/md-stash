@@ -16,7 +16,7 @@ export const Privacy: React.FC = () => {
   // Update Page Title and Meta Description for SEO
   useEffect(() => {
     const originalTitle = document.title;
-    document.title = 'Privacy & Transparency — MDstash';
+    document.title = 'MDstash | Privacy';
 
     let metaDesc = document.querySelector('meta[name="description"]');
     const originalDesc = metaDesc?.getAttribute('content') || '';

@@ -7,6 +7,7 @@ import { formatFileForCopy } from '../../domain/copyFormats';
 import { persistenceService } from '../../services/persistence';
 import { cleanMarkdownPreview } from '../../utils/markdownPreview';
 import { CrateGlyph } from '../ui/CrateGlyph';
+import { confirm } from '../ui/ConfirmDialog';
 import {
   Pin,
   GripVertical,
@@ -75,7 +76,15 @@ export const FileCard: React.FC<FileCardProps> = ({
 
   const handleDelete = async (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (confirm(`Delete "${file.filename}"? This action cannot be undone.`)) {
+    const ok = await confirm({
+      title: `Delete ${file.filename}?`,
+      body: "This removes the file and its version history from this device. This can't be undone.",
+      filenameChip: file.filename,
+      confirmLabel: 'Delete file',
+      cancelLabel: 'Cancel',
+      tone: 'danger',
+    });
+    if (ok) {
       await filesRepo.delete(file.id);
       showToast(`Deleted "${file.filename}"`, 'info');
     }
@@ -114,6 +123,7 @@ export const FileCard: React.FC<FileCardProps> = ({
   if (viewMode === 'list') {
     return (
       <div
+        data-testid={`file-card-${file.id}`}
         onClick={() => onOpen(file)}
         draggable
         onDragStart={handleDragStart}
@@ -217,14 +227,14 @@ export const FileCard: React.FC<FileCardProps> = ({
             type="button"
             onClick={handleTogglePin}
             className={`p-1.5 rounded-lg transition-colors cursor-pointer ${
-              file.pinned ? 'text-orange hover:bg-orange/15' : 'text-ink/45 hover:text-ink hover:bg-[rgba(38,51,42,0.08)]'
+              file.pinned ? 'text-ink bg-ink/10 hover:bg-ink/15' : 'text-ink/45 hover:text-ink hover:bg-[rgba(38,51,42,0.08)]'
             }`}
             title={file.pinned ? 'Unpin' : 'Pin'}
             aria-label={file.pinned ? 'Unpin file' : 'Pin file'}
           >
             <Pin
               className={`w-4 h-4 stroke-[1.75] ${
-                file.pinned ? 'fill-orange text-orange animate-pushpin-thunk' : 'fill-none text-current'
+                file.pinned ? 'fill-ink text-ink animate-pushpin-thunk' : 'fill-none text-current'
               }`}
             />
           </button>
@@ -247,6 +257,7 @@ export const FileCard: React.FC<FileCardProps> = ({
   // GRID VIEW CARD: Warm Oat Paper Index Card (#D8D3BC)
   return (
     <div
+      data-testid={`file-card-${file.id}`}
       onClick={() => onOpen(file)}
       draggable
       onDragStart={handleDragStart}
@@ -288,7 +299,7 @@ export const FileCard: React.FC<FileCardProps> = ({
             onClick={handleTogglePin}
             className={`p-1 rounded-md transition-all cursor-pointer ${
               file.pinned
-                ? 'text-orange bg-orange/15 hover:bg-orange/25'
+                ? 'text-ink bg-ink/10 hover:bg-ink/15'
                 : 'text-ink/45 hover:text-ink hover:bg-[rgba(38,51,42,0.08)]'
             }`}
             title={file.pinned ? 'Unpin' : 'Pin'}
@@ -296,7 +307,7 @@ export const FileCard: React.FC<FileCardProps> = ({
           >
             <Pin
               className={`w-3.5 h-3.5 stroke-[1.75] ${
-                file.pinned ? 'fill-orange text-orange animate-pushpin-thunk' : 'fill-none text-current'
+                file.pinned ? 'fill-ink text-ink animate-pushpin-thunk' : 'fill-none text-current'
               }`}
             />
           </button>

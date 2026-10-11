@@ -26,6 +26,18 @@ export const CollectionView: React.FC = () => {
     return new Map(collections.map((c) => [c.id, c]));
   }, [collections]);
 
+  const filteredFiles = useMemo(() => {
+    let list = files;
+    if (activeTag) {
+      list = list.filter((f) => f.tags.includes(activeTag));
+    }
+    if (searchQuery.trim()) {
+      const matchIds = new Set(searchService.search(searchQuery));
+      list = list.filter((f) => matchIds.has(f.id));
+    }
+    return list;
+  }, [files, activeTag, searchQuery]);
+
   // Check if collection exists once collections are loaded
   const isKnown = isUnsorted || (collectionId && collections.some((c) => c.id === collectionId));
   const isStillLoading = !isUnsorted && collections.length === 0;
@@ -55,18 +67,6 @@ export const CollectionView: React.FC = () => {
       </div>
     );
   }
-
-  const filteredFiles = useMemo(() => {
-    let list = files;
-    if (activeTag) {
-      list = list.filter((f) => f.tags.includes(activeTag));
-    }
-    if (searchQuery.trim()) {
-      const matchIds = new Set(searchService.search(searchQuery));
-      list = list.filter((f) => matchIds.has(f.id));
-    }
-    return list;
-  }, [files, activeTag, searchQuery]);
 
   return (
     <div className="max-w-7xl mx-auto space-y-8 animate-fadeIn">

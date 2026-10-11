@@ -1,95 +1,55 @@
 import { db } from './schema';
-import { collectionsRepo } from './collections.repo';
 import { filesRepo } from './files.repo';
 
+const STARTER_FILE_ID = 'starter-mdstash-note';
+let isSeeding = false;
+
 export async function seedInitialDataIfNeeded(): Promise<void> {
-  const fileCount = await db.files.count();
-  if (fileCount > 0) return;
+  if (isSeeding) return;
+  isSeeding = true;
 
-  const colCount = await db.collections.count();
-  if (colCount > 0) return;
+  try {
+    const allFiles = await db.files.toArray();
 
-  // 1. Create collections
-  const aiCollection = await collectionsRepo.create({
-    name: 'AI Context',
-    color: '#E28B38',
-    icon: 'folder',
-    order: 0,
-  });
+    // If the database has the old 3 test starter files, migrate them to the single MDstash card
+    const isOldTestSeed =
+      allFiles.length === 3 &&
+      allFiles.some((f) => f.filename === 'CLAUDE.md') &&
+      allFiles.some((f) => f.filename === '.cursorrules') &&
+      allFiles.some((f) => f.filename === 'README-starter.md');
 
-  const rulesCollection = await collectionsRepo.create({
-    name: 'Rules & Configs',
-    color: '#D4A234',
-    icon: 'folder',
-    order: 1,
-  });
+    if (isOldTestSeed) {
+      await db.files.clear();
+      await db.collections.clear();
+      await db.versions.clear();
+    } else if (allFiles.length > 0) {
+      return;
+    }
 
-  const startersCollection = await collectionsRepo.create({
-    name: 'Starters & Templates',
-    color: '#6B8B9B',
-    icon: 'folder',
-    order: 2,
-  });
+    const colCount = await db.collections.count();
+    if (colCount > 0 && !isOldTestSeed) return;
 
-  // 2. Create sample files
-  await filesRepo.create({
-    title: 'Claude Project Memory & Rules',
-    filename: 'CLAUDE.md',
-    content: `# Claude Project Context & Rules
+    const content = `# Welcome to MDstash
 
-## Project Overview
-This file serves as persistent contextual memory for Claude Code and related AI agents.
+A pure, local-first stash for your markdown files.
 
-## Behavioral Guidelines
-- Write clean, maintainable TypeScript.
-- Always check for edge cases before returning code.
-- Prefer local-first architectural patterns.
-- Do not add telemetry or external analytics without explicit user confirmation.
-`,
-    collectionId: aiCollection.id,
-    tags: ['claude', 'prompt', 'rules'],
-    pinned: true,
-    size: 420,
-  });
+- **Offline-ready**: Everything stays securely on your device in IndexedDB.
+- **Drag & drop**: Drop markdown files or folders directly into your stash.
+- **Copy prompt-ready**: Copy notes formatted for AI chats and IDEs with a single click.
+`;
 
-  await filesRepo.create({
-    title: 'Cursor Rules Cheatsheet',
-    filename: '.cursorrules',
-    content: `# Cursor AI System Instructions
-
-You are an expert full-stack developer working on high-performance web applications.
-
-- Style: Follow Tailwind CSS tokens and strict TypeScript types.
-- Architecture: Keep UI components modular, accessible, and responsive.
-- Performance: Lazy load assets when suitable.
-`,
-    collectionId: rulesCollection.id,
-    tags: ['cursor', 'ai', 'editor'],
-    pinned: false,
-    size: 310,
-  });
-
-  await filesRepo.create({
-    title: 'Standard Project README Starter',
-    filename: 'README-starter.md',
-    content: `# Project Name
-
-> A concise one-liner describing the core value proposition.
-
-## Features
-- **Local-first**: Stored on your device.
-- **Fast**: Minimal footprint and snappy reactivity.
-- **Craft Design**: Thoughtful aesthetic and smooth interactions.
-
-## Quick Start
-\`\`\`bash
-npm install
-npm run dev
-\`\`\`
-`,
-    collectionId: startersCollection.id,
-    tags: ['template', 'readme'],
-    pinned: false,
-    size: 360,
-  });
+    // Idempotent put using fixed starter ID
+    await filesRepo.create({
+      id: STARTER_FILE_ID,
+      title: 'MDstash',
+      filename: 'MDstash.md',
+      content,
+      collectionId: null,
+      tags: ['example'],
+      pinned: false,
+      size: new Blob([content]).size,
+    });
+  } finally {
+    isSeeding = false;
+  }
 }

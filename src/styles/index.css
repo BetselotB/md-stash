@@ -97,6 +97,57 @@
   pointer-events: none;
 }
 
+/* Reusable paper grain overlay for cards, trays, and menus */
+.bg-paper-grain {
+  background-image: url('/textures/paper-fine.png');
+  background-image: -webkit-image-set(url('/textures/paper-fine.png') 1x, url('/textures/paper-fine@2x.png') 2x);
+  background-image: image-set(url('/textures/paper-fine.png') 1x, url('/textures/paper-fine@2x.png') 2x);
+  background-repeat: repeat;
+  background-size: var(--grain-scale, 512px) var(--grain-scale, 512px);
+  mix-blend-mode: normal;
+  opacity: var(--grain-opacity, 0.11);
+  pointer-events: none;
+}
+
+/* Custom Select Dropdown Animations */
+@keyframes selectMenuUp {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes selectMenuDown {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-select-up {
+  animation: selectMenuUp 0.16s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-select-down {
+  animation: selectMenuDown 0.16s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-select-up,
+  .animate-select-down {
+    animation: fadeIn 0.08s ease forwards !important;
+    transform: none !important;
+  }
+}
+
 /* Lenis smooth scrolling integration */
 html.lenis,
 html.lenis body {
@@ -474,7 +525,70 @@ mark.hl:hover .hl-bg {
   animation: crateThunk 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
+/* Confirm Dialog Animations: 0.18s open (fade + scale 0.97 to 1 and 8px rise, expo.out), 0.12s close */
+@keyframes confirmBackdropFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes confirmBackdropFadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes confirmCardOpen {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes confirmCardClose {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(4px) scale(0.98);
+  }
+}
+
+@keyframes confirmFadeQuick {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.confirm-backdrop-enter {
+  animation: confirmBackdropFadeIn 0.18s ease-out forwards;
+}
+
+.confirm-backdrop-exit {
+  animation: confirmBackdropFadeOut 0.12s ease-in forwards;
+}
+
+.confirm-card-enter {
+  animation: confirmCardOpen 0.18s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.confirm-card-exit {
+  animation: confirmCardClose 0.12s cubic-bezier(0.4, 0, 1, 1) forwards;
+}
+
 @media (prefers-reduced-motion: reduce) {
+  .confirm-card-enter {
+    animation: confirmFadeQuick 0.08s ease-out forwards !important;
+    transform: none !important;
+  }
+  .confirm-card-exit {
+    animation: confirmBackdropFadeOut 0.06s ease-in forwards !important;
+    transform: none !important;
+  }
+
   .animate-spin-slow,
   .animate-bob,
   .animate-bob-delayed,

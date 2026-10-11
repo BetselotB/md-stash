@@ -8,10 +8,12 @@ import { ToastContainer } from '../ui/Toast';
 import { QuickAddModal } from '../library/QuickAddModal';
 import { CollectionModal } from '../collections/CollectionModal';
 import { useUIStore } from '../../store/uiStore';
-import { getFilesFromDataTransfer, importFilesList } from '../../services/fileImport';
+import { useCollections } from '../../hooks/useDb';
+import { getFilesFromDataTransfer, importFiles, getRouteCollectionId } from '../../services/fileImport';
 import { Collection } from '../../domain/types';
 
 export const Shell: React.FC = () => {
+  const collections = useCollections();
   const { isWindowDragOver, setIsWindowDragOver, showToast, pastedText, setPastedText } =
     useUIStore();
 
@@ -53,13 +55,9 @@ export const Shell: React.FC = () => {
         try {
           const files = await getFilesFromDataTransfer(e.dataTransfer.items);
           if (files.length > 0) {
-            const result = await importFilesList(files);
-            showToast(
-              `Stashed ${result.added} markdown file(s)${
-                result.skipped > 0 ? ` (${result.skipped} duplicate skipped)` : ''
-              }`,
-              'success'
-            );
+            const targetColId = getRouteCollectionId();
+            const result = await importFiles(files, { collectionId: targetColId });
+            showToast(result.message, result.added > 0 ? 'success' : 'info');
           }
         } catch (err) {
           console.error(err);
@@ -144,7 +142,10 @@ export const Shell: React.FC = () => {
       </div>
 
       {/* Global Drag Overlay */}
-      <DropOverlay isVisible={isWindowDragOver} />
+      <DropOverlay
+        isVisible={isWindowDragOver}
+        collectionName={getRouteCollectionId() ? collections.find((c) => c.id === getRouteCollectionId())?.name : undefined}
+      />
 
       {/* Bottom Bundle Tray */}
       <BundleTray />

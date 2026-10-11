@@ -1,6 +1,7 @@
 import React, { useState, useEffect, Suspense, lazy } from 'react';
 import { ErrorBoundary } from './components/ui/ErrorBoundary';
 import { DesktopGate } from './components/gate/DesktopGate';
+import { ConfirmDialogProvider } from './components/ui/ConfirmDialog';
 
 // Lazy-load the entire site bundle behind the desktop gate check
 const DesktopApp = lazy(() => import('./DesktopApp'));
@@ -77,14 +78,16 @@ export const App: React.FC = () => {
 
   return (
     <ErrorBoundary>
-      <div className="grain-overlay" aria-hidden="true" />
-      {!isDesktop ? (
-        <DesktopGate />
-      ) : (
-        <Suspense fallback={<div className="min-h-screen bg-sage text-cream" />}>
-          <DesktopApp />
-        </Suspense>
-      )}
+      <ConfirmDialogProvider>
+        <div className="grain-overlay" aria-hidden="true" />
+        {!isDesktop ? (
+          <DesktopGate />
+        ) : (
+          <Suspense fallback={<div className="min-h-screen bg-sage text-cream" />}>
+            <DesktopApp />
+          </Suspense>
+        )}
+      </ConfirmDialogProvider>
     </ErrorBoundary>
   );
 };

@@ -138,24 +138,27 @@ export const Landing: React.FC = () => {
       </section>
 
       {/* ================= 4. FOOTER IN FOREST ================= */}
-      <footer className="border-t border-line pt-12 pb-0 px-6 bg-forest text-xs text-cream-dim relative z-10 overflow-hidden">
+      <footer className="border-t border-line pt-12 pb-0 px-6 bg-forest text-xs text-cream relative z-10 overflow-hidden">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 pb-8 border-b border-cream/10">
           <div className="flex items-center gap-2">
             <span className="font-display text-xl text-cream">
               MD<span className="text-orange">stash</span>
             </span>
-            <span>· Organize and stash your markdown locally.</span>
+            <span className="text-cream">· Organize and stash your markdown locally.</span>
           </div>
 
           <div className="flex items-center gap-6">
-            <Link to="/privacy" className="hover:text-cream transition-colors">
+            <Link
+              to="/privacy"
+              className="text-cream hover:text-orange focus:text-orange focus:outline-none transition-colors"
+            >
               Privacy
             </Link>
             <a
               href="https://github.com/Jole-19/MDstash"
               target="_blank"
               rel="noopener noreferrer"
-              className="hover:text-cream transition-colors"
+              className="text-cream hover:text-orange focus:text-orange focus:outline-none transition-colors"
             >
               GitHub
             </a>
@@ -167,8 +170,8 @@ export const Landing: React.FC = () => {
           className="w-full text-center select-none pointer-events-none overflow-hidden -mb-8 sm:-mb-14 md:-mb-20 pt-6"
           aria-hidden="true"
         >
-          <span className="font-display text-[19vw] leading-none text-cream/5 tracking-tighter block whitespace-nowrap">
-            MDstash
+          <span className="font-display text-[19vw] leading-none text-cream tracking-tighter block whitespace-nowrap">
+            MD<span className="text-orange">stash</span>
           </span>
         </div>
       </footer>

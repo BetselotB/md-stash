@@ -62,14 +62,14 @@ export const EditFileModal: React.FC<EditFileModalProps> = ({
     <Dialog
       isOpen={isOpen}
       onClose={onClose}
-      title="Edit Markdown File"
+      title="Edit markdown file"
       description="Make changes and save. A version snapshot will be saved automatically."
       maxWidth="2xl"
     >
       <form onSubmit={handleSave} className="flex flex-col gap-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-xs font-semibold text-cream-dim mb-1">
+            <label className="block font-display text-[13px] text-ink/80 mb-1.5">
               Title
             </label>
             <Input
@@ -81,7 +81,7 @@ export const EditFileModal: React.FC<EditFileModalProps> = ({
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-cream-dim mb-1">
+            <label className="block font-display text-[13px] text-ink/80 mb-1.5">
               Filename
             </label>
             <Input
@@ -94,8 +94,8 @@ export const EditFileModal: React.FC<EditFileModalProps> = ({
         </div>
 
         <div>
-          <label className="block text-xs font-semibold text-cream-dim mb-1">
-            Tags (comma separated)
+          <label className="block font-display text-[13px] text-ink/80 mb-1.5">
+            Tags, comma separated
           </label>
           <Input
             value={tagsInput}
@@ -105,25 +105,33 @@ export const EditFileModal: React.FC<EditFileModalProps> = ({
         </div>
 
         <div>
-          <label className="block text-xs font-semibold text-cream-dim mb-1">
-            Content
+          <label className="block font-display text-[13px] text-ink/80 mb-1.5">
+            Markdown content
           </label>
           <textarea
             value={content}
             onChange={(e) => setContent(e.target.value)}
             rows={14}
-            className="w-full bg-forest-dark text-cream font-mono text-xs border border-line rounded-lg p-3 focus:outline-none focus:border-orange focus:ring-1 focus:ring-orange resize-y"
+            className="w-full bg-[var(--field-bg)] text-ink font-mono text-sm border border-[var(--field-border)] rounded-[10px] p-3 focus:outline-none focus:border-orange focus:ring-2 focus:ring-orange/40 resize-y placeholder:text-ink/60"
             required
           />
         </div>
 
-        <div className="flex items-center justify-end gap-3 pt-3 border-t border-line">
-          <Button type="button" variant="ghost" onClick={onClose}>
+        <div className="flex items-center justify-end gap-3 pt-3 border-t border-[rgba(38,51,42,0.15)]">
+          <button
+            type="button"
+            onClick={onClose}
+            className="min-h-[40px] h-10 px-4 py-2 rounded-full border border-[var(--field-border)] text-ink hover:bg-[rgba(38,51,42,0.06)] font-display text-sm tracking-wide transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-orange"
+          >
             Cancel
-          </Button>
-          <Button type="submit" variant="primary" disabled={isSaving}>
-            {isSaving ? 'Saving...' : 'Save & Snapshot'}
-          </Button>
+          </button>
+          <button
+            type="submit"
+            disabled={isSaving}
+            className="min-h-[40px] h-10 px-5 py-2 rounded-full bg-orange hover:bg-orange-deep text-ink font-display text-sm font-bold tracking-wide transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-orange shadow-sm disabled:opacity-50"
+          >
+            {isSaving ? 'Saving...' : 'Save & snapshot'}
+          </button>
         </div>
       </form>
     </Dialog>

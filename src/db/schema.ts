@@ -20,3 +20,7 @@ export class MDstashDatabase extends Dexie {
 }
 
 export const db = new MDstashDatabase();
+
+if (typeof window !== 'undefined') {
+  (window as unknown as { __db: typeof db }).__db = db;
+}

@@ -192,7 +192,7 @@ async function runPrivacyCheck() {
   await page.waitForTimeout(200);
 
   // Dialog should be open
-  const dialog = page.getByRole('dialog', { name: /confirm permanent erase/i });
+  const dialog = page.locator('[role="dialog"], [role="alertdialog"]').filter({ hasText: /confirm permanent erase/i });
   if (!(await dialog.isVisible())) {
     console.error('FAIL: Confirm dialog did not open upon clicking delete button');
     hasFailure = true;

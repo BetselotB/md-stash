@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Dialog } from '../ui/Dialog';
 import { Button } from '../ui/Button';
+import { confirm } from '../ui/ConfirmDialog';
 import { Input } from '../ui/Input';
 import { Collection } from '../../domain/types';
 import { collectionsRepo } from '../../db/collections.repo';
@@ -68,7 +69,14 @@ export const CollectionModal: React.FC<CollectionModalProps> = ({
 
   const handleDelete = async () => {
     if (!collection) return;
-    if (confirm(`Delete collection "${collection.name}"? Files will be moved to Unsorted.`)) {
+    const ok = await confirm({
+      title: `Delete collection "${collection.name}"?`,
+      body: 'Files in this collection will be moved to Unsorted. This action cannot be undone.',
+      confirmLabel: 'Delete collection',
+      cancelLabel: 'Cancel',
+      tone: 'danger',
+    });
+    if (ok) {
       await collectionsRepo.delete(collection.id, true);
       showToast(`Deleted collection "${collection.name}"`, 'info');
       onClose();
@@ -84,7 +92,7 @@ export const CollectionModal: React.FC<CollectionModalProps> = ({
     >
       <form onSubmit={handleSubmit} className="flex flex-col gap-5">
         <div>
-          <label className="block text-xs font-bold text-ink/80 mb-1">
+          <label className="block font-display text-[13px] text-ink/80 mb-1.5">
             Collection name
           </label>
           <Input
@@ -97,7 +105,7 @@ export const CollectionModal: React.FC<CollectionModalProps> = ({
         </div>
 
         <div>
-          <label className="block text-xs font-bold text-ink/80 mb-2">
+          <label className="block font-display text-[13px] text-ink/80 mb-1.5">
             Craft color
           </label>
           <div className="flex items-center gap-3 flex-wrap">
@@ -118,10 +126,10 @@ export const CollectionModal: React.FC<CollectionModalProps> = ({
 
         {/* Paper-feel silhouette preview */}
         <div>
-          <label className="block text-xs font-bold text-ink/80 mb-1.5">
+          <label className="block font-display text-[13px] text-ink/80 mb-1.5">
             Mark preview
           </label>
-          <div className="flex items-center gap-3 p-3 rounded-2xl bg-[#D8D3BC] border border-[rgba(38,51,42,0.22)]">
+          <div className="flex items-center gap-3 p-3 rounded-[10px] bg-[var(--field-bg)] border border-[var(--field-border)]">
             <CrateGlyph color={color} size={26} />
             <div className="min-w-0">
               <div className="text-sm font-bold font-display text-ink leading-tight truncate">
@@ -134,26 +142,33 @@ export const CollectionModal: React.FC<CollectionModalProps> = ({
           </div>
         </div>
 
-        <div className="flex items-center justify-between pt-4 border-t border-[rgba(38,51,42,0.12)] mt-2">
+        <div className="flex items-center justify-between pt-4 border-t border-[rgba(38,51,42,0.15)] mt-2">
           {collection ? (
-            <Button
+            <button
               type="button"
-              variant="ghost"
               onClick={handleDelete}
-              className="text-red-700 hover:text-red-800"
-              icon={<Trash2 className="w-4 h-4" />}
+              className="min-h-[40px] h-10 px-4 py-2 rounded-full bg-[var(--danger)] hover:bg-[#963024] text-cream font-display text-sm font-bold tracking-wide transition-colors cursor-pointer flex items-center gap-1.5 focus:outline-none focus:ring-2 focus:ring-[var(--danger)] focus:ring-offset-2 focus:ring-offset-[var(--dialog-bg)]"
             >
-              Delete
-            </Button>
+              <Trash2 className="w-4 h-4" />
+              <span>Delete</span>
+            </button>
           ) : <div />}
 
           <div className="flex items-center gap-2">
-            <Button type="button" variant="ghost" onClick={onClose} className="text-ink/70 hover:text-ink">
+            <button
+              type="button"
+              onClick={onClose}
+              className="min-h-[40px] h-10 px-4 py-2 rounded-full border border-[var(--field-border)] text-ink hover:bg-[rgba(38,51,42,0.06)] font-display text-sm tracking-wide transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-orange"
+            >
               Cancel
-            </Button>
-            <Button type="submit" variant="primary" disabled={isSubmitting}>
+            </button>
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="min-h-[40px] h-10 px-5 py-2 rounded-full bg-orange hover:bg-orange-deep text-ink font-display text-sm font-bold tracking-wide transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-orange shadow-sm disabled:opacity-50"
+            >
               {collection ? 'Save changes' : 'Create collection'}
-            </Button>
+            </button>
           </div>
         </div>
       </form>

@@ -26,6 +26,13 @@
   --line-light: rgba(248, 247, 230, 0.15);
   --line-ink: rgba(38, 51, 42, 0.18);
 
+  /* Modal, Dialog & Popover Tokens (Neutral Mid-tone Oat System) */
+  --dialog-bg: #D8D3BC;          /* Muted oat paper card surface (L ~ 79.2%) */
+  --field-bg: #CBC5AB;           /* Darker oat field surface (~7% darker than card) */
+  --field-border: rgba(38, 51, 42, 0.20); /* Hairline ink border on fields */
+  --scrim: rgba(38, 51, 42, 0.40);        /* Sage-tinted 40% backdrop overlay */
+  --danger: #A8382A;             /* Muted clay red (contrast > 6.4:1 with cream text) */
+
   /* Nav color transition timing (single source of truth for all nav items) */
   --nav-color-duration: 150ms;
   --nav-color-ease: cubic-bezier(0.4, 0, 0.2, 1);

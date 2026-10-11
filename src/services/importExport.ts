@@ -158,7 +158,17 @@ export const importExportService = {
   },
 
   async importZip(file: File): Promise<{ filesCount: number; collectionsCount: number }> {
-    const arrayBuffer = await file.arrayBuffer();
+    let arrayBuffer: ArrayBuffer;
+    if (typeof file.arrayBuffer === 'function') {
+      arrayBuffer = await file.arrayBuffer();
+    } else {
+      arrayBuffer = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result as ArrayBuffer);
+        reader.onerror = reject;
+        reader.readAsArrayBuffer(file);
+      });
+    }
     return await this.importZipBuffer(new Uint8Array(arrayBuffer));
   },
 };

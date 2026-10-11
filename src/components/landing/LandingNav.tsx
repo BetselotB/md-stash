@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { ArrowUp, Shield } from 'lucide-react';
 import { MenuOverlay } from './MenuOverlay';
 
@@ -130,6 +130,7 @@ export const LandingNav: React.FC<LandingNavProps> = ({
   theme = 'sage',
   onNavigateSection,
 }) => {
+  const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navRef = React.useRef<HTMLElement>(null);
 
@@ -186,6 +187,15 @@ export const LandingNav: React.FC<LandingNavProps> = ({
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const handleHomeClick = (e: React.MouseEvent) => {
+    if (location.pathname === '/') {
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      window.scrollTo({ top: 0 });
+    }
+  };
+
   const handleSectionClick = (sectionId: string) => {
     if (onNavigateSection) {
       onNavigateSection(sectionId);
@@ -229,7 +239,7 @@ export const LandingNav: React.FC<LandingNavProps> = ({
         >
           <Link
             to="/"
-            onClick={scrollToTop}
+            onClick={handleHomeClick}
             title="MDstash home"
             aria-label="MDstash home"
             className="group block relative w-full h-full select-none cursor-pointer"
@@ -252,7 +262,7 @@ export const LandingNav: React.FC<LandingNavProps> = ({
           <div className="flex items-center gap-[clamp(10px,0.8vw,20px)] shrink-0 z-10 nav-left">
             <Link
               to="/"
-              onClick={scrollToTop}
+              onClick={handleHomeClick}
               className="font-display text-[clamp(14px,1.1vw,28px)] transition-colors hover:text-orange"
             >
               Home
@@ -329,14 +339,13 @@ export const LandingNav: React.FC<LandingNavProps> = ({
               onClick={() => setIsMenuOpen(true)}
               title="Open navigation menu"
               aria-label="Open navigation menu"
-              className="nav-menu-btn rounded-full border flex items-center justify-center gap-1.5 transition-colors cursor-pointer hover:border-orange hover:text-orange px-[clamp(12px,1vw,20px)]"
+              className="nav-menu-btn rounded-full border flex items-center justify-center transition-colors cursor-pointer hover:border-orange hover:text-orange px-[clamp(14px,1.2vw,24px)]"
               style={{
                 height: 'clamp(36px, 2.5vw, 64px)',
                 fontSize: 'clamp(13px, 1vw, 22px)',
               }}
             >
               <span className="font-display">Menu</span>
-              <span className="font-mono text-xs opacity-75">≡</span>
             </button>
           </div>
         </div>

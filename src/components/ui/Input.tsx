@@ -11,19 +11,23 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
       <div className="w-full">
         <div className="relative flex items-center">
           {icon && (
-            <div className="absolute left-3 text-cream-dim pointer-events-none flex items-center">
+            <div className="absolute left-3 text-ink/60 pointer-events-none flex items-center">
               {icon}
             </div>
           )}
           <input
             ref={ref}
-            className={`w-full bg-[#F8F7E6] text-ink placeholder:text-ink/40 border border-[rgba(38,51,42,0.2)] rounded-xl py-2 text-sm focus:outline-none focus:border-orange focus:ring-2 focus:ring-orange/30 transition-colors duration-150 ${
+            className={`w-full bg-[var(--field-bg)] text-ink placeholder:text-ink/60 border border-[var(--field-border)] rounded-[10px] py-2 text-sm focus:outline-none focus:border-orange focus:ring-2 focus:ring-orange/40 transition-colors duration-150 ${
               icon ? 'pl-9 pr-3' : 'px-3'
-            } ${error ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''} ${className}`}
+            } ${
+              error
+                ? '!border-[var(--danger)] focus:!border-[var(--danger)] focus:!ring-[var(--danger)]/30'
+                : ''
+            } ${className}`}
             {...props}
           />
         </div>
-        {error && <p className="mt-1 text-xs text-red-300">{error}</p>}
+        {error && <p className="mt-1 text-xs text-[var(--danger)] font-sans">{error}</p>}
       </div>
     );
   }

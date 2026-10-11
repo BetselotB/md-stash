@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeSanitize from 'rehype-sanitize';
@@ -9,6 +10,7 @@ import { persistenceService } from '../../services/persistence';
 import { useUIStore } from '../../store/uiStore';
 import { filesRepo } from '../../db/files.repo';
 import { Button } from '../ui/Button';
+import { confirm } from '../ui/ConfirmDialog';
 import { EditFileModal } from './EditFileModal';
 import { VersionHistoryModal } from './VersionHistoryModal';
 import {
@@ -82,35 +84,40 @@ export const FileDetailModal: React.FC<FileDetailModalProps> = ({
   };
 
   const handleDelete = async () => {
-    if (confirm(`Delete "${file.filename}"? This cannot be undone.`)) {
+    if (!file) return;
+    const ok = await confirm({
+      title: `Delete ${file.filename}?`,
+      body: "This removes the file and its version history from this device. This can't be undone.",
+      filenameChip: file.filename,
+      confirmLabel: 'Delete file',
+      cancelLabel: 'Cancel',
+      tone: 'danger',
+    });
+    if (ok) {
       await filesRepo.delete(file.id);
       showToast(`Deleted "${file.filename}"`, 'info');
       onClose();
     }
   };
 
+  if (typeof document === 'undefined') return null;
+
   return (
     <>
-      <div
-        role="dialog"
-        aria-modal="true"
-        className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-forest-dark/85 backdrop-blur-sm animate-fadeIn"
-        onClick={onClose}
-      >
+      {createPortal(
         <div
-          className="w-full max-w-4xl max-h-[92vh] flex flex-col bg-forest border border-line rounded-2xl shadow-card overflow-hidden"
-          onClick={(e) => e.stopPropagation()}
+          role="dialog"
+          aria-modal="true"
+          className="fixed inset-0 z-[80] flex items-center justify-center p-3 sm:p-6 bg-[var(--scrim)] animate-fadeIn"
+          onClick={onClose}
         >
-          {/* Top Modal Header */}
-          <div className="flex items-center justify-between px-6 py-4 border-b border-line bg-forest-dark/60">
+          <div
+            className="w-full max-w-4xl max-h-[92vh] flex flex-col bg-forest border border-line rounded-2xl shadow-card overflow-hidden"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Top Modal Header */}
+            <div className="flex items-center justify-between px-6 py-4 border-b border-line bg-forest-dark/60">
             <div className="flex items-center gap-3 min-w-0">
-              {collection && (
-                <span
-                  className="w-3 h-3 rounded-full shrink-0"
-                  style={{ backgroundColor: collection.color }}
-                  title={collection.name}
-                />
-              )}
               <div className="min-w-0">
                 <h2 className="text-lg sm:text-xl font-bold text-cream truncate">
                   {file.title}
@@ -355,7 +362,9 @@ export const FileDetailModal: React.FC<FileDetailModalProps> = ({
             )}
           </div>
         </div>
-      </div>
+      </div>,
+      document.body
+    )}
 
       {/* Edit Modal */}
       {isEditOpen && (

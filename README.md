@@ -1,77 +1,67 @@
 # MDstash
 
-> **Your markdown files, stashed, sorted, and ready to drop anywhere.**  
-> *Nothing ever leaves your device.*
+A craft-inspired, local-first organizer for markdown files and AI context prompts. Keep your `CLAUDE.md`, `AGENTS.md`, `.cursorrules`, and scratch notes organized, searchable, and ready to drop into any workflow.
 
-MDstash is a craft-inspired, local-first organizer for Markdown files and AI prompts. Designed for developers and AI-tool power users who frequently reference `CLAUDE.md`, `AGENTS.md`, `README`s, `.cursorrules`, and context prompts.
-
----
-
-## ✨ Features
-
-- 📁 **Instant Drag-and-Drop Import:** Drop files (`.md`, `.markdown`, `.txt`) or entire directories straight into your browser with recursive directory traversal.
-- 🗂️ **Collections & Reordering:** Color-coded collections with custom icons; reorder with move controls; delete collections without losing files (preserved in Unsorted).
-- 🏷️ **Tags & Dynamic Filtering:** Free-form tags per file with real-time tag chips filtering.
-- 📄 **Deep-Linkable File Detail Route (`/app/f/:fileId`):** Sanitized preview (`react-markdown` + `rehype-sanitize`) and raw toggle, light in-browser edit, download, and delete.
-- 📋 **Three Copy Modes:**
-  - **Prompt-ready:** Prefixes `### File: <filename>` for AI models.
-  - **Fenced Code Block:** Dynamic fence length calculation preventing broken backticks.
-  - **Raw:** Exact markdown content as-is.
-- 📦 **Bundle Multi-Select & Reordering:** Select 2+ files to activate the floating Bundle Tray; reorder files with up/down arrows and copy as a single combined context block with per-file headers.
-- 🔍 **Instant Fuzzy Search:** Local client-side MiniSearch indexing over title, filename, tags, and full body content with boosted title weighting.
-- 📌 **Pinned Favorites:** Fast one-click pin/unpin keeping critical rules at the top of your library.
-- ⚡ **Quick-Add via Paste (`Ctrl+V`):** Paste markdown text anywhere outside an active text input to trigger an instant stashing dialog.
-- 📜 **Version History Snapshots:** Non-destructive snapshots captured on each save, capped per file, with instant restore.
-- 💾 **Full Zip Export & Import Round-Trip:** Export your entire stash as a `.zip` archive containing real `.md` files organized by collection folders + a portable `manifest.json`.
-- 🔒 **Zero Cloud & Absolute Privacy:** Pure IndexedDB storage with persistent storage request support (`navigator.storage.persist`). Zero analytics, zero cookies, zero external network requests.
-- 📱 **Responsive & Accessible:** Off-canvas mobile navigation drawer, visible orange focus rings, Escape key modal dismissal, and Lenis smooth scrolling on the landing page (with `prefers-reduced-motion` detection).
-- 📦 **Offline PWA:** Installable desktop web app powered by Service Worker precaching.
+Runs entirely in your browser with offline storage. Nothing ever leaves your device.
 
 ---
 
-## 🎯 Drag-Out Compatibility Note
+## Features
 
-The drag handle on file cards and file detail views sets both `text/plain` and Chromium `DownloadURL`:
-- **Editor Text Panes & AI Chat Inputs:** Fully supported across Chrome, Edge, Brave, Firefox, and Safari via `text/plain`.
-- **Desktop / File Explorer (Chromium):** Creates a real `.md` file on desktop, Windows File Explorer, or macOS Finder via `DownloadURL`.
-- **IDE File Explorers (e.g. VS Code / Cursor Explorer tree):** Browser security sandboxes prevent web drag events from injecting filesystem entries into native IDE file trees. **Copy** and **Download** buttons are always provided as universal fallbacks.
-
----
-
-## 🎨 Design System & Custom Display Font
-
-Inspired by the Brew District craft aesthetic:
-- **Palette:** Muted Sage `#84937A`, Deep Sage `#748368`, Warm Cream `#F7F3E1`, Craft Orange `#EEAA45`, Deep Forest `#2F3A33`, and Ink `#26332A`.
-- **Typography:** Self-hosted Chelsea Market display font (medium-bold, near-monoline, round terminals, wide-open C, low crossbars, and real lowercase glyphs), friendly rounded Nunito for UI text, and crisp JetBrains Mono reserved strictly for raw code and markdown.
-- **Custom Display Font Drop-in:** To use any custom display font:
-  1. Drop your font file at `public/fonts/custom-display.woff2`.
-  2. Change a single line in [`src/styles/tokens.css`](file:///src/styles/tokens.css):
-     ```css
-     --font-display: 'CustomDisplay', 'Chelsea Market', sans-serif;
-     ```
-  That's it — the `@font-face` is already pre-configured in `fonts.css`.
-- **Craft Signature:** Seamless rotating circular badge, two-layer pre-rendered analog grain overlay (fine speckle + coarse mottling), subtle perimeter vignette, fluid Lenis + ScrollTrigger cream curtain transition, and pinned scroll-story.
+- **Local-first storage:** Pure IndexedDB persistence with offline PWA support. Zero external network requests, zero telemetry, and zero accounts.
+- **Drag-and-drop import:** Drop markdown files, text files, or full folders directly into the library with recursive directory traversal.
+- **Collections and tags:** Organize files into color-coded collections or filter on the fly with free-form tags.
+- **Instant search:** Fast client-side fuzzy search across file titles, tags, and full body content.
+- **Prompt-ready context copying:** Copy notes formatted as prompt headers (`### File: <name>`), fenced code blocks, or raw text.
+- **Context bundling:** Select multiple files to reorder and bundle them into a single coherent prompt payload.
+- **Live markdown preview:** Clean, sanitized markdown rendering with an instant raw source toggle and editing.
+- **Version history:** Non-destructive save snapshots with instant rollback.
+- **Portable export and import:** Backup or restore your entire stash as a zip archive preserving folder structure and metadata.
 
 ---
 
-## 🧪 Testing & Verification
+## Copy modes
+
+When feeding context into AI coding assistants or LLM interfaces, MDstash provides three one-click copy modes:
+
+1. **Prompt-ready:** Prefixes each file with `### File: <filename>` headers for structured prompt context.
+2. **Fenced code block:** Wraps markdown safely inside dynamically-sized backtick fences to prevent breaking nested code blocks.
+3. **Raw:** Copies the exact document text without any surrounding formatting.
+
+---
+
+## Drag-out compatibility
+
+File cards and detail views provide a native drag handle that attaches both `text/plain` and Chromium `DownloadURL`:
+
+- **AI chat inputs and text editors:** Dragging into Claude, ChatGPT, Cursor chat, or any text editor pastes the markdown content immediately.
+- **Desktop and file manager:** Dragging to desktop or file folders saves a `.md` file directly in Chromium-based browsers.
+- **IDE file trees:** Browser security boundaries prevent dragging into native IDE tree views. Use the one-click copy or download buttons as universal fallbacks.
+
+---
+
+## Development
 
 ```bash
-# Run Vitest test suite (51 unit and integration tests across 16 test suites)
+# Install dependencies
+npm install
+
+# Start local development server
+npm run dev
+
+# Run test suite
 npm test
 
-# Run ESLint (zero warnings or errors)
+# Type checking and linting
+npx tsc --noEmit
 npm run lint
 
-# Type check
-npx tsc --noEmit
-
-# Build production bundle and PWA service worker
+# Production build
 npm run build
 ```
 
 ---
 
-## 📜 License
+## License
 
-MIT License. Crafted with care.
+MIT

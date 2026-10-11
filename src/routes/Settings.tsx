@@ -8,6 +8,7 @@ import { versionsRepo } from '../db/versions.repo';
 import { settingsRepo } from '../db/settings.repo';
 import { useUIStore } from '../store/uiStore';
 import { Button } from '../components/ui/Button';
+import { confirm } from '../components/ui/ConfirmDialog';
 import {
   HardDrive,
   ShieldCheck,
@@ -91,10 +92,15 @@ export const Settings: React.FC = () => {
   };
 
   const handleWipeData = async () => {
-    const confirmed = prompt(
-      'Type "DELETE" to permanently erase all files, collections, and versions from this browser:'
-    );
-    if (confirmed === 'DELETE') {
+    const ok = await confirm({
+      title: 'Wipe all data?',
+      body: 'This permanently erases all files, collections, and versions from this browser. This action cannot be undone.',
+      confirmLabel: 'Wipe all data',
+      cancelLabel: 'Cancel',
+      tone: 'danger',
+      requireText: 'delete',
+    });
+    if (ok) {
       await filesRepo.clearAll();
       await collectionsRepo.clearAll();
       await versionsRepo.clearAll();

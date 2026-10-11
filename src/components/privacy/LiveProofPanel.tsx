@@ -7,13 +7,12 @@ import {
   Trash2,
   CheckCircle2,
   AlertTriangle,
-  X,
   Database,
   Layers,
   Tag,
-  ShieldAlert,
 } from 'lucide-react';
 import { Pill } from '../ui/Pill';
+import { confirm } from '../ui/ConfirmDialog';
 import { filesRepo } from '../../db/files.repo';
 import { collectionsRepo } from '../../db/collections.repo';
 import { versionsRepo } from '../../db/versions.repo';
@@ -57,12 +56,9 @@ export const LiveProofPanel: React.FC = () => {
   // Tab view: 'network' | 'storage'
   const [activeTab, setActiveTab] = useState<'network' | 'storage'>('network');
 
-  // Delete modal state
-  const [isConfirmOpen, setIsConfirmOpen] = useState<boolean>(false);
+  // Delete wipe state
   const [isWiping, setIsWiping] = useState<boolean>(false);
   const [wipeSuccess, setWipeSuccess] = useState<boolean>(false);
-  const confirmModalRef = useRef<HTMLDivElement>(null);
-  const cancelButtonRef = useRef<HTMLButtonElement>(null);
 
   // 1. Inspect network requests via Performance API + PerformanceObserver
   const refreshNetworkEntries = useCallback(() => {
@@ -185,23 +181,6 @@ export const LiveProofPanel: React.FC = () => {
     };
   }, [refreshNetworkEntries, refreshStorageMetrics]);
 
-  // Modal accessibility: Escape key and focus
-  useEffect(() => {
-    if (!isConfirmOpen) return;
-
-    cancelButtonRef.current?.focus();
-
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        e.preventDefault();
-        setIsConfirmOpen(false);
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isConfirmOpen]);
-
   // Handle wipe data
   const handleExecuteWipe = async () => {
     setIsWiping(true);
@@ -221,7 +200,6 @@ export const LiveProofPanel: React.FC = () => {
 
       await refreshStorageMetrics();
       setWipeSuccess(true);
-      setIsConfirmOpen(false);
     } catch {
       // error handling
     } finally {
@@ -536,9 +514,18 @@ export const LiveProofPanel: React.FC = () => {
 
                   <button
                     type="button"
-                    onClick={() => {
+                    onClick={async () => {
                       setWipeSuccess(false);
-                      setIsConfirmOpen(true);
+                      const ok = await confirm({
+                        title: 'Confirm permanent erase',
+                        body: "This will delete every markdown note, collection, version history entry, and preference stored in your browser's MDstashDB database. This action cannot be undone.",
+                        confirmLabel: 'Confirm erase',
+                        cancelLabel: 'Cancel',
+                        tone: 'danger',
+                      });
+                      if (ok) {
+                        await handleExecuteWipe();
+                      }
                     }}
                     className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-forest border border-cream/30 hover:border-orange text-cream hover:text-orange font-display text-xs transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-orange self-start sm:self-auto shrink-0"
                   >
@@ -559,73 +546,6 @@ export const LiveProofPanel: React.FC = () => {
           </div>
         </div>
       </div>
-
-      {/* ================= CONFIRM WIPE MODAL DIALOG ================= */}
-      {isConfirmOpen && (
-        <div
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="wipe-dialog-title"
-          aria-describedby="wipe-dialog-desc"
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-forest-dark/80 backdrop-blur-sm animate-fadeIn"
-        >
-          <div
-            ref={confirmModalRef}
-            className="w-full max-w-md rounded-3xl bg-forest border-2 border-orange/40 text-cream p-6 sm:p-8 shadow-2xl relative space-y-6"
-          >
-            {/* Modal Header */}
-            <div className="flex items-start justify-between gap-4">
-              <div className="flex items-center gap-3">
-                <div className="p-2 rounded-xl bg-orange/20 text-orange">
-                  <ShieldAlert className="w-6 h-6" />
-                </div>
-                <h3 id="wipe-dialog-title" className="font-display text-xl text-cream">
-                  Confirm permanent erase
-                </h3>
-              </div>
-              <button
-                type="button"
-                onClick={() => setIsConfirmOpen(false)}
-                aria-label="Close dialog"
-                className="p-1 rounded-full text-cream/60 hover:text-cream transition-colors cursor-pointer"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            {/* Modal Description */}
-            <div id="wipe-dialog-desc" className="space-y-3 text-xs sm:text-sm text-cream/80 font-sans leading-relaxed">
-              <p>
-                This will delete every markdown note, collection, version history entry, and preference stored in your
-                browser's <strong className="text-cream">MDstashDB</strong> database.
-              </p>
-              <p className="text-orange font-display">
-                This action cannot be undone. We have no servers and cannot recover your files.
-              </p>
-            </div>
-
-            {/* Action Buttons */}
-            <div className="flex items-center justify-end gap-3 pt-2">
-              <button
-                ref={cancelButtonRef}
-                type="button"
-                onClick={() => setIsConfirmOpen(false)}
-                className="px-5 py-2.5 rounded-full border border-cream/20 text-cream hover:bg-cream/10 font-display text-xs transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-cream/40"
-              >
-                Cancel
-              </button>
-              <button
-                type="button"
-                onClick={handleExecuteWipe}
-                disabled={isWiping}
-                className="px-5 py-2.5 rounded-full bg-orange hover:bg-orange-deep text-forest font-display text-xs font-bold transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-orange disabled:opacity-50"
-              >
-                {isWiping ? 'Erasing...' : 'Confirm erase'}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </section>
   );
 };

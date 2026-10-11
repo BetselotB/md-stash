@@ -5,7 +5,7 @@ import { useUIStore } from '../store/uiStore';
 import { searchService } from '../services/search';
 import { FileCard } from '../components/library/FileCard';
 import { importExportService } from '../services/importExport';
-import { importFilesList } from '../services/fileImport';
+import { importFiles, getRouteCollectionId } from '../services/fileImport';
 import { HardDrive, Download, X, Pin } from 'lucide-react';
 import { CrateLogo } from '../components/ui/CrateLogo';
 
@@ -92,11 +92,9 @@ export const Library: React.FC = () => {
       try {
         const files = Array.from(e.dataTransfer.files);
         if (files.length > 0) {
-          const result = await importFilesList(files);
-          showToast(
-            `Stashed ${result.added} file(s)${result.skipped > 0 ? ` (${result.skipped} skipped)` : ''}`,
-            'success'
-          );
+          const routeColId = getRouteCollectionId();
+          const result = await importFiles(files, { collectionId: routeColId });
+          showToast(result.message, result.added > 0 ? 'success' : 'info');
         }
       } catch {
         showToast('Failed to import dropped files', 'error');
@@ -115,8 +113,9 @@ export const Library: React.FC = () => {
         onChange={async (e) => {
           if (e.target.files && e.target.files.length > 0) {
             const files = Array.from(e.target.files);
-            const res = await importFilesList(files);
-            showToast(`Stashed ${res.added} file(s)`, 'success');
+            const routeColId = getRouteCollectionId();
+            const res = await importFiles(files, { collectionId: routeColId });
+            showToast(res.message, res.added > 0 ? 'success' : 'info');
           }
         }}
         className="hidden"
@@ -124,7 +123,7 @@ export const Library: React.FC = () => {
 
       {/* Backup Nudge Banner (after 5+ files) */}
       {!backupNudgeDismissed && allFiles.length >= 5 && (
-        <div className="flex items-center justify-between gap-4 p-4 rounded-2xl bg-[#FDFAF2] border border-orange/40 shadow-xs text-xs text-ink">
+        <div className="flex items-center justify-between gap-4 p-4 rounded-2xl bg-[var(--dialog-bg)] border border-[rgba(38,51,42,0.18)] shadow-xs text-xs text-ink">
           <div className="flex items-center gap-3">
             <div className="p-2 rounded-xl bg-orange/20 text-orange-deep shrink-0">
               <HardDrive className="w-4 h-4" />
@@ -291,7 +290,7 @@ export const Library: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setWindowLimit((prev) => prev + 100)}
-                className="px-5 py-2 rounded-full border border-[rgba(38,51,42,0.2)] bg-[#FDFAF2] text-ink font-display text-xs hover:border-orange hover:text-orange cursor-pointer"
+                className="px-5 py-2 rounded-full border border-[rgba(38,51,42,0.2)] bg-[var(--dialog-bg)] text-ink font-display text-xs hover:border-orange hover:text-orange hover:bg-[var(--field-bg)] cursor-pointer"
               >
                 Load more files ({remainingFiles.length - windowLimit} remaining)
               </button>

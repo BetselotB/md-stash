@@ -23,10 +23,10 @@ import { filesRepo } from '../../db/files.repo';
 import { collectionsRepo } from '../../db/collections.repo';
 import { persistenceService } from '../../services/persistence';
 import { importExportService } from '../../services/importExport';
+import { getFilesFromDataTransfer, importFiles } from '../../services/fileImport';
 import { useUIStore } from '../../store/uiStore';
 import { Collection } from '../../domain/types';
 import { CrateGlyph } from '../ui/CrateGlyph';
-import { PaperPinGlyph } from '../ui/OrangePushpin';
 import {
   Files,
   Inbox,
@@ -84,8 +84,8 @@ const SortableCollectionRow: React.FC<SortableCollectionRowProps> = ({
   } = useSortable({ id: collection.id });
 
   const style: React.CSSProperties = {
-    transform: CSS.Transform.toString(transform),
-    transition,
+    transform: isDragging || transform ? CSS.Translate.toString(transform) : undefined,
+    transition: isDragging || transform ? transition : undefined,
   };
 
   const isInsertionTarget = over?.id === collection.id && !isDragging;
@@ -100,7 +100,7 @@ const SortableCollectionRow: React.FC<SortableCollectionRowProps> = ({
       onDragLeave={(e) => onDragLeaveCol(e, collection.id)}
       onDrop={(e) => onDropCol(e, collection.id)}
       onClick={() => onSelect(collection.id)}
-      className={`group relative flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+      className={`group relative flex items-center justify-between px-3 h-9 rounded-xl text-xs font-semibold transition-colors cursor-pointer ${
         isDragging ? 'opacity-40 z-20 scale-[0.98]' : ''
       } ${
         isCurrent
@@ -121,7 +121,7 @@ const SortableCollectionRow: React.FC<SortableCollectionRowProps> = ({
         <div className="absolute -top-1 inset-x-2 h-0.5 bg-orange rounded-full pointer-events-none z-30 shadow-[0_0_4px_rgba(238,178,87,0.8)]" />
       )}
 
-      <div className="flex items-center gap-2.5 truncate">
+      <div className="flex items-center gap-2.5 truncate min-w-0">
         {/* Small flat matte crate glyph tinted in collection color */}
         <CrateGlyph
           color={collection.color}
@@ -133,18 +133,30 @@ const SortableCollectionRow: React.FC<SortableCollectionRowProps> = ({
         </span>
       </div>
 
-      <div className="flex items-center gap-1.5 shrink-0">
-        {/* Count badge stays visible, edit pencil appears on hover */}
-        <span className="text-[11px] font-mono px-1.5 py-0.2 rounded bg-[rgba(38,51,42,0.1)] text-inherit font-medium group-hover:hidden">
+      <div className="flex items-center gap-1.5 shrink-0 h-5">
+        {/* Count badge */}
+        <span
+          className={`text-[11px] font-mono px-1.5 h-5 flex items-center justify-center rounded font-medium transition-colors ${
+            isCurrent
+              ? 'bg-[rgba(38,51,42,0.12)] text-ink'
+              : 'bg-[rgba(38,51,42,0.1)] text-cream group-hover:hidden'
+          }`}
+        >
           {count}
         </span>
+
+        {/* Edit pencil button */}
         <button
           type="button"
           onClick={(e) => {
             e.stopPropagation();
             onEdit(collection);
           }}
-          className="hidden group-hover:flex p-1 text-cream/70 hover:text-orange rounded transition-colors cursor-pointer"
+          className={`w-5 h-5 flex items-center justify-center rounded transition-colors cursor-pointer ${
+            isCurrent
+              ? 'text-ink/70 hover:bg-orange hover:text-ink focus-visible:bg-orange focus-visible:text-ink'
+              : 'hidden group-hover:flex text-cream hover:bg-orange hover:text-ink focus-visible:bg-orange focus-visible:text-ink'
+          }`}
           title="Edit collection"
           aria-label="Edit collection"
         >
@@ -233,6 +245,19 @@ export const Sidebar: React.FC<SidebarProps> = ({
         `Moved "${matchingFile.filename}" to ${targetCol ? targetCol.name : 'Unsorted'}`,
         'success'
       );
+    } else {
+      try {
+        const files = await getFilesFromDataTransfer(e.dataTransfer.items || e.dataTransfer.files);
+        if (files.length > 0) {
+          setDroppingColId(colId || '__unsorted');
+          setTimeout(() => setDroppingColId(null), 400);
+          const result = await importFiles(files, { collectionId: colId });
+          showToast(result.message, result.added > 0 ? 'success' : 'info');
+        }
+      } catch (err) {
+        console.error(err);
+        showToast('Failed to import dropped files', 'error');
+      }
     }
   };
 
@@ -331,7 +356,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 onClick={handleNavClick}
                 className={({ isActive }) => {
                   const current = isActive && !activeCollectionId && !isPinnedFilter;
-                  return `flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                  return `flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold transition-colors cursor-pointer ${
                     current
                       ? 'bg-cream text-ink shadow-sm'
                       : 'text-cream hover:bg-[rgba(248,247,230,0.12)]'
@@ -359,7 +384,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 to="/app?filter=pinned"
                 onClick={handleNavClick}
                 className={() =>
-                  `flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                  `flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold transition-colors cursor-pointer ${
                     isPinnedFilter
                       ? 'bg-cream text-ink shadow-sm'
                       : 'text-cream hover:bg-[rgba(248,247,230,0.12)]'
@@ -367,7 +392,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 }
               >
                 <div className="flex items-center gap-2.5">
-                  <Pin className="w-5 h-5 stroke-[1.75] fill-orange text-orange shrink-0" />
+                  <Pin className="w-5 h-5 stroke-[1.75] shrink-0" />
                   <span className="tracking-tight text-[13px]">Pinned</span>
                 </div>
                 <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-[rgba(38,51,42,0.1)] text-inherit font-semibold">
@@ -382,7 +407,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 className={({ isActive }) => {
                   const isHovered = hoveredDropId === '__unsorted';
                   const isDropped = droppingColId === '__unsorted';
-                  return `flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                  return `flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold transition-colors cursor-pointer ${
                     isActive
                       ? 'bg-cream text-ink shadow-sm'
                       : 'text-cream hover:bg-[rgba(248,247,230,0.12)]'

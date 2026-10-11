@@ -3,9 +3,10 @@ import { CrateLogo } from '../ui/CrateLogo';
 
 interface DropOverlayProps {
   isVisible: boolean;
+  collectionName?: string | null;
 }
 
-export const DropOverlay: React.FC<DropOverlayProps> = ({ isVisible }) => {
+export const DropOverlay: React.FC<DropOverlayProps> = ({ isVisible, collectionName }) => {
   if (!isVisible) return null;
 
   return (
@@ -41,7 +42,7 @@ export const DropOverlay: React.FC<DropOverlayProps> = ({ isVisible }) => {
           </div>
 
           <h2 className="font-display text-4xl sm:text-5xl text-cream tracking-tight leading-none mb-1">
-            Drop to stash
+            {collectionName ? `Importing to ${collectionName}` : 'Drop to stash'}
           </h2>
           <p className="text-cream/80 text-xs sm:text-sm max-w-sm font-sans">
             Release your markdown files or folders here to stash them locally.

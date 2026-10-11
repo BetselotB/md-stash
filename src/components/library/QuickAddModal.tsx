@@ -6,6 +6,8 @@ import { useUIStore } from '../../store/uiStore';
 import { useCollections } from '../../hooks/useDb';
 import { filesRepo } from '../../db/files.repo';
 import { extractTitle } from '../../domain/titleFromContent';
+import { getTargetCollectionFromRoute, getRouteCollectionId } from '../../services/fileImport';
+import { Select, SelectOption } from '../ui/Select';
 
 interface QuickAddModalProps {
   isOpen: boolean;
@@ -23,9 +25,27 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
 
   const [filename, setFilename] = useState('new-note.md');
   const [content, setContent] = useState('');
-  const [collectionId, setCollectionId] = useState<string>('');
+  const [collectionId, setCollectionId] = useState<string>(() => {
+    const rawId = getRouteCollectionId();
+    return rawId || '';
+  });
   const [tagsInput, setTagsInput] = useState('');
   const [isSaving, setIsSaving] = useState(false);
+
+  useEffect(() => {
+    if (isOpen) {
+      const rawId = getRouteCollectionId();
+      if (rawId && collections.some((c) => c.id === rawId)) {
+        setCollectionId(rawId);
+      } else if (!rawId) {
+        setCollectionId('');
+      } else {
+        getTargetCollectionFromRoute().then((target) => {
+          setCollectionId(target.collectionId || '');
+        });
+      }
+    }
+  }, [isOpen, collections]);
 
   useEffect(() => {
     if (initialContent) {
@@ -65,7 +85,12 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
         size: new Blob([content]).size,
       });
 
-      showToast(`Stashed "${filename}" successfully!`, 'success');
+      const targetCol = collections.find((c) => c.id === collectionId);
+      if (targetCol) {
+        showToast(`Stashed "${filename}" to ${targetCol.name}!`, 'success');
+      } else {
+        showToast(`Stashed "${filename}" successfully!`, 'success');
+      }
       onClose();
     } catch (err) {
       console.error(err);
@@ -86,7 +111,7 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
       <form onSubmit={handleSave} className="flex flex-col gap-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-xs font-bold text-ink/80 mb-1">
+            <label className="block font-display text-[13px] text-ink/80 mb-1.5">
               Filename
             </label>
             <Input
@@ -98,27 +123,27 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-ink/80 mb-1">
+            <label className="block font-display text-[13px] text-ink/80 mb-1.5">
               Collection
             </label>
-            <select
+            <Select
               value={collectionId}
-              onChange={(e) => setCollectionId(e.target.value)}
-              className="w-full bg-[#F8F7E6] text-ink border border-[rgba(38,51,42,0.2)] rounded-xl py-2 px-3 text-sm focus:outline-none focus:border-orange focus:ring-2 focus:ring-orange/30 font-sans"
-            >
-              <option value="">(Unsorted)</option>
-              {collections.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.name}
-                </option>
-              ))}
-            </select>
+              onChange={(val) => setCollectionId(val)}
+              options={[
+                { value: '', label: '(Unsorted)' },
+                ...collections.map((c) => ({ value: c.id, label: c.name })),
+              ]}
+              label="Collection"
+              variant="field"
+              placement="down"
+              className="w-full"
+            />
           </div>
         </div>
 
         <div>
-          <label className="block text-xs font-bold text-ink/80 mb-1">
-            Tags (comma separated)
+          <label className="block font-display text-[13px] text-ink/80 mb-1.5">
+            Tags, comma separated
           </label>
           <Input
             value={tagsInput}
@@ -128,26 +153,34 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
         </div>
 
         <div>
-          <label className="block text-xs font-bold text-ink/80 mb-1">
+          <label className="block font-display text-[13px] text-ink/80 mb-1.5">
             Markdown content
           </label>
           <textarea
             value={content}
             onChange={(e) => setContent(e.target.value)}
             rows={10}
-            className="w-full bg-[#F8F7E6] text-ink font-mono text-sm border border-[rgba(38,51,42,0.2)] rounded-xl p-3 focus:outline-none focus:border-orange focus:ring-2 focus:ring-orange/30 resize-y"
+            className="w-full bg-[var(--field-bg)] text-ink font-mono text-sm border border-[var(--field-border)] rounded-[10px] p-3 focus:outline-none focus:border-orange focus:ring-2 focus:ring-orange/40 resize-y placeholder:text-ink/60"
             placeholder="# Stash your markdown here..."
             required
           />
         </div>
 
-        <div className="flex items-center justify-end gap-3 pt-3 border-t border-[rgba(38,51,42,0.12)]">
-          <Button type="button" variant="ghost" onClick={onClose} className="text-ink/70 hover:text-ink">
+        <div className="flex items-center justify-end gap-3 pt-3 border-t border-[rgba(38,51,42,0.15)]">
+          <button
+            type="button"
+            onClick={onClose}
+            className="min-h-[40px] h-10 px-4 py-2 rounded-full border border-[var(--field-border)] text-ink hover:bg-[rgba(38,51,42,0.06)] font-display text-sm tracking-wide transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-orange"
+          >
             Cancel
-          </Button>
-          <Button type="submit" variant="primary" disabled={isSaving}>
+          </button>
+          <button
+            type="submit"
+            disabled={isSaving}
+            className="min-h-[40px] h-10 px-5 py-2 rounded-full bg-orange hover:bg-orange-deep text-ink font-display text-sm font-bold tracking-wide transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-orange shadow-sm disabled:opacity-50"
+          >
             {isSaving ? 'Stashing...' : 'Save to stash'}
-          </Button>
+          </button>
         </div>
       </form>
     </Dialog>

@@ -37,6 +37,18 @@ export default {
           deep: 'var(--orange-deep)',
           light: '#F5B85D',
         },
+        dialog: {
+          DEFAULT: 'var(--dialog-bg)',
+        },
+        field: {
+          DEFAULT: 'var(--field-bg)',
+          border: 'var(--field-border)',
+        },
+        scrim: 'var(--scrim)',
+        danger: {
+          DEFAULT: 'var(--danger)',
+          hover: '#963024',
+        },
         line: {
           DEFAULT: 'var(--line)',
           ink: 'var(--line-ink)',

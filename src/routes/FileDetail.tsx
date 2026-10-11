@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -10,6 +11,7 @@ import { setupDragOut } from '../services/dragOut';
 import { persistenceService } from '../services/persistence';
 import { useUIStore } from '../store/uiStore';
 import { Button } from '../components/ui/Button';
+import { confirm } from '../components/ui/ConfirmDialog';
 import { EditFileModal } from '../components/file/EditFileModal';
 import { VersionHistoryModal } from '../components/file/VersionHistoryModal';
 import { CopyMode } from '../domain/types';
@@ -30,6 +32,12 @@ import {
   Folder,
 } from 'lucide-react';
 
+const COPY_OPTIONS: { value: CopyMode; label: string; hint: string }[] = [
+  { value: 'prompt', label: 'Prompt-ready (with header)', hint: '### File' },
+  { value: 'codeblock', label: 'Fenced code block', hint: '```' },
+  { value: 'raw', label: 'Raw content', hint: 'plain' },
+];
+
 export const FileDetail: React.FC = () => {
   const { fileId } = useParams<{ fileId: string }>();
   const navigate = useNavigate();
@@ -39,9 +47,148 @@ export const FileDetail: React.FC = () => {
 
   const [activeTab, setActiveTab] = useState<'preview' | 'raw'>('preview');
   const [isCopied, setIsCopied] = useState(false);
+  const [copyMode, setCopyMode] = useState<CopyMode>('prompt');
   const [showCopyMenu, setShowCopyMenu] = useState(false);
+  const [activeOptionIndex, setActiveOptionIndex] = useState(0);
+  const [menuCoords, setMenuCoords] = useState<{
+    left: number;
+    width: number;
+    top?: number;
+    bottom?: number;
+    placement: 'up' | 'down';
+  }>({ left: 0, width: 300, top: 0, placement: 'down' });
+
+  const splitButtonRef = useRef<HTMLDivElement>(null);
+  const chevronRef = useRef<HTMLButtonElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
+
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
+
+  const updateMenuCoords = useCallback(() => {
+    if (!splitButtonRef.current) return;
+    const rect = splitButtonRef.current.getBoundingClientRect();
+    const menuWidth = 300;
+
+    // Right-aligned to button's right edge
+    let left = rect.right - menuWidth;
+    if (left < 12) left = 12;
+
+    const gap = 8;
+    const menuHeight = 142;
+    const spaceBelow = window.innerHeight - (rect.bottom + gap);
+    const shouldFlipUp = spaceBelow < menuHeight && rect.top > menuHeight;
+
+    if (shouldFlipUp) {
+      setMenuCoords({
+        left,
+        width: menuWidth,
+        bottom: window.innerHeight - rect.top + gap,
+        placement: 'up',
+      });
+    } else {
+      setMenuCoords({
+        left,
+        width: menuWidth,
+        top: rect.bottom + gap,
+        placement: 'down',
+      });
+    }
+  }, []);
+
+  const openCopyMenu = () => {
+    updateMenuCoords();
+    const idx = COPY_OPTIONS.findIndex((opt) => opt.value === copyMode);
+    setActiveOptionIndex(idx >= 0 ? idx : 0);
+    setShowCopyMenu(true);
+  };
+
+  const closeCopyMenu = (returnFocus = true) => {
+    setShowCopyMenu(false);
+    if (returnFocus) {
+      chevronRef.current?.focus();
+    }
+  };
+
+  const handleSelectOption = (mode: CopyMode) => {
+    setCopyMode(mode);
+    handleCopy(mode);
+    closeCopyMenu(true);
+  };
+
+  useEffect(() => {
+    if (!showCopyMenu) return;
+    updateMenuCoords();
+
+    const handleWindowChange = () => updateMenuCoords();
+    window.addEventListener('resize', handleWindowChange);
+    window.addEventListener('scroll', handleWindowChange, true);
+    return () => {
+      window.removeEventListener('resize', handleWindowChange);
+      window.removeEventListener('scroll', handleWindowChange, true);
+    };
+  }, [showCopyMenu, updateMenuCoords]);
+
+  useEffect(() => {
+    if (!showCopyMenu) return;
+
+    const handlePointerDown = (e: PointerEvent) => {
+      const target = e.target as Node;
+      if (
+        splitButtonRef.current?.contains(target) ||
+        menuRef.current?.contains(target)
+      ) {
+        return;
+      }
+      closeCopyMenu(false);
+    };
+
+    document.addEventListener('pointerdown', handlePointerDown);
+    return () => {
+      document.removeEventListener('pointerdown', handlePointerDown);
+    };
+  }, [showCopyMenu]);
+
+  const handleChevronKeyDown = (e: React.KeyboardEvent<HTMLButtonElement>) => {
+    if (!showCopyMenu) {
+      if (['ArrowDown', 'ArrowUp', 'Enter', ' '].includes(e.key)) {
+        e.preventDefault();
+        openCopyMenu();
+      }
+      return;
+    }
+
+    switch (e.key) {
+      case 'ArrowDown': {
+        e.preventDefault();
+        setActiveOptionIndex((prev) => (prev + 1) % COPY_OPTIONS.length);
+        break;
+      }
+      case 'ArrowUp': {
+        e.preventDefault();
+        setActiveOptionIndex((prev) => (prev - 1 + COPY_OPTIONS.length) % COPY_OPTIONS.length);
+        break;
+      }
+      case 'Enter':
+      case ' ': {
+        e.preventDefault();
+        if (COPY_OPTIONS[activeOptionIndex]) {
+          handleSelectOption(COPY_OPTIONS[activeOptionIndex].value);
+        }
+        break;
+      }
+      case 'Escape': {
+        e.preventDefault();
+        e.stopPropagation();
+        closeCopyMenu(true);
+        break;
+      }
+      case 'Tab': {
+        closeCopyMenu(false);
+        break;
+      }
+    }
+  };
 
   // Friendly not found state if fileId is not present
   if (!file) {
@@ -70,7 +217,7 @@ export const FileDetail: React.FC = () => {
     );
   }
 
-  const handleCopy = async (mode: CopyMode) => {
+  const handleCopy = async (mode: CopyMode = copyMode) => {
     try {
       const text = formatFileForCopy(file.filename, file.content, mode);
       await navigator.clipboard.writeText(text);
@@ -106,7 +253,15 @@ export const FileDetail: React.FC = () => {
   };
 
   const handleDelete = async () => {
-    if (confirm(`Delete "${file.filename}"? This action cannot be undone.`)) {
+    const ok = await confirm({
+      title: `Delete ${file.filename}?`,
+      body: "This removes the file and its version history from this device. This can't be undone.",
+      filenameChip: file.filename,
+      confirmLabel: 'Delete file',
+      cancelLabel: 'Cancel',
+      tone: 'danger',
+    });
+    if (ok) {
       await filesRepo.delete(file.id);
       showToast(`Deleted "${file.filename}"`, 'info');
       navigate('/app');
@@ -134,12 +289,8 @@ export const FileDetail: React.FC = () => {
           {collection ? (
             <Link
               to={`/app/c/${collection.id}`}
-              className="hover:text-cream transition-colors flex items-center gap-1"
+              className="hover:text-cream transition-colors"
             >
-              <span
-                className="w-2 h-2 rounded-full"
-                style={{ backgroundColor: collection.color }}
-              />
               <span>{collection.name}</span>
             </Link>
           ) : (
@@ -155,7 +306,7 @@ export const FileDetail: React.FC = () => {
       {/* Main Container */}
       <div className="bg-forest border border-line rounded-2xl shadow-card overflow-hidden">
         {/* Header Bar */}
-        <div className="px-6 py-5 border-b border-line bg-forest-dark/50 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="px-6 py-5 border-b border-line bg-forest-dark/50 flex flex-col md:flex-row md:items-end justify-between gap-4">
           <div className="min-w-0 space-y-1">
             <div className="flex items-center gap-3">
               <h1 className="text-2xl font-bold text-cream truncate">{file.title}</h1>
@@ -171,63 +322,123 @@ export const FileDetail: React.FC = () => {
               </button>
             </div>
 
-            <div className="flex items-center gap-2.5 text-xs text-cream-dim font-mono flex-wrap">
-              <span>{file.filename}</span>
-              <span>•</span>
-              <span>{persistenceService.formatBytes(file.size)}</span>
-              <span>•</span>
-              <span>Updated {new Date(file.updatedAt).toLocaleString()}</span>
+            <div className="flex items-center gap-2.5 text-xs text-cream-dim font-mono min-w-0">
+              <span className="truncate">{file.filename}</span>
+              <span className="shrink-0">•</span>
+              <span className="shrink-0">{persistenceService.formatBytes(file.size)}</span>
             </div>
           </div>
 
           {/* Action Buttons */}
-          <div className="flex items-center gap-2 flex-wrap shrink-0">
-            {/* Copy dropdown */}
-            <div className="relative">
-              <div className="inline-flex rounded-full shadow-sm">
-                <Button
-                  size="sm"
-                  variant="primary"
-                  onClick={() => handleCopy('prompt')}
-                  icon={isCopied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-                >
-                  {isCopied ? 'Copied!' : 'Copy Prompt'}
-                </Button>
+          <div className="flex items-center gap-3 flex-wrap shrink-0">
+            {/* Copy split button */}
+            <div ref={splitButtonRef} className="relative inline-flex items-center">
+              <div className="inline-flex items-stretch rounded-full bg-orange shadow-xs focus-within:ring-2 focus-within:ring-orange/80">
                 <button
                   type="button"
-                  onClick={() => setShowCopyMenu(!showCopyMenu)}
-                  className="bg-orange text-forest hover:bg-orange-deep px-2 rounded-r-full border-l border-forest/20 flex items-center justify-center cursor-pointer -ml-2"
-                  aria-label="More copy options"
+                  onClick={() => handleCopy(copyMode)}
+                  className="inline-flex items-center gap-1.5 pl-3.5 pr-2.5 py-1.5 text-xs font-display tracking-wide font-medium text-forest hover:bg-orange-deep rounded-l-full transition-colors cursor-pointer focus-visible:outline-none"
                 >
-                  <ChevronDown className="w-3.5 h-3.5" />
+                  {isCopied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+                  <span>{isCopied ? 'Copied!' : 'Copy prompt'}</span>
+                </button>
+
+                {/* Divider: 1px ink line at about 25% opacity, inset 8px top and bottom */}
+                <div
+                  className="w-[1px] my-2 bg-ink/25 self-stretch shrink-0"
+                  aria-hidden="true"
+                />
+
+                <button
+                  ref={chevronRef}
+                  type="button"
+                  id="copy-format-trigger"
+                  role="combobox"
+                  aria-haspopup="listbox"
+                  aria-expanded={showCopyMenu}
+                  aria-controls="copy-format-listbox"
+                  aria-label="More copy options"
+                  onClick={() => (showCopyMenu ? closeCopyMenu(true) : openCopyMenu())}
+                  onKeyDown={handleChevronKeyDown}
+                  className="px-[10px] py-1.5 text-forest hover:bg-orange-deep rounded-r-full transition-colors flex items-center justify-center cursor-pointer focus-visible:outline-none"
+                >
+                  <ChevronDown
+                    className={`w-3.5 h-3.5 transition-transform duration-200 ${
+                      showCopyMenu ? 'rotate-180' : ''
+                    }`}
+                  />
                 </button>
               </div>
 
-              {showCopyMenu && (
-                <div className="absolute right-0 mt-2 w-48 bg-forest-dark border border-line rounded-xl shadow-card py-1.5 z-50 text-xs animate-fadeIn">
-                  <button
-                    type="button"
-                    onClick={() => handleCopy('prompt')}
-                    className="w-full text-left px-3 py-2 text-cream hover:bg-forest-light hover:text-orange transition-colors"
+              {/* Portal Dropdown Menu */}
+              {showCopyMenu &&
+                createPortal(
+                  <div
+                    ref={menuRef}
+                    id="copy-format-listbox"
+                    role="listbox"
+                    aria-label="Copy format options"
+                    aria-activedescendant={`copy-opt-${activeOptionIndex}`}
+                    tabIndex={-1}
+                    style={{
+                      position: 'fixed',
+                      left: `${menuCoords.left}px`,
+                      width: `${menuCoords.width}px`,
+                      zIndex: 9999,
+                      ...(menuCoords.placement === 'up'
+                        ? { bottom: `${menuCoords.bottom}px` }
+                        : { top: `${menuCoords.top}px` }),
+                    }}
+                    className={`bg-forest-dark text-cream border border-line rounded-[12px] shadow-[0_12px_28px_-4px_rgba(25,32,28,0.45)] p-[6px] overflow-hidden select-none ${
+                      menuCoords.placement === 'up' ? 'animate-select-up' : 'animate-select-down'
+                    }`}
                   >
-                    Prompt-ready (with header)
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleCopy('codeblock')}
-                    className="w-full text-left px-3 py-2 text-cream hover:bg-forest-light hover:text-orange transition-colors"
-                  >
-                    Fenced Code Block
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleCopy('raw')}
-                    className="w-full text-left px-3 py-2 text-cream hover:bg-forest-light hover:text-orange transition-colors"
-                  >
-                    Raw Content
-                  </button>
-                </div>
-              )}
+                    {/* Paper grain overlay */}
+                    <div
+                      className="pointer-events-none absolute inset-0 bg-paper-grain rounded-[12px]"
+                      aria-hidden="true"
+                    />
+
+                    <div className="relative z-10 flex flex-col gap-[2px]">
+                      {COPY_OPTIONS.map((opt, idx) => {
+                        const isSelected = opt.value === copyMode;
+                        const isFocused = idx === activeOptionIndex;
+
+                        return (
+                          <div
+                            key={opt.value}
+                            id={`copy-opt-${idx}`}
+                            role="option"
+                            aria-selected={isSelected}
+                            onClick={() => handleSelectOption(opt.value)}
+                            onMouseEnter={() => setActiveOptionIndex(idx)}
+                            className={`h-[40px] px-3 flex items-center justify-between rounded-[8px] cursor-pointer transition-colors ${
+                              isFocused
+                                ? 'bg-forest-light text-cream'
+                                : 'text-cream hover:bg-forest-light'
+                            }`}
+                          >
+                            <div className="flex items-center gap-2 min-w-0">
+                              <span className="font-display text-xs tracking-tight text-cream truncate">
+                                {opt.label}
+                              </span>
+                              <span className="font-mono text-[11px] text-cream-dim/60 shrink-0">
+                                {opt.hint}
+                              </span>
+                            </div>
+                            {isSelected && (
+                              <Check
+                                className="w-4 h-4 text-orange shrink-0 ml-2"
+                                strokeWidth={2.5}
+                              />
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>,
+                  document.body
+                )}
             </div>
 
             {/* Download */}
@@ -240,7 +451,7 @@ export const FileDetail: React.FC = () => {
               Download
             </Button>
 
-            {/* Drag Me */}
+            {/* Drag me */}
             <div
               draggable
               onDragStart={handleDragStart}
@@ -248,7 +459,7 @@ export const FileDetail: React.FC = () => {
               title="Drag file out to Desktop or IDE"
             >
               <GripVertical className="w-3.5 h-3.5 text-orange" />
-              <span>Drag Me</span>
+              <span>Drag me</span>
             </div>
 
             {/* Edit */}
@@ -277,6 +488,7 @@ export const FileDetail: React.FC = () => {
               onClick={handleDelete}
               className="p-1.5 text-cream-dim hover:text-red-400 rounded-lg hover:bg-cream-faint transition-colors cursor-pointer"
               title="Delete file"
+              aria-label="Delete file"
             >
               <Trash2 className="w-4 h-4" />
             </button>
@@ -308,7 +520,7 @@ export const FileDetail: React.FC = () => {
               }`}
             >
               <Code2 className="w-3.5 h-3.5" />
-              <span>Raw Markdown</span>
+              <span>Raw markdown</span>
             </button>
           </div>
 
