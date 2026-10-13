@@ -7276,7 +7276,7 @@
   },
   {
     "id": "base",
-    "name": " Base",
+    "name": "Base",
     "kind": "component",
     "category": "data-display",
     "tags": [
@@ -7300,14 +7300,14 @@
     "attribution": "Mantine — MIT © 2020-present Vitaly Rtishchev (https://mantine.dev)",
     "favorite": false,
     "origin": "harvested",
-    "description": " Base component harvested from mantine with css-modules styling.",
+    "description": "Base component harvested from mantine with css-modules styling.",
     "depsCount": 2,
     "updatedAt": 1791913568408,
     "createdAt": 1791913568408
   },
   {
     "id": "base--mantine",
-    "name": " Base",
+    "name": "Base",
     "kind": "component",
     "category": "data-display",
     "tags": [
@@ -7331,7 +7331,7 @@
     "attribution": "Mantine — MIT © 2020-present Vitaly Rtishchev (https://mantine.dev)",
     "favorite": false,
     "origin": "harvested",
-    "description": " Base component harvested from mantine with css-modules styling.",
+    "description": "Base component harvested from mantine with css-modules styling.",
     "depsCount": 2,
     "updatedAt": 1791913568408,
     "createdAt": 1791913568408

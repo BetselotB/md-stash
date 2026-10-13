@@ -250,6 +250,25 @@ ${blob?.code || ''}
   // Estimated tokens
   const estimatedTokens = Math.round(promptOutput.length / 4);
 
+  // Dynamic origin for CLI & Agent URLs
+  const apiOrigin = typeof window !== 'undefined' ? window.location.origin : 'http://localhost:8787';
+
+  // Prevent flash of Component Not Found while Dexie query resolves
+  const [hasLoadedOnce, setHasLoadedOnce] = useState(false);
+  useEffect(() => {
+    const timer = setTimeout(() => setHasLoadedOnce(true), 300);
+    return () => clearTimeout(timer);
+  }, [id]);
+
+  if (!component && !hasLoadedOnce) {
+    return (
+      <div className="py-24 text-center space-y-3 animate-fadeIn">
+        <div className="w-8 h-8 mx-auto rounded-full border-2 border-orange/20 border-t-orange animate-spin" />
+        <p className="text-xs text-cream/70 font-sans">Opening component crate...</p>
+      </div>
+    );
+  }
+
   if (!component) {
     return (
       <div className="py-24 text-center space-y-4">
@@ -292,10 +311,10 @@ ${blob?.code || ''}
               to={`/app?cat=${component.category}`}
               className="text-cream/70 hover:text-orange transition-colors capitalize"
             >
-              {component.category}
+              {component.category.replace(/-/g, ' ')}
             </Link>
             <span className="text-cream/40">/</span>
-            <span className="text-cream font-bold">{component.name}</span>
+            <span className="text-cream font-bold">{component.name.trim()}</span>
           </div>
         </div>
 
@@ -325,7 +344,7 @@ ${blob?.code || ''}
         {/* Left 2/3 Main View */}
         <div className="lg:col-span-2 space-y-4">
           {/* Tabs Navigation Strip */}
-          <div className="flex items-center gap-1 overflow-x-auto p-1.5 rounded-2xl bg-[var(--dialog-bg)] border border-[rgba(38,51,42,0.18)] shadow-xs">
+          <div className="flex items-center gap-1 overflow-x-auto p-1.5 rounded-2xl bg-[var(--dialog-bg)] border border-[rgba(38,51,42,0.18)] shadow-xs scrollbar-none">
             {(
               [
                 { key: 'preview', label: 'Preview', icon: Maximize2 },
@@ -345,7 +364,7 @@ ${blob?.code || ''}
                   key={tab.key}
                   type="button"
                   onClick={() => setActiveTab(tab.key)}
-                  className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl font-display text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+                  className={`flex items-center gap-1.5 px-2.5 sm:px-3 xl:px-3.5 py-1.5 rounded-xl font-display text-xs font-bold transition-all cursor-pointer whitespace-nowrap shrink-0 ${
                     isActive
                       ? 'bg-forest text-cream shadow-xs ring-1 ring-forest/20'
                       : 'text-ink/75 hover:bg-[rgba(38,51,42,0.08)] hover:text-ink'
@@ -759,13 +778,13 @@ ${blob?.code || ''}
                 </span>
                 <div className="flex items-center justify-between p-3 rounded-xl bg-forest-dark text-cream font-mono text-xs">
                   <span>
-                    npx shadcn@latest add http://localhost:8787/r/{component.id}.json
+                    npx shadcn@latest add {apiOrigin}/r/{component.id}.json
                   </span>
                   <button
                     type="button"
                     onClick={() =>
                       handleCopy(
-                        `npx shadcn@latest add http://localhost:8787/r/${component.id}.json`,
+                        `npx shadcn@latest add ${apiOrigin}/r/${component.id}.json`,
                         'shadcn_cli',
                         'command'
                       )
@@ -879,7 +898,7 @@ ${blob?.code || ''}
                 type="button"
                 onClick={() =>
                   handleCopy(
-                    `http://localhost:8787/c/${component.id}.md`,
+                    `${apiOrigin}/c/${component.id}.md`,
                     'rail_agent_link',
                     'Agent link'
                   )
@@ -899,7 +918,7 @@ ${blob?.code || ''}
                 type="button"
                 onClick={() =>
                   handleCopy(
-                    `http://localhost:8787/r/${component.id}.json`,
+                    `${apiOrigin}/r/${component.id}.json`,
                     'rail_shadcn',
                     'Shadcn registry URL'
                   )

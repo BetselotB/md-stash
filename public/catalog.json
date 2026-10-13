@@ -22767,7 +22767,7 @@
   },
   {
     "id": "base",
-    "name": " Base",
+    "name": "Base",
     "kind": "component",
     "category": "data-display",
     "tags": [
@@ -22791,14 +22791,14 @@
     "attribution": "Mantine — MIT © 2020-present Vitaly Rtishchev (https://mantine.dev)",
     "favorite": false,
     "origin": "harvested",
-    "description": " Base component harvested from mantine with css-modules styling.",
+    "description": "Base component harvested from mantine with css-modules styling.",
     "depsCount": 2,
     "updatedAt": 1791913568408,
     "createdAt": 1791913568408
   },
   {
     "id": "base--mantine",
-    "name": " Base",
+    "name": "Base",
     "kind": "component",
     "category": "data-display",
     "tags": [
@@ -22822,7 +22822,7 @@
     "attribution": "Mantine — MIT © 2020-present Vitaly Rtishchev (https://mantine.dev)",
     "favorite": false,
     "origin": "harvested",
-    "description": " Base component harvested from mantine with css-modules styling.",
+    "description": "Base component harvested from mantine with css-modules styling.",
     "depsCount": 2,
     "updatedAt": 1791913568408,
     "createdAt": 1791913568408
@@ -38439,7 +38439,7 @@
   },
   {
     "id": "cssloader",
-    "name": " CssLoader",
+    "name": "CssLoader",
     "kind": "component",
     "category": "feedback",
     "tags": [
@@ -38463,7 +38463,7 @@
     "attribution": "Mantine — MIT © 2020-present Vitaly Rtishchev (https://mantine.dev)",
     "favorite": false,
     "origin": "harvested",
-    "description": " CssLoader component harvested from mantine with css-modules styling.",
+    "description": "CssLoader component harvested from mantine with css-modules styling.",
     "depsCount": 2,
     "updatedAt": 1791913568414,
     "createdAt": 1791913568414
@@ -62159,7 +62159,7 @@
   },
   {
     "id": "col-wrapper",
-    "name": " Col Wrapper",
+    "name": "Col Wrapper",
     "kind": "component",
     "category": "layout",
     "tags": [
@@ -62183,7 +62183,7 @@
     "attribution": "Mantine — MIT © 2020-present Vitaly Rtishchev (https://mantine.dev)",
     "favorite": false,
     "origin": "harvested",
-    "description": " Col Wrapper component harvested from mantine with css-modules styling.",
+    "description": "Col Wrapper component harvested from mantine with css-modules styling.",
     "depsCount": 2,
     "updatedAt": 1791913568424,
     "createdAt": 1791913568424
@@ -68022,7 +68022,7 @@
   },
   {
     "id": "slides",
-    "name": " Slides",
+    "name": "Slides",
     "kind": "component",
     "category": "media",
     "tags": [
@@ -68046,7 +68046,7 @@
     "attribution": "Mantine — MIT © 2020-present Vitaly Rtishchev (https://mantine.dev)",
     "favorite": false,
     "origin": "harvested",
-    "description": " Slides component harvested from mantine with css-modules styling.",
+    "description": "Slides component harvested from mantine with css-modules styling.",
     "depsCount": 2,
     "updatedAt": 1791913568425,
     "createdAt": 1791913568425
@@ -77659,7 +77659,7 @@
   },
   {
     "id": "base--mantine-2",
-    "name": " Base",
+    "name": "Base",
     "kind": "component",
     "category": "ai-chat",
     "tags": [
@@ -77684,7 +77684,7 @@
     "attribution": "Mantine — MIT © 2020-present Vitaly Rtishchev (https://mantine.dev)",
     "favorite": false,
     "origin": "harvested",
-    "description": " Base component harvested from mantine with css-modules styling.",
+    "description": "Base component harvested from mantine with css-modules styling.",
     "depsCount": 2,
     "updatedAt": 1791913568433,
     "createdAt": 1791913568433
@@ -101654,7 +101654,7 @@
   },
   {
     "id": "demo-base",
-    "name": " Demo Base",
+    "name": "Demo Base",
     "kind": "component",
     "category": "ai-chat",
     "tags": [
@@ -101679,14 +101679,14 @@
     "attribution": "Mantine — MIT © 2020-present Vitaly Rtishchev (https://mantine.dev)",
     "favorite": false,
     "origin": "harvested",
-    "description": " Demo Base component harvested from mantine with css-modules styling.",
+    "description": "Demo Base component harvested from mantine with css-modules styling.",
     "depsCount": 2,
     "updatedAt": 1791913568462,
     "createdAt": 1791913568462
   },
   {
     "id": "demo-item",
-    "name": " Demo Item",
+    "name": "Demo Item",
     "kind": "primitive",
     "category": "data-display",
     "tags": [
@@ -101711,7 +101711,7 @@
     "attribution": "Mantine — MIT © 2020-present Vitaly Rtishchev (https://mantine.dev)",
     "favorite": false,
     "origin": "harvested",
-    "description": " Demo Item component harvested from mantine with css-modules styling.",
+    "description": "Demo Item component harvested from mantine with css-modules styling.",
     "depsCount": 2,
     "updatedAt": 1791913568462,
     "createdAt": 1791913568462
@@ -108912,7 +108912,7 @@
   },
   {
     "id": "eventdetails",
-    "name": " EventDetails",
+    "name": "EventDetails",
     "kind": "component",
     "category": "ai-chat",
     "tags": [
@@ -108937,14 +108937,14 @@
     "attribution": "Mantine — MIT © 2020-present Vitaly Rtishchev (https://mantine.dev)",
     "favorite": false,
     "origin": "harvested",
-    "description": " EventDetails component harvested from mantine with css-modules styling.",
+    "description": "EventDetails component harvested from mantine with css-modules styling.",
     "depsCount": 2,
     "updatedAt": 1791913568468,
     "createdAt": 1791913568468
   },
   {
     "id": "eventform",
-    "name": " EventForm",
+    "name": "EventForm",
     "kind": "component",
     "category": "inputs-forms",
     "tags": [
@@ -108969,7 +108969,7 @@
     "attribution": "Mantine — MIT © 2020-present Vitaly Rtishchev (https://mantine.dev)",
     "favorite": false,
     "origin": "harvested",
-    "description": " EventForm component harvested from mantine with css-modules styling.",
+    "description": "EventForm component harvested from mantine with css-modules styling.",
     "depsCount": 2,
     "updatedAt": 1791913568468,
     "createdAt": 1791913568468
@@ -199534,7 +199534,7 @@
   },
   {
     "id": "content",
-    "name": " Content",
+    "name": "Content",
     "kind": "primitive",
     "category": "navigation",
     "tags": [
@@ -199558,7 +199558,7 @@
     "attribution": "Mantine — MIT © 2020-present Vitaly Rtishchev (https://mantine.dev)",
     "favorite": false,
     "origin": "harvested",
-    "description": " Content component harvested from mantine with css-modules styling.",
+    "description": "Content component harvested from mantine with css-modules styling.",
     "depsCount": 2,
     "updatedAt": 1791913568546,
     "createdAt": 1791913568546
@@ -202042,7 +202042,7 @@
   },
   {
     "id": "menu-items",
-    "name": " Menu Items",
+    "name": "Menu Items",
     "kind": "primitive",
     "category": "navigation",
     "tags": [
@@ -202066,7 +202066,7 @@
     "attribution": "Mantine — MIT © 2020-present Vitaly Rtishchev (https://mantine.dev)",
     "favorite": false,
     "origin": "harvested",
-    "description": " Menu Items component harvested from mantine with css-modules styling.",
+    "description": "Menu Items component harvested from mantine with css-modules styling.",
     "depsCount": 2,
     "updatedAt": 1791913568546,
     "createdAt": 1791913568546
@@ -243028,7 +243028,7 @@
   },
   {
     "id": "virtual-example",
-    "name": " Virtual Example",
+    "name": "Virtual Example",
     "kind": "component",
     "category": "selection",
     "tags": [
@@ -243048,7 +243048,7 @@
     "attribution": "Headless UI — MIT © Tailwind Labs, Inc. (https://headlessui.com)",
     "favorite": false,
     "origin": "harvested",
-    "description": " Virtual Example component harvested from headless-ui with tailwind styling.",
+    "description": "Virtual Example component harvested from headless-ui with tailwind styling.",
     "depsCount": 0,
     "updatedAt": 1791913568550,
     "createdAt": 1791913568550

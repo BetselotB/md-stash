@@ -40,7 +40,7 @@ export const KitTray: React.FC = () => {
   const [isReordering, setIsReordering] = useState(false);
   const [kitTitle, setKitTitle] = useState('My Custom Kit');
 
-  if (selectedComponentIds.length < 2) return null;
+  if (selectedComponentIds.length < 1) return null;
 
   // Selected components preserving current order
   const selectedComponents = selectedComponentIds

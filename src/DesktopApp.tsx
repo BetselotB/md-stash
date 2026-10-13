@@ -21,8 +21,8 @@ export const DesktopApp: React.FC = () => {
   useEffect(() => {
     // Only execute initial starter note seed if IndexedDB is freshly created on a mounted desktop session
     seedInitialDataIfNeeded().catch(console.error);
-    // Stock initial component crates from pilot catalog
-    catalogImportService.importCatalogIfNeeded({ url: '/pilot-catalog.json' }).catch(console.error);
+    // Stock initial component crates from full catalog
+    catalogImportService.importCatalogIfNeeded({ url: '/catalog.json' }).catch(console.error);
   }, []);
 
   return (

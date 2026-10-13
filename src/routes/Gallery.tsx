@@ -160,9 +160,10 @@ export const Gallery: React.FC = () => {
 
   const rowVirtualizer = useVirtualizer({
     count: rows.length,
-    getScrollElement: () => containerRef.current,
+    getScrollElement: () => containerRef.current?.closest('main') || null,
     estimateSize: () => 350,
     overscan: 3,
+    scrollMargin: containerRef.current?.offsetTop ?? 0,
   });
 
   return (

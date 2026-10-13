@@ -2,8 +2,8 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "base",
   "type": "registry:ui",
-  "title": " Base",
-  "description": " Base component harvested from mantine with css-modules styling.",
+  "title": "Base",
+  "description": "Base component harvested from mantine with css-modules styling.",
   "dependencies": [
     "@mantine/core",
     "@mantine/hooks"

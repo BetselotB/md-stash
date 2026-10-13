@@ -6,6 +6,7 @@ import {
   getPreviewStatusInfo,
 } from '../../services/previewRuntime';
 import { componentsRepo } from '../../db/components.repo';
+import { useUIStore } from '../../store/uiStore';
 import { AlertTriangle, RefreshCw, Sparkles, Box, Code } from 'lucide-react';
 
 interface PreviewSandboxProps {
@@ -27,6 +28,7 @@ export const PreviewSandbox: React.FC<PreviewSandboxProps> = ({
   onEvicted,
   showFallbackOnEvict = true,
 }) => {
+  const { showToast } = useUIStore();
   const [blob, setBlob] = useState<CodeBlob | null>(null);
   const [loading, setLoading] = useState(true);
   const [mountReady, setMountReady] = useState(false);
@@ -166,7 +168,7 @@ export const PreviewSandbox: React.FC<PreviewSandboxProps> = ({
             onClick={() => {
               const promptText = `Generate a self-contained visual demo wrapper for the "${component.name}" component (${component.id}) so it can be previewed cleanly.`;
               navigator.clipboard?.writeText(promptText);
-              alert('Copied AI prompt to clipboard!');
+              showToast('Copied AI demo prompt to clipboard!', 'success');
             }}
             className="px-3 py-1.5 rounded-lg bg-orange hover:bg-orange-deep text-forest text-xs font-display flex items-center gap-1.5 shadow-sm transition-all cursor-pointer"
           >
