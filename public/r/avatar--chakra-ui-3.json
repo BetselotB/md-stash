@@ -1,0 +1,34 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "avatar--chakra-ui-3",
+  "type": "registry:ui",
+  "title": "Avatar",
+  "description": "Avatar component harvested from chakra-ui with css-in-js styling.",
+  "dependencies": [
+    "@chakra-ui/react"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/avatar--chakra-ui-3.tsx",
+      "content": "\"use client\"\n\nimport { Avatar as ChakraAvatar, Group } from \"@chakra-ui/react\"\nimport * as React from \"react\"\n\nexport const Avatar = React.forwardRef(function Avatar(props, ref) {\n  const { name, src, srcSet, loading, icon, fallback, children, ...rest } =\n    props\n  return (\n    <ChakraAvatar.Root ref={ref} {...rest}>\n      <AvatarFallback name={name} icon={icon}>\n        {fallback}\n      </AvatarFallback>\n      <ChakraAvatar.Image src={src} srcSet={srcSet} loading={loading} />\n      {children}\n    </ChakraAvatar.Root>\n  )\n})\n\nconst AvatarFallback = React.forwardRef(function AvatarFallback(props, ref) {\n  const { name, icon, children, ...rest } = props\n  return (\n    <ChakraAvatar.Fallback ref={ref} {...rest}>\n      {children}\n      {name != null && children == null && <>{getInitials(name)}</>}\n      {name == null && children == null && (\n        <ChakraAvatar.Icon asChild={!!icon}>{icon}</ChakraAvatar.Icon>\n      )}\n    </ChakraAvatar.Fallback>\n  )\n})\n\nfunction getInitials(name) {\n  const names = name.trim().split(\" \")\n  const firstName = names[0] != null ? names[0] : \"\"\n  const lastName = names.length > 1 ? names[names.length - 1] : \"\"\n  return firstName && lastName\n    ? `${firstName.charAt(0)}${lastName.charAt(0)}`\n    : firstName.charAt(0)\n}\n\nexport const AvatarGroup = React.forwardRef(function AvatarGroup(props, ref) {\n  const { size, variant, borderless, ...rest } = props\n  return (\n    <ChakraAvatar.PropsProvider value={{ size, variant, borderless }}>\n      <Group gap=\"0\" spaceX=\"-3\" ref={ref} {...rest} />\n    </ChakraAvatar.PropsProvider>\n  )\n})",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Chakra UI — MIT © 2019-present Segun Adebayo (https://chakra-ui.com)",
+    "source": "chakra-ui",
+    "styling": "css-in-js",
+    "category": "data-display",
+    "previewStatus": "unsupported"
+  }
+}

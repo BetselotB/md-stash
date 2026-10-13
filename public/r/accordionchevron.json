@@ -1,0 +1,35 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "accordionchevron",
+  "type": "registry:ui",
+  "title": "AccordionChevron",
+  "description": "AccordionChevron component harvested from mantine with css-modules styling.",
+  "dependencies": [
+    "@mantine/core",
+    "@mantine/hooks"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/accordionchevron.tsx",
+      "content": "import { rem } from '../../core';\n\nexport interface AccordionChevronProps extends React.ComponentProps<'svg'> {\n  /** Controls `width` and `height` of the icon, `16` by default */\n  size?: number | string;\n}\n\nexport function AccordionChevron({ style, size = 16, ...others }: AccordionChevronProps) {\n  return (\n    <svg\n      viewBox=\"0 0 15 15\"\n      fill=\"none\"\n      xmlns=\"http://www.w3.org/2000/svg\"\n      style={{ ...style, width: rem(size), height: rem(size), display: 'block' }}\n      {...others}\n    >\n      <path\n        d=\"M3.13523 6.15803C3.3241 5.95657 3.64052 5.94637 3.84197 6.13523L7.5 9.56464L11.158 6.13523C11.3595 5.94637 11.6759 5.95657 11.8648 6.15803C12.0536 6.35949 12.0434 6.67591 11.842 6.86477L7.84197 10.6148C7.64964 10.7951 7.35036 10.7951 7.15803 10.6148L3.15803 6.86477C2.95657 6.67591 2.94637 6.35949 3.13523 6.15803Z\"\n        fill=\"currentColor\"\n        fillRule=\"evenodd\"\n        clipRule=\"evenodd\"\n      />\n    </svg>\n  );\n}\n\nAccordionChevron.displayName = '@mantine/core/AccordionChevron';\n\nexport namespace AccordionChevron {\n  export type Props = AccordionChevronProps;\n}",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Mantine — MIT © 2020-present Vitaly Rtishchev (https://mantine.dev)",
+    "source": "mantine",
+    "styling": "css-modules",
+    "category": "data-display",
+    "previewStatus": "unsupported"
+  }
+}

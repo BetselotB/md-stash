@@ -1,0 +1,35 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "avatar-test--mantine",
+  "type": "registry:ui",
+  "title": "Avatar.test",
+  "description": "Avatar.test component harvested from mantine with css-modules styling.",
+  "dependencies": [
+    "@mantine/core",
+    "@mantine/hooks"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/avatar-test--mantine.tsx",
+      "content": "import { fireEvent } from '@testing-library/react';\nimport { render, tests } from '@mantine-tests/core';\nimport { Avatar, AvatarProps, AvatarStylesNames } from './Avatar';\nimport { AvatarGroup } from './AvatarGroup/AvatarGroup';\n\nconst defaultProps: AvatarProps = {};\n\ndescribe('@mantine/core/Avatar', () => {\n  tests.axe([<Avatar src=\"test.png\" alt=\"test\" key=\"1\" />, <Avatar alt=\"test\" key=\"2\" />]);\n  tests.itSupportsSystemProps<AvatarProps, AvatarStylesNames>({\n    component: Avatar,\n    props: defaultProps,\n    varsResolver: true,\n    polymorphic: true,\n    children: true,\n    displayName: '@mantine/core/Avatar',\n    stylesApiSelectors: ['root', 'placeholder'],\n  });\n\n  it('sets data-within-group attribute when Avatar is rendered inside Avatar.Group', () => {\n    const { container, rerender } = render(\n      <Avatar.Group>\n        <Avatar />\n      </Avatar.Group>\n    );\n\n    expect(container.querySelector('.mantine-Avatar-root')).toHaveAttribute('data-within-group');\n\n    rerender(<Avatar />);\n    expect(container.querySelector('.mantine-Avatar-root')).not.toHaveAttribute(\n      'data-within-group'\n    );\n  });\n\n  it('renders placeholder if src was not set', () => {\n    const { rerender, container } = render(<Avatar />);\n    expect(container.querySelector('.mantine-Avatar-placeholder')).toBeInTheDocument();\n\n    rerender(<Avatar src=\"image.png\" />);\n    expect(container.querySelector('.mantine-Avatar-placeholder')).not.toBeInTheDocument();\n\n    rerender(<Avatar src={null} />);\n    expect(container.querySelector('.mantine-Avatar-placeholder')).toBeInTheDocument();\n  });\n\n  it('sets image src and alt attributes based on props', () => {\n    const { container } = render(<Avatar src=\"image.png\" alt=\"test-alt\" />);\n    const image = container.querySelector('img');\n\n    expect(image).toHaveAttribute('src', 'image.png');\n    expect(image).toHaveAttribute('alt', 'test-alt');\n  });\n\n  it('displays placeholder if image failed to load', () => {\n    const { container } = render(<Avatar src=\"image.png\" alt=\"test-alt\" />);\n    expect(container.querySelector('.mantine-Avatar-placeholder')).not.toBeInTheDocument();\n\n    fireEvent.error(container.querySelector('img')!);\n    expect(container.querySelector('.mantine-Avatar-placeholder')).toBeInTheDocument();\n  });\n\n  it('passes down imageProps to img element', () => {\n    const { container } = render(\n      <Avatar src=\"image.png\" alt=\"test-alt\" imageProps={{ 'aria-label': 'test-label' }} />\n    );\n    expect(container.querySelector('img')).toHaveAttribute('aria-label', 'test-label');\n  });\n\n  it('exposes AvatarGroup component', () => {\n    expect(Avatar.Group).toBe(AvatarGroup);\n  });\n});",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Mantine — MIT © 2020-present Vitaly Rtishchev (https://mantine.dev)",
+    "source": "mantine",
+    "styling": "css-modules",
+    "category": "data-display",
+    "previewStatus": "primitive"
+  }
+}

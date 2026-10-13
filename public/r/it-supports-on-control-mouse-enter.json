@@ -1,0 +1,35 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "it-supports-on-control-mouse-enter",
+  "type": "registry:hook",
+  "title": "It Supports On Control Mouse Enter",
+  "description": "It Supports On Control Mouse Enter component harvested from mantine with css-modules styling.",
+  "dependencies": [
+    "@mantine/core",
+    "@mantine/hooks"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "hooks/it-supports-on-control-mouse-enter.ts",
+      "content": "import userEvent from '@testing-library/user-event';\nimport { render } from '@mantine-tests/core';\n\ninterface Options {\n  component: React.ComponentType<any>;\n  props: Record<string, any>;\n}\n\nexport function itSupportsOnControlMouseEnter(\n  options: Options,\n  name = 'supports __onControlMouseEnter'\n) {\n  it(name, async () => {\n    const spy = jest.fn();\n    const { container } = render(\n      <options.component\n        {...options.props}\n        __onControlMouseEnter={(_event: any, date: any) => {\n          spy(date);\n        }}\n      />\n    );\n\n    await userEvent.hover(container.querySelector('table button')!);\n    expect(spy).toHaveBeenCalledWith(expect.any(String));\n  });\n}",
+      "type": "registry:hook"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Mantine — MIT © 2020-present Vitaly Rtishchev (https://mantine.dev)",
+    "source": "mantine",
+    "styling": "css-modules",
+    "category": "hooks",
+    "previewStatus": "primitive"
+  }
+}

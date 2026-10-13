@@ -1,0 +1,34 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "avatar-group",
+  "type": "registry:ui",
+  "title": "Avatar Group",
+  "description": "Avatar Group component harvested from ark-ui with unstyled styling.",
+  "dependencies": [
+    "@ark-ui/react"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/avatar-group.tsx",
+      "content": "import { HStack } from 'styled-system/jsx'\nimport { Avatar } from '~/components/ui/avatar'\n\ninterface Props {\n  avatars: { name: string; src: string }[]\n}\n\nexport const AvatarGroup = (props: Props) => {\n  const { avatars } = props\n  return (\n    <HStack gap=\"0\">\n      {avatars.map((avatar) => (\n        <Avatar\n          key={avatar.name}\n          src={avatar.src}\n          name={avatar.name}\n          _first={{ marginStart: '0' }}\n          overflow=\"hidden\"\n          marginStart={{ base: '-3', md: '-4' }}\n          size={{ base: 'xl', md: '2xl' }}\n          borderWidth=\"2px\"\n          borderColor=\"border.emphasized\"\n        />\n      ))}\n    </HStack>\n  )\n}",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Ark UI — MIT © 2022-present Chakra Systems GmbH (https://ark-ui.com)",
+    "source": "ark-ui",
+    "styling": "unstyled",
+    "category": "data-display",
+    "previewStatus": "needs-demo"
+  }
+}

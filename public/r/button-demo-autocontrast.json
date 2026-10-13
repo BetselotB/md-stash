@@ -1,0 +1,35 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "button-demo-autocontrast",
+  "type": "registry:ui",
+  "title": "Button.demo.autoContrast",
+  "description": "Button.demo.autoContrast component harvested from mantine with css-modules styling.",
+  "dependencies": [
+    "@mantine/core",
+    "@mantine/hooks"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/button-demo-autocontrast.tsx",
+      "content": "import { Button, Group } from '@mantine/core';\nimport { MantineDemo } from '@mantinex/demo';\n\nconst code = `\nimport { Button, Group } from '@mantine/core';\n\nfunction Demo() {\n  return (\n    <Group>\n      <Button color=\"lime.4\">Default</Button>\n      <Button color=\"lime.4\" autoContrast>\n        Auto contrast\n      </Button>\n    </Group>\n  );\n}\n`;\n\nfunction Demo() {\n  return (\n    <Group>\n      <Button color=\"lime.4\">Default</Button>\n      <Button color=\"lime.4\" autoContrast>\n        Auto contrast\n      </Button>\n    </Group>\n  );\n}\n\nexport const autoContrast: MantineDemo = {\n  type: 'code',\n  component: Demo,\n  code,\n  centered: true,\n};",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Mantine — MIT © 2020-present Vitaly Rtishchev (https://mantine.dev)",
+    "source": "mantine",
+    "styling": "css-modules",
+    "category": "buttons",
+    "previewStatus": "unsupported"
+  }
+}

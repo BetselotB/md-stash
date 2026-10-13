@@ -1,0 +1,34 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "useitems",
+  "type": "registry:hook",
+  "title": "UseItems",
+  "description": "UseItems component harvested from ant-design with css-in-js styling.",
+  "dependencies": [
+    "antd"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "hooks/useitems.ts",
+      "content": "import * as React from 'react';\nimport LoadingOutlined from '@ant-design/icons/LoadingOutlined';\nimport { toArray } from '@rc-component/util';\nimport { clsx } from 'clsx';\n\nimport { genCssVar } from '../theme/util/genStyleUtils';\nimport type { TimelineItemType, TimelineMode, TimelineProps } from './Timeline';\n\nconst useItems = (\n  rootPrefixCls: string,\n  prefixCls: string,\n  mode: TimelineMode,\n  items?: TimelineItemType[],\n  children?: React.ReactNode,\n  pending?: TimelineProps['pending'],\n  pendingDot?: TimelineProps['pendingDot'],\n) => {\n  const itemCls = `${prefixCls}-item`;\n\n  const [varName] = genCssVar(rootPrefixCls, 'cmp-steps');\n\n  // Merge items and children\n  const parseItems = React.useMemo<TimelineItemType[]>(() => {\n    return Array.isArray(items)\n      ? items\n      : toArray(children).map((ele: React.ReactElement<any>) => ({ ...ele.props }));\n  }, [items, children]);\n\n  // convert legacy type\n  return React.useMemo(() => {\n    const mergedItems = parseItems.map<TimelineItemType>((item, index) => {\n      const {\n        label,\n        children,\n        title,\n        content,\n        color,\n        className,\n        style,\n        icon,\n        dot,\n        placement,\n        position,\n        loading,\n        ...restProps\n      } = item;\n\n      let mergedStyle = style;\n      let mergedClassName = className;\n\n      if (color) {\n        if (['blue', 'red', 'green', 'gray'].includes(color)) {\n          mergedClassName = clsx(className, `${itemCls}-color-${color}`);\n        } else {\n          mergedStyle = {\n            [varName('item-icon-dot-color')]: color,\n            ...style,\n          };\n        }\n      }\n\n      // Placement\n      const mergedPlacement =\n        placement ??\n        position ??\n        (mode === 'alternate' ? (index % 2 === 0 ? 'start' : 'end') : mode);\n\n      mergedClassName = clsx(mergedClassName, `${itemCls}-placement-${mergedPlacement}`);\n\n      // Icon\n      let mergedIcon = icon ?? dot;\n      if (!mergedIcon && loading) {\n        mergedIcon = <LoadingOutlined />;\n      }\n\n      return {\n        ...restProps,\n        title: title ?? label,\n        content: content ?? children,\n        style: mergedStyle,\n        className: mergedClassName,\n        icon: mergedIcon,\n        status: loading ? 'process' : 'finish',\n      };\n    });\n\n    if (pending) {\n      mergedItems.push({\n        icon: pendingDot ?? <LoadingOutlined />,\n        content: pending,\n        status: 'process',\n      } as TimelineItemType);\n    }\n\n    return mergedItems;\n  }, [parseItems, pending, mode, itemCls, varName, pendingDot]);\n};\n\nexport default useItems;",
+      "type": "registry:hook"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Ant Design — MIT © 2015-present Alipay.com (https://ant.design)",
+    "source": "ant-design",
+    "styling": "css-in-js",
+    "category": "data-display",
+    "previewStatus": "primitive"
+  }
+}

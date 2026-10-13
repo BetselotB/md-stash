@@ -1,0 +1,35 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "accordionpanel-test--mantine",
+  "type": "registry:ui",
+  "title": "AccordionPanel.test",
+  "description": "AccordionPanel.test component harvested from mantine with css-modules styling.",
+  "dependencies": [
+    "@mantine/core",
+    "@mantine/hooks"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/accordionpanel-test--mantine.tsx",
+      "content": "import { createContextContainer, tests } from '@mantine-tests/core';\nimport { Accordion } from '../Accordion';\nimport { AccordionItem } from '../AccordionItem/AccordionItem';\nimport { AccordionPanel, AccordionPanelProps, AccordionPanelStylesNames } from './AccordionPanel';\n\nconst defaultProps: AccordionPanelProps = {};\n\nconst _ContextContainer = createContextContainer(AccordionPanel, AccordionItem, { value: 'test' });\nconst ContextContainer = createContextContainer(_ContextContainer, Accordion, {});\n\ndescribe('@mantine/core/AccordionPanel', () => {\n  tests.itSupportsSystemProps<AccordionPanelProps, AccordionPanelStylesNames>({\n    component: ContextContainer,\n    props: defaultProps,\n    children: true,\n    displayName: '@mantine/core/AccordionPanel',\n    stylesApiSelectors: ['panel', 'content'],\n    stylesApiName: 'Accordion',\n    selector: '.mantine-Accordion-panel',\n    providerStylesApi: false,\n    compound: true,\n  });\n\n  tests.itThrowsContextError(\n    {\n      component: AccordionPanel,\n      props: defaultProps,\n      error: 'Accordion.Item component was not found in the tree',\n    },\n    'throws error when rendered outside of Accordion.Item context'\n  );\n\n  tests.itThrowsContextError(\n    {\n      component: _ContextContainer,\n      props: defaultProps,\n      error: 'Accordion component was not found in the tree',\n    },\n    'throws error when rendered outside of Accordion context'\n  );\n});",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Mantine — MIT © 2020-present Vitaly Rtishchev (https://mantine.dev)",
+    "source": "mantine",
+    "styling": "css-modules",
+    "category": "data-display",
+    "previewStatus": "primitive"
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "transition-demo-custom",
+  "type": "registry:ui",
+  "title": "Transition.demo.custom",
+  "description": "Transition.demo.custom component harvested from mantine with css-modules styling.",
+  "dependencies": [
+    "@mantine/core",
+    "@mantine/hooks"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/transition-demo-custom.tsx",
+      "content": "import { useState } from 'react';\nimport { Box, Button, Paper, Transition } from '@mantine/core';\nimport { useClickOutside } from '@mantine/hooks';\nimport { MantineDemo } from '@mantinex/demo';\n\nconst code = `\nimport { useState } from 'react';\nimport { useClickOutside } from '@mantine/hooks';\nimport { Transition, Paper, Button, Box } from '@mantine/core';\n\nconst scaleY = {\n  in: { opacity: 1, transform: 'scaleY(1)' },\n  out: { opacity: 0, transform: 'scaleY(0)' },\n  common: { transformOrigin: 'top' },\n  transitionProperty: 'transform, opacity',\n};\n\nfunction Demo() {\n  const [opened, setOpened] = useState(false);\n  const clickOutsideRef = useClickOutside(() => setOpened(false));\n\n  return (\n    <Box\n      maw={200}\n      pos=\"relative\"\n      style={{ display: 'flex', justifyContent: 'center', margin: 'auto' }}\n    >\n      <Button onClick={() => setOpened(true)}>Open dropdown</Button>\n      <Transition\n        mounted={opened}\n        transition={scaleY}\n        duration={200}\n        timingFunction=\"ease\"\n        keepMounted\n      >\n        {(transitionStyle) => (\n          <Paper\n            shadow=\"md\"\n            p=\"xl\"\n            h={120}\n            pos=\"absolute\"\n            top={0}\n            left={0}\n            right={0}\n            ref={clickOutsideRef}\n            style={{ ...transitionStyle, zIndex: 1 }}\n          >\n            Dropdown\n          </Paper>\n        )}\n      </Transition>\n    </Box>\n  );\n}`;\n\nconst scaleY = {\n  in: { opacity: 1, transform: 'scaleY(1)' },\n  out: { opacity: 0, transform: 'scaleY(0)' },\n  common: { transformOrigin: 'top' },\n  transitionProperty: 'transform, opacity',\n};\n\nexport function Demo() {\n  const [opened, setOpened] = useState(false);\n  const clickOutsideRef = useClickOutside(() => setOpened(false));\n\n  return (\n    <Box\n      maw={200}\n      pos=\"relative\"\n      style={{ display: 'flex', justifyContent: 'center', margin: 'auto' }}\n    >\n      <Button onClick={() => setOpened(true)}>Open dropdown</Button>\n      <Transition\n        mounted={opened}\n        transition={scaleY}\n        duration={200}\n        timingFunction=\"ease\"\n        keepMounted\n      >\n        {(transitionStyle) => (\n          <Paper\n            shadow=\"md\"\n            p=\"xl\"\n            h={120}\n            pos=\"absolute\"\n            top={0}\n            left={0}\n            right={0}\n            ref={clickOutsideRef}\n            style={{ ...transitionStyle, zIndex: 1 }}\n          >\n            Dropdown\n          </Paper>\n        )}\n      </Transition>\n    </Box>\n  );\n}\n\nexport const custom: MantineDemo = {\n  type: 'code',\n  code,\n  component: Demo,\n};",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Mantine — MIT © 2020-present Vitaly Rtishchev (https://mantine.dev)",
+    "source": "mantine",
+    "styling": "css-modules",
+    "category": "animation-primitives",
+    "previewStatus": "unsupported"
+  }
+}

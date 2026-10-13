@@ -1,0 +1,35 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "it-supports-background-props",
+  "type": "registry:ui",
+  "title": "It Supports Background Props",
+  "description": "It Supports Background Props component harvested from mantine with css-modules styling.",
+  "dependencies": [
+    "@mantine/core",
+    "@mantine/hooks"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/it-supports-background-props.tsx",
+      "content": "import { render } from '../render';\n\ninterface Options<Props = any> {\n  component: React.ComponentType<Props>;\n  props: Props;\n  selector?: string;\n}\n\nexport function itSupportsBackgroundProps<Props>(\n  options: Options<Props>,\n  name = 'supports bd, bgsz, bgp, bgr and bga props'\n) {\n  const selector = options.selector || '*:not(style)';\n\n  it(name, () => {\n    const { container: bgsz } = render(<options.component {...options.props} bgsz={32} />);\n    const { container: bgp } = render(<options.component {...options.props} bgp=\"center\" />);\n    const { container: bgr } = render(<options.component {...options.props} bgr=\"repeat\" />);\n    const { container: bga } = render(<options.component {...options.props} bga=\"fixed\" />);\n\n    expect(bgsz.querySelector(selector)).toHaveStyle({\n      backgroundSize: 'calc(2rem * var(--mantine-scale))',\n    });\n    expect(bgp.querySelector(selector)).toHaveStyle({ backgroundPosition: 'center' });\n    expect(bgr.querySelector(selector)).toHaveStyle({ backgroundRepeat: 'repeat' });\n    expect(bga.querySelector(selector)).toHaveStyle({ backgroundAttachment: 'fixed' });\n  });\n}",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Mantine — MIT © 2020-present Vitaly Rtishchev (https://mantine.dev)",
+    "source": "mantine",
+    "styling": "css-modules",
+    "category": "backgrounds",
+    "previewStatus": "unsupported"
+  }
+}

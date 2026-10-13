@@ -1,0 +1,35 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "button-demo-disabledtooltip",
+  "type": "registry:ui",
+  "title": "Button.demo.disabledTooltip",
+  "description": "Button.demo.disabledTooltip component harvested from mantine with css-modules styling.",
+  "dependencies": [
+    "@mantine/core",
+    "@mantine/hooks"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/button-demo-disabledtooltip.tsx",
+      "content": "import { Button, Tooltip } from '@mantine/core';\nimport { MantineDemo } from '@mantinex/demo';\n\nconst code = `\nimport { Button, Tooltip } from '@mantine/core';\n\nfunction Demo() {\n  return (\n    <Tooltip label=\"Tooltip for disabled button\">\n      <Button data-disabled onClick={(event) => event.preventDefault()}>\n        Disabled button with tooltip\n      </Button>\n    </Tooltip>\n  );\n}\n`;\n\nfunction Demo() {\n  return (\n    <Tooltip label=\"Tooltip for disabled button\">\n      <Button data-disabled onClick={(event) => event.preventDefault()}>\n        Disabled button with tooltip\n      </Button>\n    </Tooltip>\n  );\n}\n\nexport const disabledTooltip: MantineDemo = {\n  type: 'code',\n  component: Demo,\n  centered: true,\n  code,\n};",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Mantine — MIT © 2020-present Vitaly Rtishchev (https://mantine.dev)",
+    "source": "mantine",
+    "styling": "css-modules",
+    "category": "buttons",
+    "previewStatus": "unsupported"
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "button-spec--mui",
+  "type": "registry:ui",
+  "title": "Button.spec",
+  "description": "Button.spec component harvested from mui with css-in-js styling.",
+  "dependencies": [
+    "@mui/material",
+    "@emotion/react",
+    "@emotion/styled"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/button-spec--mui.tsx",
+      "content": "import * as React from 'react';\nimport { Link as ReactRouterLink, LinkProps } from 'react-router';\nimport { expectType } from '@mui/types';\nimport Button, { ButtonProps } from '@mui/material/Button';\nimport MaterialUiLink, { LinkProps as MaterialUiLinkProps } from '@mui/material/Link';\n\nconst log = console.log;\n\nconst TestOverride = React.forwardRef<HTMLDivElement, { x?: number }>((props, ref) => (\n  <div ref={ref} />\n));\n\ntype CustomLinkProps = MaterialUiLinkProps<typeof ReactRouterLink, LinkProps>;\nconst CustomLink: React.FC<React.PropsWithChildren<CustomLinkProps>> = ({ children, ...props }) => {\n  return (\n    <MaterialUiLink component={ReactRouterLink} {...props}>\n      {children}\n    </MaterialUiLink>\n  );\n};\n\nfunction FakeIcon() {\n  return <div>Icon</div>;\n}\n\nconst props1: ButtonProps<'div'> = {\n  component: 'div',\n  onChange: (event) => {\n    expectType<React.ChangeEvent<HTMLDivElement>, typeof event>(event);\n  },\n};\n\nconst props2: ButtonProps = {\n  onChange: (event) => {\n    expectType<React.ChangeEvent<HTMLButtonElement>, typeof event>(event);\n  },\n};\n\nconst props3: ButtonProps<typeof TestOverride> = {\n  component: TestOverride,\n  x: 2,\n};\n\nconst props4: ButtonProps<typeof TestOverride> = {\n  component: TestOverride,\n  // @ts-expect-error TestOverride does not accept incorrectProp\n  incorrectProp: 3,\n};\n\nconst props5: ButtonProps<typeof TestOverride> = {\n  component: TestOverride,\n};\n\nconst buttonTest = () => (\n  <div>\n    <Button>I am a button!</Button>\n    <Button color=\"inherit\">Contrast</Button>\n    <Button disabled>Disabled</Button>\n    <Button href=\"#link-button\">Link</Button>\n    <Button size=\"small\">Small</Button>\n    <Button variant=\"contained\">Contained</Button>\n    <Button variant=\"outlined\" aria-label=\"add\">\n      Outlined\n    </Button>\n    <Button tabIndex={1} title=\"some button\">\n      Title\n    </Button>\n    <Button component=\"a\">Simple Link</Button>\n    <Button component={(props: any) => <a {...props} />}>Complex Link</Button>\n    <Button component={ReactRouterLink} to=\"/open-collective\">\n      Link\n    </Button>\n    <Button href=\"/open-collective\">Link</Button>\n    <Button component={ReactRouterLink} to=\"/open-collective\">\n      Link\n    </Button>\n    <Button component={CustomLink} to=\"/some-route\">\n      Link\n    </Button>\n    <Button href=\"/open-collective\">Link</Button>\n    {/* By default the underlying component is a button element */}\n    <Button\n      ref={(elem) => {\n        expectType<HTMLButtonElement | null, typeof elem>(elem);\n      }}\n      onClick={(event) => {\n        expectType<React.MouseEvent<HTMLButtonElement, MouseEvent>, typeof event>(event);\n        log(event);\n      }}\n    >\n      Button\n    </Button>\n    {/* If an href is provided, an anchor is used */}\n    <Button\n      href=\"/open-collective\"\n      ref={(elem) => {\n        expectType<HTMLAnchorElement | null, typeof elem>(elem);\n      }}\n      onClick={(event) => {\n        expectType<React.MouseEvent<HTMLAnchorElement, MouseEvent>, typeof event>(event);\n        log(event);\n      }}\n    >\n      Link\n    </Button>\n    {/* If a component prop is specified, use that: */}\n    <Button<'div'>\n      component=\"div\"\n      ref={(elem) => {\n        expectType<HTMLDivElement | null, typeof elem>(elem);\n      }}\n      onClick={(event) => {\n        expectType<React.MouseEvent<HTMLDivElement, MouseEvent>, typeof event>(event);\n        log(event);\n      }}\n    >\n      Div\n    </Button>\n    {\n      // Can't have an onClick handler if the overriding component doesn't specify one:\n      // @ts-expect-error\n      <Button<typeof TestOverride> component={TestOverride} onClick={log}>\n        TestOverride\n      </Button>\n    }\n    <Button startIcon={<FakeIcon />}>Start Icon</Button>\n    <Button endIcon={<FakeIcon />}>endIcon</Button>\n  </div>\n);\n\nconst ReactRouterLinkTest = () => {\n  function ButtonLink(props: ButtonProps<typeof ReactRouterLink>) {\n    return <Button {...props} component={ReactRouterLink} />;\n  }\n\n  const reactRouterButtonLink1 = <ButtonLink to=\"/\">Go Home</ButtonLink>;\n\n  const MyLink = React.forwardRef<HTMLAnchorElement, LinkProps>((props, ref) => {\n    return <ReactRouterLink ref={ref} {...props} />;\n  });\n\n  const reactRouterButtonLink2 = (\n    <Button component={MyLink} to=\"/router-future\">\n      Go Home\n    </Button>\n  );\n};\n\nfunction ClassesTest() {\n  return (\n    <Button\n      classes={{\n        outlined: 'extra-outlined',\n        loadingIndicator: 'extra-loading-indicator',\n        disabled: 'extra-disabled',\n      }}\n    >\n      Button\n    </Button>\n  );\n}",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Material UI — MIT © 2014-present Call-Em-All / Material-UI (https://mui.com)",
+    "source": "mui",
+    "styling": "css-in-js",
+    "category": "buttons",
+    "previewStatus": "unsupported"
+  }
+}

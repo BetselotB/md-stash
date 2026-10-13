@@ -1,0 +1,35 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "button-demo-sectionsjustify",
+  "type": "registry:block",
+  "title": "Button.demo.sectionsJustify",
+  "description": "Button.demo.sectionsJustify component harvested from mantine with css-modules styling.",
+  "dependencies": [
+    "@mantine/core",
+    "@mantine/hooks"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/button-demo-sectionsjustify.tsx",
+      "content": "import { ImageIcon } from '@phosphor-icons/react';\nimport { Button } from '@mantine/core';\nimport { MantineDemo } from '@mantinex/demo';\n\nconst code = (props: any) => `\nimport { Button } from '@mantine/core';\nimport { ImageIcon } from '@phosphor-icons/react';\n\nfunction Demo() {\n  const icon = <ImageIcon size={14} />;\n  return (\n    <>\n      <Button justify=\"${props.justify}\" fullWidth leftSection={icon} rightSection={icon} variant=\"default\">\n        Button label\n      </Button>\n\n      <Button justify=\"${props.justify}\" fullWidth leftSection={icon} variant=\"default\" mt=\"md\">\n        Button label\n      </Button>\n\n      <Button justify=\"${props.justify}\" fullWidth rightSection={icon} variant=\"default\" mt=\"md\">\n        Button label\n      </Button>\n\n      <Button\n        justify=\"${props.justify}\"\n        fullWidth\n        rightSection={icon}\n        leftSection={<span />}\n        variant=\"default\"\n        mt=\"md\"\n      >\n        Button label\n      </Button>\n    </>\n  );\n}\n`;\n\nfunction Wrapper(props: any) {\n  const icon = <ImageIcon size={14} />;\n  return (\n    <>\n      <Button fullWidth leftSection={icon} rightSection={icon} variant=\"default\" {...props}>\n        Button label\n      </Button>\n\n      <Button fullWidth leftSection={icon} variant=\"default\" mt=\"md\" {...props}>\n        Button label\n      </Button>\n\n      <Button fullWidth rightSection={icon} variant=\"default\" mt=\"md\" {...props}>\n        Button label\n      </Button>\n\n      <Button\n        fullWidth\n        rightSection={icon}\n        leftSection={<span />}\n        variant=\"default\"\n        mt=\"md\"\n        {...props}\n      >\n        Button label\n      </Button>\n    </>\n  );\n}\n\nexport const sectionsJustify: MantineDemo = {\n  type: 'configurator',\n  component: Wrapper,\n  code,\n  controls: [\n    {\n      type: 'segmented',\n      prop: 'justify',\n      data: ['center', 'space-between'],\n      initialValue: 'center',\n      libraryValue: '__none__',\n    },\n  ],\n};",
+      "type": "registry:block"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Mantine — MIT © 2020-present Vitaly Rtishchev (https://mantine.dev)",
+    "source": "mantine",
+    "styling": "css-modules",
+    "category": "buttons",
+    "previewStatus": "unsupported"
+  }
+}

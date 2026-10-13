@@ -1,0 +1,35 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "button-demo-group",
+  "type": "registry:ui",
+  "title": "Button.demo.group",
+  "description": "Button.demo.group component harvested from mantine with css-modules styling.",
+  "dependencies": [
+    "@mantine/core",
+    "@mantine/hooks"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/button-demo-group.tsx",
+      "content": "import { Button } from '@mantine/core';\nimport { MantineDemo } from '@mantinex/demo';\n\nconst code = `\nimport { Button } from '@mantine/core';\n\nfunction Demo() {\n  return (\n    <Button.Group{{props}}>\n      <Button variant=\"default\">First</Button>\n      <Button variant=\"default\">Second</Button>\n      <Button variant=\"default\">Third</Button>\n    </Button.Group>\n  );\n}\n`;\n\nfunction Wrapper(props: any) {\n  return (\n    <Button.Group {...props}>\n      <Button variant=\"default\">First</Button>\n      <Button variant=\"default\">Second</Button>\n      <Button variant=\"default\">Third</Button>\n    </Button.Group>\n  );\n}\n\nexport const group: MantineDemo = {\n  type: 'configurator',\n  component: Wrapper,\n  code,\n  centered: true,\n  controls: [\n    {\n      type: 'segmented',\n      prop: 'orientation',\n      data: ['horizontal', 'vertical'],\n      initialValue: 'horizontal',\n      libraryValue: 'horizontal',\n    },\n  ],\n};",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Mantine — MIT © 2020-present Vitaly Rtishchev (https://mantine.dev)",
+    "source": "mantine",
+    "styling": "css-modules",
+    "category": "buttons",
+    "previewStatus": "unsupported"
+  }
+}

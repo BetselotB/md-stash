@@ -1,0 +1,35 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "button-demo-loading",
+  "type": "registry:ui",
+  "title": "Button.demo.loading",
+  "description": "Button.demo.loading component harvested from mantine with css-modules styling.",
+  "dependencies": [
+    "@mantine/core",
+    "@mantine/hooks"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/button-demo-loading.tsx",
+      "content": "import { Button, Group, Switch } from '@mantine/core';\nimport { useDisclosure } from '@mantine/hooks';\nimport { MantineDemo } from '@mantinex/demo';\n\nconst code = `\nimport { Button, Group, Switch } from '@mantine/core';\nimport { useDisclosure } from '@mantine/hooks';\n\nfunction Demo() {\n  const [loading, { toggle }] = useDisclosure();\n  return (\n    <>\n      <Group>\n        <Button loading={loading}>Filled button</Button>\n        <Button variant=\"light\" loading={loading}>\n          Light button\n        </Button>\n        <Button variant=\"outline\" loading={loading}>\n          Outline button\n        </Button>\n      </Group>\n\n      <Switch checked={loading} onChange={toggle} label=\"Loading state\" mt=\"md\" />\n    </>\n  );\n}\n`;\n\nfunction Demo() {\n  const [loading, { toggle }] = useDisclosure();\n  return (\n    <>\n      <Group>\n        <Button loading={loading}>Filled button</Button>\n        <Button variant=\"light\" loading={loading}>\n          Light button\n        </Button>\n        <Button variant=\"outline\" loading={loading}>\n          Outline button\n        </Button>\n      </Group>\n\n      <Switch checked={loading} onChange={toggle} label=\"Loading state\" mt=\"md\" />\n    </>\n  );\n}\n\nexport const loading: MantineDemo = {\n  type: 'code',\n  component: Demo,\n  centered: true,\n  code,\n};",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Mantine — MIT © 2020-present Vitaly Rtishchev (https://mantine.dev)",
+    "source": "mantine",
+    "styling": "css-modules",
+    "category": "buttons",
+    "previewStatus": "unsupported"
+  }
+}

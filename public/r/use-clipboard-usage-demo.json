@@ -1,0 +1,35 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "use-clipboard-usage-demo",
+  "type": "registry:hook",
+  "title": "Use Clipboard.usage.demo",
+  "description": "Use Clipboard.usage.demo component harvested from mantine with css-modules styling.",
+  "dependencies": [
+    "@mantine/core",
+    "@mantine/hooks"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "hooks/use-clipboard-usage-demo.ts",
+      "content": "import { Button } from '@mantine/core';\nimport { useClipboard } from '@mantine/hooks';\nimport { MantineDemo } from '@mantinex/demo';\n\nconst code = `\nimport { Button } from '@mantine/core';\nimport { useClipboard } from '@mantine/hooks';\n\nfunction Demo() {\n  const clipboard = useClipboard({ timeout: 500 });\n\n  return (\n    <Button\n      color={clipboard.copied ? 'teal' : 'blue'}\n      onClick={() => clipboard.copy('Hello, world!')}\n    >\n      {clipboard.copied ? 'Copied' : 'Copy'}\n    </Button>\n  );\n}`;\n\nfunction Demo() {\n  const clipboard = useClipboard({ timeout: 500 });\n\n  return (\n    <Button\n      color={clipboard.copied ? 'teal' : 'blue'}\n      onClick={() => clipboard.copy('Hello, world!')}\n    >\n      {clipboard.copied ? 'Copied' : 'Copy'}\n    </Button>\n  );\n}\n\nexport const usage: MantineDemo = {\n  type: 'code',\n  code,\n  component: Demo,\n  centered: true,\n};",
+      "type": "registry:hook"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Mantine — MIT © 2020-present Vitaly Rtishchev (https://mantine.dev)",
+    "source": "mantine",
+    "styling": "css-modules",
+    "category": "hooks",
+    "previewStatus": "primitive"
+  }
+}

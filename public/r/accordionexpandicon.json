@@ -1,0 +1,36 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "accordionexpandicon",
+  "type": "registry:ui",
+  "title": "AccordionExpandIcon",
+  "description": "AccordionExpandIcon component harvested from mui with css-in-js styling.",
+  "dependencies": [
+    "@mui/material",
+    "@emotion/react",
+    "@emotion/styled"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/accordionexpandicon.tsx",
+      "content": "import * as React from 'react';\nimport Accordion from '@mui/material/Accordion';\nimport AccordionSummary from '@mui/material/AccordionSummary';\nimport AccordionDetails from '@mui/material/AccordionDetails';\nimport Typography from '@mui/material/Typography';\nimport ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';\nimport ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';\n\nexport default function AccordionExpandIcon() {\n  // @focus-start @padding 1\n  const id = React.useId();\n  return (\n    <div>\n      <Accordion>\n        <AccordionSummary\n          expandIcon={<ArrowDownwardIcon />}\n          aria-controls={`${id}-panel1-content`}\n          id={`${id}-panel1-header`}\n        >\n          <Typography component=\"span\">Accordion 1</Typography>\n        </AccordionSummary>\n        <AccordionDetails>\n          <Typography>\n            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse\n            malesuada lacus ex, sit amet blandit leo lobortis eget.\n          </Typography>\n        </AccordionDetails>\n      </Accordion>\n      <Accordion>\n        <AccordionSummary\n          expandIcon={<ArrowDropDownIcon />}\n          aria-controls={`${id}-panel2-content`}\n          id={`${id}-panel2-header`}\n        >\n          <Typography component=\"span\">Accordion 2</Typography>\n        </AccordionSummary>\n        <AccordionDetails>\n          <Typography>\n            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse\n            malesuada lacus ex, sit amet blandit leo lobortis eget.\n          </Typography>\n        </AccordionDetails>\n      </Accordion>\n    </div>\n  );\n  // @focus-end\n}",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Material UI — MIT © 2014-present Call-Em-All / Material-UI (https://mui.com)",
+    "source": "mui",
+    "styling": "css-in-js",
+    "category": "data-display",
+    "previewStatus": "unsupported"
+  }
+}

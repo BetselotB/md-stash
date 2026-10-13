@@ -1,0 +1,34 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "icon-button--chakra-ui",
+  "type": "registry:ui",
+  "title": "Icon Button",
+  "description": "Icon Button component harvested from chakra-ui with css-in-js styling.",
+  "dependencies": [
+    "@chakra-ui/react"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/icon-button--chakra-ui.tsx",
+      "content": "\"use client\"\n\nimport { forwardRef } from \"react\"\nimport { Button, type ButtonProps } from \"./button\"\n\nexport interface IconButtonProps extends ButtonProps {}\n\nexport const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(\n  function IconButton(props, ref) {\n    return (\n      <Button\n        px=\"0\"\n        py=\"0\"\n        _icon={{ fontSize: \"1.2em\" }}\n        ref={ref}\n        {...props}\n      />\n    )\n  },\n)\n\nIconButton.displayName = \"IconButton\"",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Chakra UI — MIT © 2019-present Segun Adebayo (https://chakra-ui.com)",
+    "source": "chakra-ui",
+    "styling": "css-in-js",
+    "category": "buttons",
+    "previewStatus": "unsupported"
+  }
+}

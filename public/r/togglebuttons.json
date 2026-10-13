@@ -1,0 +1,36 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "togglebuttons",
+  "type": "registry:ui",
+  "title": "ToggleButtons",
+  "description": "ToggleButtons component harvested from mui with css-in-js styling.",
+  "dependencies": [
+    "@mui/material",
+    "@emotion/react",
+    "@emotion/styled"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/togglebuttons.tsx",
+      "content": "import * as React from 'react';\nimport FormatAlignLeftIcon from '@mui/icons-material/FormatAlignLeft';\nimport FormatAlignCenterIcon from '@mui/icons-material/FormatAlignCenter';\nimport FormatAlignRightIcon from '@mui/icons-material/FormatAlignRight';\nimport FormatAlignJustifyIcon from '@mui/icons-material/FormatAlignJustify';\nimport ToggleButton from '@mui/material/ToggleButton';\nimport ToggleButtonGroup from '@mui/material/ToggleButtonGroup';\n\nexport default function ToggleButtons() {\n  // @focus-start @padding 1\n  const [alignment, setAlignment] = React.useState<string | null>('left');\n\n  const handleAlignment = (\n    event: React.MouseEvent<HTMLElement>,\n    newAlignment: string | null,\n  ) => {\n    setAlignment(newAlignment);\n  };\n\n  return (\n    <ToggleButtonGroup\n      value={alignment}\n      exclusive\n      onChange={handleAlignment}\n      aria-label=\"text alignment\"\n    >\n      <ToggleButton value=\"left\" aria-label=\"left aligned\">\n        <FormatAlignLeftIcon />\n      </ToggleButton>\n      <ToggleButton value=\"center\" aria-label=\"centered\">\n        <FormatAlignCenterIcon />\n      </ToggleButton>\n      <ToggleButton value=\"right\" aria-label=\"right aligned\">\n        <FormatAlignRightIcon />\n      </ToggleButton>\n      <ToggleButton value=\"justify\" aria-label=\"justified\" disabled>\n        <FormatAlignJustifyIcon />\n      </ToggleButton>\n    </ToggleButtonGroup>\n  );\n  // @focus-end\n}",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Material UI — MIT © 2014-present Call-Em-All / Material-UI (https://mui.com)",
+    "source": "mui",
+    "styling": "css-in-js",
+    "category": "buttons",
+    "previewStatus": "unsupported"
+  }
+}

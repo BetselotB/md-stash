@@ -1,0 +1,35 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "use-debounced-callback-demo-unmount",
+  "type": "registry:hook",
+  "title": "Use Debounced Callback.demo.unmount",
+  "description": "Use Debounced Callback.demo.unmount component harvested from mantine with css-modules styling.",
+  "dependencies": [
+    "@mantine/core",
+    "@mantine/hooks"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "hooks/use-debounced-callback-demo-unmount.ts",
+      "content": "import { useState } from 'react';\nimport { Button, Group, Stack, Text } from '@mantine/core';\nimport { useDebouncedCallback } from '@mantine/hooks';\nimport { MantineDemo } from '@mantinex/demo';\n\nconst code = `\nimport { useState } from 'react';\nimport { Button, Group, Stack, Text } from '@mantine/core';\nimport { useDebouncedCallback } from '@mantine/hooks';\n\nfunction InputWithDebounce({ onChange }) {\n  const [innerValue, setInnerValue] = useState('');\n  const debouncedCallback = useDebouncedCallback(\n    (newInnerValue) => {\n      onChange(newInnerValue);\n    },\n    { delay: 2000, flushOnUnmount: true }\n  );\n\n  const handleChange = (newInnerValue) => {\n    setInnerValue(newInnerValue);\n    debouncedCallback(newInnerValue);\n  };\n\n  return (\n    <input\n      aria-label=\"Enter text\"\n      placeholder=\"Enter text...\"\n      value={innerValue}\n      onChange={(event) => handleChange(event.target.value)}\n      style={{ padding: '8px', width: '100%' }}\n    />\n  );\n}\n\nfunction Demo() {\n  const [outerValue, setOuterValue] = useState('');\n  const [visible, setVisible] = useState(true);\n\n  return (\n    <Stack>\n      <Text fw={700}>Output value: {outerValue || '(none)'}</Text>\n\n      <Group>\n        <Button onClick={() => setVisible(!visible)}>\n          {visible ? 'Hide component' : 'Show component'}\n        </Button>\n      </Group>\n\n      {visible ? <InputWithDebounce onChange={setOuterValue} /> : null}\n\n      <Text size=\"sm\" c=\"dimmed\">\n        1. Type text and wait 2 seconds for the value to be transmitted.\n        2. Type text and immediately click the 'Hide component' button.\n           The value will be transmitted immediately due to the flushOnUnmount option.\n      </Text>\n    </Stack>\n  );\n}\n`;\n\nfunction InputWithDebounce({ onChange }: { onChange: (value: string) => void }) {\n  const [innerValue, setInnerValue] = useState('');\n  const debouncedCallback = useDebouncedCallback(\n    (newInnerValue: string) => {\n      onChange(newInnerValue);\n    },\n    { delay: 2000, flushOnUnmount: true }\n  );\n\n  const handleChange = (newInnerValue: string) => {\n    setInnerValue(newInnerValue);\n    debouncedCallback(newInnerValue);\n  };\n\n  return (\n    <input\n      aria-label=\"Enter text\"\n      placeholder=\"Enter text...\"\n      value={innerValue}\n      onChange={(event) => handleChange(event.target.value)}\n      style={{ padding: '8px', width: '100%' }}\n    />\n  );\n}\n\nfunction Demo() {\n  const [outerValue, setOuterValue] = useState('');\n  const [visible, setVisible] = useState(true);\n\n  return (\n    <Stack>\n      <Text fw={700}>Output value: {outerValue || '(none)'}</Text>\n\n      <Group>\n        <Button onClick={() => setVisible(!visible)}>\n          {visible ? 'Hide component' : 'Show component'}\n        </Button>\n      </Group>\n\n      {visible ? <InputWithDebounce onChange={setOuterValue} /> : null}\n\n      <Text size=\"sm\" c=\"dimmed\">\n        1. Type text and wait 2 seconds for the value to be transmitted. 2. Type text and\n        immediately click the 'Hide component' button. The value will be transmitted immediately due\n        to the flushOnUnmount option.\n      </Text>\n    </Stack>\n  );\n}\n\nexport const unmount: MantineDemo = {\n  type: 'code',\n  component: Demo,\n  code,\n  centered: true,\n  maxWidth: 500,\n};",
+      "type": "registry:hook"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Mantine — MIT © 2020-present Vitaly Rtishchev (https://mantine.dev)",
+    "source": "mantine",
+    "styling": "css-modules",
+    "category": "hooks",
+    "previewStatus": "primitive"
+  }
+}

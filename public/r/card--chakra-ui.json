@@ -1,0 +1,34 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "card--chakra-ui",
+  "type": "registry:ui",
+  "title": "Card",
+  "description": "Card component harvested from chakra-ui with css-in-js styling.",
+  "dependencies": [
+    "@chakra-ui/react"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/card--chakra-ui.tsx",
+      "content": "\"use client\"\n\nimport {\n  type HTMLChakraProps,\n  type SlotRecipeProps,\n  type UnstyledProp,\n  createSlotRecipeContext,\n} from \"../../styled-system\"\n\n////////////////////////////////////////////////////////////////////////////////////\n\nconst {\n  withProvider,\n  withContext,\n  useStyles: useCardStyles,\n  PropsProvider,\n} = createSlotRecipeContext({ key: \"card\" })\n\nexport { useCardStyles }\n\n////////////////////////////////////////////////////////////////////////////////////\n\nexport interface CardRootBaseProps\n  extends SlotRecipeProps<\"card\">, UnstyledProp {}\n\nexport interface CardRootProps extends HTMLChakraProps<\n  \"div\",\n  CardRootBaseProps\n> {}\n\nexport const CardRoot = withProvider<HTMLDivElement, CardRootProps>(\n  \"div\",\n  \"root\",\n)\n\n////////////////////////////////////////////////////////////////////////////////////\n\nexport const CardPropsProvider =\n  PropsProvider as React.Provider<CardRootBaseProps>\n\n////////////////////////////////////////////////////////////////////////////////////\n\nexport interface CardBodyProps extends HTMLChakraProps<\"div\">, UnstyledProp {}\n\nexport const CardBody = withContext<HTMLDivElement, CardBodyProps>(\n  \"div\",\n  \"body\",\n)\n\n////////////////////////////////////////////////////////////////////////////////////\n\nexport interface CardHeaderProps extends HTMLChakraProps<\"div\">, UnstyledProp {}\n\nexport const CardHeader = withContext<HTMLDivElement, CardHeaderProps>(\n  \"div\",\n  \"header\",\n)\n\n////////////////////////////////////////////////////////////////////////////////////\n\nexport interface CardFooterProps extends HTMLChakraProps<\"div\">, UnstyledProp {}\n\nexport const CardFooter = withContext<HTMLDivElement, CardFooterProps>(\n  \"div\",\n  \"footer\",\n)\n\n////////////////////////////////////////////////////////////////////////////////////\n\nexport interface CardTitleProps extends HTMLChakraProps<\"h2\">, UnstyledProp {}\n\nexport const CardTitle = withContext<HTMLHeadingElement, CardTitleProps>(\n  \"h3\",\n  \"title\",\n)\n\n////////////////////////////////////////////////////////////////////////////////////\n\nexport interface CardDescriptionProps\n  extends HTMLChakraProps<\"p\">, UnstyledProp {}\n\nexport const CardDescription = withContext<\n  HTMLParagraphElement,\n  CardDescriptionProps\n>(\"p\", \"description\")",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Chakra UI — MIT © 2019-present Segun Adebayo (https://chakra-ui.com)",
+    "source": "chakra-ui",
+    "styling": "css-in-js",
+    "category": "data-display",
+    "previewStatus": "unsupported"
+  }
+}

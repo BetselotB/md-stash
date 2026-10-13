@@ -1,0 +1,34 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "accordion--base-ui",
+  "type": "registry:ui",
+  "title": "Accordion",
+  "description": "Accordion component harvested from base-ui with unstyled styling.",
+  "dependencies": [
+    "@base-ui-components/react"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/accordion--base-ui.tsx",
+      "content": "'use client';\nimport * as React from 'react';\nimport clsx from 'clsx';\nimport { Accordion } from '@base-ui/react/accordion';\nimport { Plus } from 'lucide-react';\nimport styles from './Accordion.module.css';\n\nexport function Root<Value = any>({ className, ...props }: Accordion.Root.Props<Value>) {\n  return <Accordion.Root className={clsx(styles.root, className)} {...props} />;\n}\n\nexport function Item({ className, ...props }: Accordion.Item.Props) {\n  return <Accordion.Item className={clsx(styles.item, className)} {...props} />;\n}\n\nexport function Header({ className, ...props }: Accordion.Header.Props) {\n  return <Accordion.Header className={clsx(styles.header, className)} {...props} />;\n}\n\nexport function Trigger({ children, className, ...props }: Accordion.Trigger.Props) {\n  return (\n    <Accordion.Trigger className={clsx(styles.trigger, className)} {...props}>\n      {children}\n      <Plus className={styles.icon} />\n    </Accordion.Trigger>\n  );\n}\n\nexport function Panel({ className, ...props }: Accordion.Panel.Props) {\n  return <Accordion.Panel className={clsx(styles.panel, className)} {...props} />;\n}\n\nexport function Content({ className, ...props }: React.ComponentProps<'div'>) {\n  return <div className={clsx(styles.content, className)} {...props} />;\n}",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Base UI — MIT © 2020-present MUI (https://base-ui.com)",
+    "source": "base-ui",
+    "styling": "unstyled",
+    "category": "data-display",
+    "previewStatus": "needs-demo"
+  }
+}

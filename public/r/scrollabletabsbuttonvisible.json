@@ -1,0 +1,36 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "scrollabletabsbuttonvisible",
+  "type": "registry:ui",
+  "title": "ScrollableTabsButtonVisible",
+  "description": "ScrollableTabsButtonVisible component harvested from mui with css-in-js styling.",
+  "dependencies": [
+    "@mui/material",
+    "@emotion/react",
+    "@emotion/styled"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/scrollabletabsbuttonvisible.tsx",
+      "content": "import * as React from 'react';\nimport Box from '@mui/material/Box';\nimport Tabs, { tabsClasses } from '@mui/material/Tabs';\nimport Tab from '@mui/material/Tab';\n\nexport default function ScrollableTabsButtonVisible() {\n  // @focus-start @padding 1\n  const [value, setValue] = React.useState(0);\n\n  const handleChange = (event: React.SyntheticEvent, newValue: number) => {\n    setValue(newValue);\n  };\n\n  return (\n    <Box\n      sx={{\n        flexGrow: 1,\n        maxWidth: { xs: 320, sm: 480 },\n        bgcolor: 'background.paper',\n      }}\n    >\n      <Tabs\n        value={value}\n        onChange={handleChange}\n        variant=\"scrollable\"\n        scrollButtons\n        aria-label=\"visible arrows tabs example\"\n        sx={{\n          [`& .${tabsClasses.scrollButtons}`]: {\n            '&.Mui-disabled': { opacity: 0.3 },\n          },\n        }}\n      >\n        <Tab label=\"Item One\" />\n        <Tab label=\"Item Two\" />\n        <Tab label=\"Item Three\" />\n        <Tab label=\"Item Four\" />\n        <Tab label=\"Item Five\" />\n        <Tab label=\"Item Six\" />\n        <Tab label=\"Item Seven\" />\n      </Tabs>\n    </Box>\n  );\n  // @focus-end\n}",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Material UI — MIT © 2014-present Call-Em-All / Material-UI (https://mui.com)",
+    "source": "mui",
+    "styling": "css-in-js",
+    "category": "buttons",
+    "previewStatus": "unsupported"
+  }
+}

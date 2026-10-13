@@ -1,0 +1,34 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "copy-to-clipboard-button",
+  "type": "registry:ui",
+  "title": "Copy To Clipboard Button",
+  "description": "Copy To Clipboard Button component harvested from ark-ui with unstyled styling.",
+  "dependencies": [
+    "@ark-ui/react"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/copy-to-clipboard-button.tsx",
+      "content": "'use client'\nimport { useCopyToClipboard } from '@uidotdev/usehooks'\nimport { CheckIcon, CopyIcon } from 'lucide-react'\nimport { useEffect, useState } from 'react'\nimport { IconButton } from '~/components/ui/icon-button'\n\ninterface Props {\n  content: string\n}\n\nexport const CopyToClipboardButton = (props: Props) => {\n  const { content } = props\n  const [_, copyToClipboard] = useCopyToClipboard()\n  const [visible, setVisible] = useState(true)\n\n  useEffect(() => {\n    if (visible) return\n    const timer = setTimeout(() => setVisible(true), 1000)\n    return () => clearTimeout(timer)\n  }, [visible])\n\n  const handleClick = () => {\n    copyToClipboard(content)\n    setVisible(false)\n  }\n\n  return (\n    <IconButton\n      variant=\"ghost\"\n      size=\"sm\"\n      aria-label=\"Copy code to clipboard\"\n      display={{ base: 'none', lg: 'inline-flex' }}\n      color=\"gray.dark.12\"\n      _hover={{ bg: 'gray.dark.a3' }}\n      onClick={handleClick}\n    >\n      {visible ? <CopyIcon /> : <CheckIcon />}\n    </IconButton>\n  )\n}",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Ark UI — MIT © 2022-present Chakra Systems GmbH (https://ark-ui.com)",
+    "source": "ark-ui",
+    "styling": "unstyled",
+    "category": "buttons",
+    "previewStatus": "needs-demo"
+  }
+}

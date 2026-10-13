@@ -1,0 +1,35 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "accordion-demo-chevron",
+  "type": "registry:ui",
+  "title": "Accordion.demo.chevron",
+  "description": "Accordion.demo.chevron component harvested from mantine with css-modules styling.",
+  "dependencies": [
+    "@mantine/core",
+    "@mantine/hooks"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/accordion-demo-chevron.tsx",
+      "content": "import { PlusIcon } from '@phosphor-icons/react';\nimport { Accordion } from '@mantine/core';\nimport { MantineDemo } from '@mantinex/demo';\nimport { data, dataCode } from './_base';\nimport classes from './Accordion.demo.chevron.module.css';\n\nconst code = `\nimport { PlusIcon } from '@phosphor-icons/react';\nimport { Accordion } from '@mantine/core';\nimport { data } from './data';\nimport classes from './Demo.module.css';\n\nfunction Demo() {\n  const items = data.map((item) => (\n    <Accordion.Item key={item.value} value={item.value}>\n      <Accordion.Control icon={item.emoji}>{item.value}</Accordion.Control>\n      <Accordion.Panel>{item.description}</Accordion.Panel>\n    </Accordion.Item>\n  ));\n\n  return (\n    <Accordion\n      defaultValue=\"Apples\"\n      classNames={{ chevron: classes.chevron }}\n      chevron={<PlusIcon className={classes.icon} />}\n      order={3}\n    >\n      {items}\n    </Accordion>\n  );\n}\n`;\n\nconst cssCode = `\n.chevron {\n  &[data-rotate] {\n    transform: rotate(45deg);\n  }\n}\n\n.icon {\n  width: 16px;\n  height: 16px;\n}\n`;\n\nfunction Demo() {\n  const items = data.map((item) => (\n    <Accordion.Item key={item.value} value={item.value}>\n      <Accordion.Control icon={item.emoji}>{item.value}</Accordion.Control>\n      <Accordion.Panel>{item.description}</Accordion.Panel>\n    </Accordion.Item>\n  ));\n\n  return (\n    <Accordion\n      defaultValue=\"Apples\"\n      classNames={{ chevron: classes.chevron }}\n      chevron={<PlusIcon className={classes.icon} />}\n      order={3}\n      mih={270}\n    >\n      {items}\n    </Accordion>\n  );\n}\n\nexport const chevron: MantineDemo = {\n  type: 'code',\n  component: Demo,\n  code: [\n    { fileName: 'Demo.tsx', language: 'tsx', code },\n    { fileName: 'Demo.module.css', code: cssCode, language: 'scss' },\n    { fileName: 'data.ts', code: dataCode, language: 'tsx' },\n  ],\n  centered: true,\n  maxWidth: 600,\n};",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Mantine — MIT © 2020-present Vitaly Rtishchev (https://mantine.dev)",
+    "source": "mantine",
+    "styling": "css-modules",
+    "category": "data-display",
+    "previewStatus": "unsupported"
+  }
+}

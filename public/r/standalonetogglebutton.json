@@ -1,0 +1,36 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "standalonetogglebutton",
+  "type": "registry:ui",
+  "title": "StandaloneToggleButton",
+  "description": "StandaloneToggleButton component harvested from mui with css-in-js styling.",
+  "dependencies": [
+    "@mui/material",
+    "@emotion/react",
+    "@emotion/styled"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/standalonetogglebutton.tsx",
+      "content": "import * as React from 'react';\nimport CheckIcon from '@mui/icons-material/Check';\nimport ToggleButton from '@mui/material/ToggleButton';\n\nexport default function StandaloneToggleButton() {\n  const [selected, setSelected] = React.useState(false);\n\n  return (\n    // @focus-start @padding 2\n    <ToggleButton\n      value=\"check\"\n      selected={selected}\n      onChange={() => setSelected((prevSelected) => !prevSelected)}\n      aria-label=\"mark as done\"\n    >\n      <CheckIcon />\n    </ToggleButton>\n    // @focus-end\n  );\n}",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Material UI — MIT © 2014-present Call-Em-All / Material-UI (https://mui.com)",
+    "source": "mui",
+    "styling": "css-in-js",
+    "category": "buttons",
+    "previewStatus": "unsupported"
+  }
+}

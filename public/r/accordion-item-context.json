@@ -1,0 +1,34 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "accordion-item-context",
+  "type": "registry:ui",
+  "title": "Accordion Item Context",
+  "description": "Accordion Item Context component harvested from ark-ui with unstyled styling.",
+  "dependencies": [
+    "@ark-ui/react"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/accordion-item-context.tsx",
+      "content": "<script lang=\"ts\">\nimport type { SlotsType, UnwrapRef } from 'vue'\n\nexport interface AccordionItemContextProps extends SlotsType<{\n  default: UnwrapRef<UseAccordionItemContext>\n}> {}\n</script>\n\n<script setup lang=\"ts\">\nimport { useAccordionItemContext, type UseAccordionItemContext } from './use-accordion-item-context.ts'\n\nconst item = useAccordionItemContext()\ndefineSlots<{\n  default(item: UnwrapRef<UseAccordionItemContext>): unknown\n}>()\n</script>\n\n<template>\n  <slot v-bind=\"item\"></slot>\n</template>",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Ark UI — MIT © 2022-present Chakra Systems GmbH (https://ark-ui.com)",
+    "source": "ark-ui",
+    "styling": "unstyled",
+    "category": "data-display",
+    "previewStatus": "primitive"
+  }
+}

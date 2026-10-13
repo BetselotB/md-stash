@@ -1,0 +1,35 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "button-demo-sections",
+  "type": "registry:block",
+  "title": "Button.demo.sections",
+  "description": "Button.demo.sections component harvested from mantine with css-modules styling.",
+  "dependencies": [
+    "@mantine/core",
+    "@mantine/hooks"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/button-demo-sections.tsx",
+      "content": "import { ArrowRightIcon, DownloadSimpleIcon, ImageIcon } from '@phosphor-icons/react';\nimport { Button, Group } from '@mantine/core';\nimport { MantineDemo } from '@mantinex/demo';\n\nconst code = `\nimport { Group, Button } from '@mantine/core';\nimport { ImageIcon, DownloadSimpleIcon, ArrowRightIcon } from '@phosphor-icons/react';\n\nfunction Demo() {\n  return (\n    <Group justify=\"center\">\n      <Button leftSection={<ImageIcon size={14} />} variant=\"default\">\n        Gallery\n      </Button>\n\n      <Button rightSection={<DownloadSimpleIcon size={14} />}>Download</Button>\n\n      <Button\n        variant=\"light\"\n        leftSection={<ImageIcon size={14} />}\n        rightSection={<ArrowRightIcon size={14} />}\n      >\n        Visit gallery\n      </Button>\n    </Group>\n  );\n}\n`;\n\nfunction Demo() {\n  return (\n    <Group justify=\"center\">\n      <Button leftSection={<ImageIcon size={14} />} variant=\"default\">\n        Gallery\n      </Button>\n\n      <Button rightSection={<DownloadSimpleIcon size={14} />}>Download</Button>\n      <Button\n        variant=\"light\"\n        leftSection={<ImageIcon size={14} />}\n        rightSection={<ArrowRightIcon size={14} className=\"mantine-rotate-rtl\" />}\n      >\n        Visit gallery\n      </Button>\n    </Group>\n  );\n}\n\nexport const sections: MantineDemo = {\n  type: 'code',\n  component: Demo,\n  code,\n};",
+      "type": "registry:block"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Mantine — MIT © 2020-present Vitaly Rtishchev (https://mantine.dev)",
+    "source": "mantine",
+    "styling": "css-modules",
+    "category": "buttons",
+    "previewStatus": "unsupported"
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "button-demo-compact",
+  "type": "registry:ui",
+  "title": "Button.demo.compact",
+  "description": "Button.demo.compact component harvested from mantine with css-modules styling.",
+  "dependencies": [
+    "@mantine/core",
+    "@mantine/hooks"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/button-demo-compact.tsx",
+      "content": "import { Button, Group } from '@mantine/core';\nimport { MantineDemo } from '@mantinex/demo';\n\nconst code = (props: any) => `\nimport { Button, Group } from '@mantine/core';\n\nfunction Demo() {\n  return (\n    <Group justify=\"center\">\n      <Button size=\"${props.size}\">Regular ${props.size}</Button>\n      <Button size=\"compact-${props.size}\">Compact ${props.size}</Button>\n    </Group>\n  );\n}\n`;\n\nfunction Wrapper(props: any) {\n  return (\n    <Group justify=\"center\">\n      <Button size={props.size}>Regular {props.size}</Button>\n      <Button size={`compact-${props.size}`}>Compact {props.size}</Button>\n    </Group>\n  );\n}\n\nexport const compact: MantineDemo = {\n  type: 'configurator',\n  component: Wrapper,\n  code,\n  centered: true,\n  controls: [{ type: 'size', prop: 'size', initialValue: 'md', libraryValue: '__none__' }],\n};",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Mantine — MIT © 2020-present Vitaly Rtishchev (https://mantine.dev)",
+    "source": "mantine",
+    "styling": "css-modules",
+    "category": "buttons",
+    "previewStatus": "unsupported"
+  }
+}

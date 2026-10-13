@@ -1,0 +1,34 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "avatar--react-aria-2",
+  "type": "registry:ui",
+  "title": "Avatar",
+  "description": "Avatar component harvested from react-aria with unstyled styling.",
+  "dependencies": [
+    "react-aria-components"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/avatar--react-aria-2.tsx",
+      "content": "/*\n * Copyright 2024 Adobe. All rights reserved.\n * This file is licensed to you under the Apache License, Version 2.0 (the \"License\");\n * you may not use this file except in compliance with the License. You may obtain a copy\n * of the License at http://www.apache.org/licenses/LICENSE-2.0\n *\n * Unless required by applicable law or agreed to in writing, software distributed under\n * the License is distributed on an \"AS IS\" BASIS, WITHOUT WARRANTIES OR REPRESENTATIONS\n * OF ANY KIND, either express or implied. See the License for the specific language\n * governing permissions and limitations under the License.\n */\n\nimport {centerBaselineBefore} from './CenterBaseline';\nimport {ContextValue, SlotProps} from 'react-aria-components/slots';\nimport {createContext, forwardRef} from 'react';\nimport {DOMProps, DOMRef, DOMRefValue} from '@react-types/shared';\nimport {filterDOMProps} from 'react-aria/filterDOMProps';\nimport {\n  getAllowedOverrides,\n  StylesPropWithoutWidth,\n  UnsafeStyles\n} from './style-utils' with {type: 'macro'};\nimport {Image, ImageContext} from './Image';\nimport {isDocsEnv} from './macros' with {type: 'macro'};\nimport {style} from '../style' with {type: 'macro'};\nimport {useDOMRef} from './useDOMRef';\nimport {useSpectrumContextProps} from './useSpectrumContextProps';\n\nexport interface AvatarProps extends UnsafeStyles, DOMProps, SlotProps {\n  /** Text description of the avatar. */\n  alt?: string;\n  /** The image URL for the avatar. */\n  src?: string;\n  /** Spectrum-defined styles, returned by the `style()` macro. */\n  styles?: StylesPropWithoutWidth;\n  /**\n   * The size of the avatar.\n   *\n   * @default 24\n   */\n  size?:\n    | 16\n    | 20\n    | 24\n    | 28\n    | 32\n    | 36\n    | 40\n    | 44\n    | 48\n    | 56\n    | 64\n    | 80\n    | 96\n    | 112\n    | (number & {})\n    | `${number}lh`;\n  /** Whether the avatar is over a color background. */\n  isOverBackground?: boolean;\n}\n\nconst imageStyles = style(\n  {\n    display: 'flex',\n    alignItems: 'center',\n    borderRadius: 'full',\n    size: 20,\n    flexShrink: 0,\n    flexGrow: 0,\n    disableTapHighlight: true,\n    outlineStyle: {\n      default: 'none',\n      isOverBackground: 'solid'\n    },\n    outlineColor: '--s2-container-bg',\n    outlineWidth: {\n      default: 1,\n      isLarge: 2,\n      // if bigger than 64px, use 2px outline, otherwise use 1px outline\n      isLH: 'min(2px, max(1px, calc((((1lh / 64) - 1px) * 9999) + 1px)))'\n    }\n  },\n  getAllowedOverrides({width: false})\n);\n\nexport const AvatarContext =\n  createContext<ContextValue<Partial<AvatarProps>, DOMRefValue<HTMLImageElement>>>(null);\n\n/**\n * An avatar is a thumbnail representation of an entity, such as a user or an organization.\n */\nexport const Avatar = forwardRef(function Avatar(\n  props: AvatarProps,\n  ref: DOMRef<HTMLImageElement>\n) {\n  [props, ref] = useSpectrumContextProps(props, ref, AvatarContext);\n  let domRef = useDOMRef(ref);\n  let {\n    alt = '',\n    src,\n    UNSAFE_style,\n    UNSAFE_className = '',\n    size = 24,\n    isOverBackground,\n    slot = 'avatar',\n    ...otherProps\n  } = props;\n  const domProps = filterDOMProps(otherProps);\n\n  // In the docs build, we need to be able to simulate font scaling.\n  let remSize;\n  let isLarge = false;\n  let isLH = false;\n  if (typeof size === 'string') {\n    remSize = size;\n    isLH = size.endsWith('lh');\n  } else {\n    remSize = isDocsEnv() ? `calc(${size / 16} * var(--rem, 1rem))` : `${size / 16}rem`;\n    isLarge = size >= 64;\n  }\n  return (\n    <ImageContext.Provider value={{}}>\n      <Image\n        {...domProps}\n        ref={domRef}\n        slot={slot}\n        alt={alt}\n        UNSAFE_style={{\n          ...UNSAFE_style,\n          width: remSize,\n          height: remSize\n        }}\n        UNSAFE_className={UNSAFE_className + ' ' + centerBaselineBefore}\n        styles={imageStyles({isOverBackground, isLarge, isLH}, props.styles)}\n        src={src}\n      />\n    </ImageContext.Provider>\n  );\n});",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "Apache-2.0",
+    "attribution": "React Aria — Apache-2.0 © 2020-present Adobe Inc. (https://react-spectrum.adobe.com/react-aria)",
+    "source": "react-aria",
+    "styling": "unstyled",
+    "category": "data-display",
+    "previewStatus": "needs-demo"
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "calendar-demo-weekpicker",
+  "type": "registry:ui",
+  "title": "Calendar.demo.weekPicker",
+  "description": "Calendar.demo.weekPicker component harvested from mantine with css-modules styling.",
+  "dependencies": [
+    "@mantine/core",
+    "@mantine/hooks"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/calendar-demo-weekpicker.tsx",
+      "content": "import dayjs from 'dayjs';\nimport { useState } from 'react';\nimport { Calendar } from '@mantine/dates';\nimport { MantineDemo } from '@mantinex/demo';\n\nconst code = `\nimport dayjs from 'dayjs';\nimport { useState } from 'react';\nimport { Calendar } from '@mantine/dates';\n\nfunction getDay(date: string) {\n  const day = dayjs(date).day();\n  return day === 0 ? 6 : day - 1;\n}\n\nfunction startOfWeek(date: string) {\n  return dayjs(date)\n    .subtract(getDay(date) + 1, 'day')\n    .toDate();\n}\n\nfunction endOfWeek(date: string) {\n  return dayjs(date)\n    .add(6 - getDay(date), 'day')\n    .endOf('day')\n    .toDate();\n}\n\nfunction isInWeekRange(date: string, value: string | null) {\n  return value\n    ? dayjs(date).isBefore(endOfWeek(value)) && dayjs(date).isAfter(startOfWeek(value))\n    : false;\n}\n\nfunction Demo() {\n  const [hovered, setHovered] = useState<string | null>(null);\n  const [value, setValue] = useState<string | null>(null);\n\n  return (\n    <Calendar\n      withCellSpacing={false}\n      getDayProps={(date) => {\n        const isHovered = isInWeekRange(date, hovered);\n        const isSelected = isInWeekRange(date, value);\n        const isInRange = isHovered || isSelected;\n        return {\n          onMouseEnter: () => setHovered(date),\n          onMouseLeave: () => setHovered(null),\n          inRange: isInRange,\n          firstInRange: isInRange && new Date(date).getDay() === 1,\n          lastInRange: isInRange && new Date(date).getDay() === 0,\n          selected: isSelected,\n          onClick: () => setValue(date),\n        };\n      }}\n    />\n  );\n}\n`;\n\nfunction getDay(date: string) {\n  const day = dayjs(date).day();\n  return day === 0 ? 6 : day - 1;\n}\n\nfunction startOfWeek(date: string) {\n  return dayjs(date)\n    .subtract(getDay(date) + 1, 'day')\n    .toDate();\n}\n\nfunction endOfWeek(date: string) {\n  return dayjs(date)\n    .add(6 - getDay(date), 'day')\n    .endOf('day')\n    .toDate();\n}\n\nfunction isInWeekRange(date: string, value: string | null) {\n  return value\n    ? dayjs(date).isBefore(endOfWeek(value)) && dayjs(date).isAfter(startOfWeek(value))\n    : false;\n}\n\nfunction Demo() {\n  const [hovered, setHovered] = useState<string | null>(null);\n  const [value, setValue] = useState<string | null>(null);\n\n  return (\n    <Calendar\n      withCellSpacing={false}\n      getDayProps={(date) => {\n        const isHovered = isInWeekRange(date, hovered);\n        const isSelected = isInWeekRange(date, value);\n        const isInRange = isHovered || isSelected;\n        return {\n          onMouseEnter: () => setHovered(date),\n          onMouseLeave: () => setHovered(null),\n          inRange: isInRange,\n          firstInRange: isInRange && new Date(date).getDay() === 1,\n          lastInRange: isInRange && new Date(date).getDay() === 0,\n          selected: isSelected,\n          onClick: () => setValue(date),\n        };\n      }}\n    />\n  );\n}\n\nexport const weekPicker: MantineDemo = {\n  type: 'code',\n  centered: true,\n  component: Demo,\n  code,\n};",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Mantine — MIT © 2020-present Vitaly Rtishchev (https://mantine.dev)",
+    "source": "mantine",
+    "styling": "css-modules",
+    "category": "data-display",
+    "previewStatus": "unsupported"
+  }
+}

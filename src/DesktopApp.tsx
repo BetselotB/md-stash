@@ -2,6 +2,11 @@ import React, { useEffect } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Shell } from './components/layout/Shell';
 import { Landing } from './routes/Landing';
+import { Gallery } from './routes/Gallery';
+import { ComponentDetail } from './routes/ComponentDetail';
+import { AddComponent } from './routes/AddComponent';
+import { Inbox } from './routes/Inbox';
+import { Connect } from './routes/Connect';
 import { Library } from './routes/Library';
 import { CollectionView } from './routes/CollectionView';
 import { FileDetail } from './routes/FileDetail';
@@ -10,11 +15,14 @@ import { Privacy } from './routes/Privacy';
 import { DevFonts } from './routes/DevFonts';
 import { NotFound } from './routes/NotFound';
 import { seedInitialDataIfNeeded } from './db/seed';
+import { catalogImportService } from './services/catalogImport';
 
 export const DesktopApp: React.FC = () => {
   useEffect(() => {
     // Only execute initial starter note seed if IndexedDB is freshly created on a mounted desktop session
     seedInitialDataIfNeeded().catch(console.error);
+    // Stock initial component crates from pilot catalog
+    catalogImportService.importCatalogIfNeeded({ url: '/pilot-catalog.json' }).catch(console.error);
   }, []);
 
   return (
@@ -31,9 +39,14 @@ export const DesktopApp: React.FC = () => {
 
         {/* Main Local-first Application */}
         <Route path="/app" element={<Shell />}>
-          <Route index element={<Library />} />
-          <Route path="c/:collectionId" element={<CollectionView />} />
+          <Route index element={<Gallery />} />
+          <Route path="c/:id" element={<ComponentDetail />} />
+          <Route path="add" element={<AddComponent />} />
+          <Route path="inbox" element={<Inbox />} />
+          <Route path="connect" element={<Connect />} />
+          <Route path="docs" element={<Library />} />
           <Route path="f/:fileId" element={<FileDetail />} />
+          <Route path="col/:collectionId" element={<CollectionView />} />
           <Route path="settings" element={<Settings />} />
         </Route>
 
@@ -43,5 +56,6 @@ export const DesktopApp: React.FC = () => {
     </BrowserRouter>
   );
 };
+
 
 export default DesktopApp;

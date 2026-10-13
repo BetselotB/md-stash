@@ -1,0 +1,34 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "avatar-as-child-test",
+  "type": "registry:ui",
+  "title": "Avatar As Child.test",
+  "description": "Avatar As Child.test component harvested from ark-ui with unstyled styling.",
+  "dependencies": [
+    "@ark-ui/react"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/avatar-as-child-test.tsx",
+      "content": "<script setup lang=\"ts\">\nimport { Avatar } from '@ark-ui/vue/avatar'\n</script>\n\n<template>\n  <Avatar.Root>\n    <Avatar.Fallback>PA</Avatar.Fallback>\n    <Avatar.Image as-child>\n      <img data-testid=\"image\" src=\"https://i.pravatar.cc/300\" alt=\"avatar\" />\n    </Avatar.Image>\n  </Avatar.Root>\n</template>",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Ark UI — MIT © 2022-present Chakra Systems GmbH (https://ark-ui.com)",
+    "source": "ark-ui",
+    "styling": "unstyled",
+    "category": "data-display",
+    "previewStatus": "primitive"
+  }
+}

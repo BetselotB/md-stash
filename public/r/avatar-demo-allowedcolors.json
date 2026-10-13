@@ -1,0 +1,35 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "avatar-demo-allowedcolors",
+  "type": "registry:ui",
+  "title": "Avatar.demo.allowedColors",
+  "description": "Avatar.demo.allowedColors component harvested from mantine with css-modules styling.",
+  "dependencies": [
+    "@mantine/core",
+    "@mantine/hooks"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/avatar-demo-allowedcolors.tsx",
+      "content": "import { Avatar, Group } from '@mantine/core';\nimport { MantineDemo } from '@mantinex/demo';\nimport { names, namesCode } from './_mockdata';\n\nconst code = `\nimport { Avatar, Group } from '@mantine/core';\n\n${namesCode}\n\nfunction Demo() {\n  const avatars = names.map((name) => (\n    <Avatar key={name} name={name} color=\"initials\" allowedInitialsColors={['blue', 'red']} />\n  ));\n  return <Group>{avatars}</Group>;\n}\n`;\n\nfunction Demo() {\n  const avatars = names.map((name) => (\n    <Avatar key={name} name={name} color=\"initials\" allowedInitialsColors={['blue', 'red']} />\n  ));\n  return <Group>{avatars}</Group>;\n}\n\nexport const allowedColors: MantineDemo = {\n  type: 'code',\n  component: Demo,\n  code,\n  centered: true,\n};",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Mantine — MIT © 2020-present Vitaly Rtishchev (https://mantine.dev)",
+    "source": "mantine",
+    "styling": "css-modules",
+    "category": "data-display",
+    "previewStatus": "unsupported"
+  }
+}

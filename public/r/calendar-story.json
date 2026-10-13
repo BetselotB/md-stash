@@ -1,0 +1,35 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "calendar-story",
+  "type": "registry:ui",
+  "title": "Calendar.story",
+  "description": "Calendar.story component harvested from mantine with css-modules styling.",
+  "dependencies": [
+    "@mantine/core",
+    "@mantine/hooks"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/calendar-story.tsx",
+      "content": "import { DatesProvider } from '../DatesProvider';\nimport { Calendar } from './Calendar';\n\nexport default { title: 'Calendar' };\n\nexport function Usage() {\n  return (\n    <div style={{ padding: 40 }}>\n      <Calendar attributes={{ day: { 'data-test-id': 'day' } }} />\n    </div>\n  );\n}\n\nexport function Unstyled() {\n  return (\n    <div style={{ padding: 40 }}>\n      <Calendar unstyled />\n    </div>\n  );\n}\n\nexport function ConsistentWeeks() {\n  return (\n    <div style={{ padding: 40 }}>\n      <DatesProvider settings={{ consistentWeeks: true }}>\n        <Calendar />\n      </DatesProvider>\n    </div>\n  );\n}\n\nexport function MaxLevel() {\n  return (\n    <div style={{ padding: 40 }}>\n      <Calendar maxLevel=\"year\" />\n    </div>\n  );\n}\n\nexport function MinLevel() {\n  return (\n    <div style={{ padding: 40 }}>\n      <Calendar minLevel=\"year\" />\n    </div>\n  );\n}\n\nexport function NumberOfColumns() {\n  return (\n    <div style={{ padding: 40 }}>\n      <div>1 column</div>\n      <Calendar mb={50} mt=\"xs\" />\n\n      <div>2 columns</div>\n      <Calendar numberOfColumns={2} columnsToScroll={2} mb={50} mt=\"xs\" />\n\n      <div>3 columns</div>\n      <Calendar numberOfColumns={3} mb={50} mt=\"xs\" />\n    </div>\n  );\n}\n\nexport function InitialLevelYear() {\n  return (\n    <div style={{ padding: 40 }}>\n      <Calendar defaultLevel=\"year\" />\n    </div>\n  );\n}\n\nexport function InitialLevelDecade() {\n  return (\n    <div style={{ padding: 40 }}>\n      <Calendar defaultLevel=\"decade\" />\n    </div>\n  );\n}\n\nexport function FullWidth() {\n  return (\n    <div style={{ padding: 40, width: '100%', maxWidth: 1000 }}>\n      <div style={{ marginBottom: 20, fontWeight: 'bold' }}>Month level</div>\n      <Calendar fullWidth />\n\n      <div style={{ marginBottom: 20, marginTop: 40, fontWeight: 'bold' }}>Year level</div>\n      <Calendar fullWidth defaultLevel=\"year\" />\n\n      <div style={{ marginBottom: 20, marginTop: 40, fontWeight: 'bold' }}>Decade level</div>\n      <Calendar fullWidth defaultLevel=\"decade\" />\n\n      <div style={{ marginBottom: 20, marginTop: 40, fontWeight: 'bold' }}>Multiple columns</div>\n      <div style={{ maxWidth: 1000 }}>\n        <Calendar fullWidth numberOfColumns={3} />\n      </div>\n    </div>\n  );\n}\n\nexport function Sizes() {\n  const sizes = (['xs', 'sm', 'md', 'lg', 'xl'] as const).map((size) => (\n    <Calendar size={size} key={size} mt=\"xl\" />\n  ));\n  return <div style={{ padding: 40 }}>{sizes}</div>;\n}",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Mantine — MIT © 2020-present Vitaly Rtishchev (https://mantine.dev)",
+    "source": "mantine",
+    "styling": "css-modules",
+    "category": "data-display",
+    "previewStatus": "unsupported"
+  }
+}

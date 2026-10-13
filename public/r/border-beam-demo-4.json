@@ -1,0 +1,35 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "border-beam-demo-4",
+  "type": "registry:ui",
+  "title": "Border Beam Demo 4",
+  "description": "Border Beam Demo 4 component harvested from magic-ui with tailwind styling.",
+  "dependencies": [
+    "clsx",
+    "tailwind-merge"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/border-beam-demo-4.tsx",
+      "content": "import { Button } from \"ui/button\"\nimport { BorderBeam } from \"@/registry/magicui/border-beam\"\n\nexport default function Component() {\n  return (\n    <Button className=\"relative overflow-hidden\" size=\"lg\" variant=\"outline\">\n      Buy Now\n      <BorderBeam\n        size={40}\n        initialOffset={20}\n        className=\"from-transparent via-yellow-500 to-transparent\"\n        transition={{\n          type: \"spring\",\n          stiffness: 60,\n          damping: 20,\n        }}\n      />\n    </Button>\n  )\n}",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Magic UI — MIT © 2023-present Dillion Verma (https://magicui.design)",
+    "source": "magic-ui",
+    "styling": "tailwind",
+    "category": "backgrounds",
+    "previewStatus": "ready"
+  }
+}

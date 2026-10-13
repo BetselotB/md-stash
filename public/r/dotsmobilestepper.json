@@ -1,0 +1,36 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "dotsmobilestepper",
+  "type": "registry:ui",
+  "title": "DotsMobileStepper",
+  "description": "DotsMobileStepper component harvested from mui with css-in-js styling.",
+  "dependencies": [
+    "@mui/material",
+    "@emotion/react",
+    "@emotion/styled"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/dotsmobilestepper.tsx",
+      "content": "import * as React from 'react';\nimport { useTheme } from '@mui/material/styles';\nimport MobileStepper from '@mui/material/MobileStepper';\nimport Button from '@mui/material/Button';\nimport KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';\nimport KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';\n\nconst steps = 6;\n\nexport default function DotsMobileStepper() {\n  // @focus-start @padding 1\n  const theme = useTheme();\n  const [activeStep, setActiveStep] = React.useState(0);\n\n  const handleNext = () => {\n    setActiveStep((prevActiveStep) => prevActiveStep + 1);\n  };\n\n  const handleBack = () => {\n    setActiveStep((prevActiveStep) => prevActiveStep - 1);\n  };\n\n  const nextButtonRef = React.useRef<HTMLButtonElement>(null);\n  const backButtonRef = React.useRef<HTMLButtonElement>(null);\n  const previousActiveStepRef = React.useRef(activeStep);\n\n  // Manage focus when the active step changes.\n  React.useEffect(() => {\n    const previousActiveStep = previousActiveStepRef.current;\n    previousActiveStepRef.current = activeStep;\n\n    if (activeStep === 0 && previousActiveStep === 1) {\n      // If the user is going back to the first step, focus the \"Next\" button.\n      nextButtonRef.current!.focus();\n      return;\n    }\n    if (activeStep === steps - 1 && previousActiveStep === steps - 2) {\n      // If the user is going to the last step, focus the \"Back\" button.\n      backButtonRef.current!.focus();\n    }\n  }, [activeStep]);\n\n  return (\n    <MobileStepper\n      variant=\"dots\"\n      steps={steps}\n      position=\"static\"\n      activeStep={activeStep}\n      sx={{ maxWidth: 400, flexGrow: 1 }}\n      slotProps={{\n        progress: {\n          'aria-label': 'stepper dotted progress',\n        },\n      }}\n      nextButton={\n        <Button\n          size=\"small\"\n          onClick={handleNext}\n          disabled={activeStep === 5}\n          ref={nextButtonRef}\n        >\n          Next\n          {theme.direction === 'rtl' ? (\n            <KeyboardArrowLeft />\n          ) : (\n            <KeyboardArrowRight />\n          )}\n        </Button>\n      }\n      backButton={\n        <Button\n          size=\"small\"\n          onClick={handleBack}\n          disabled={activeStep === 0}\n          ref={backButtonRef}\n        >\n          {theme.direction === 'rtl' ? (\n            <KeyboardArrowRight />\n          ) : (\n            <KeyboardArrowLeft />\n          )}\n          Back\n        </Button>\n      }\n    />\n  );\n  // @focus-end\n}",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Material UI — MIT © 2014-present Call-Em-All / Material-UI (https://mui.com)",
+    "source": "mui",
+    "styling": "css-in-js",
+    "category": "backgrounds",
+    "previewStatus": "unsupported"
+  }
+}

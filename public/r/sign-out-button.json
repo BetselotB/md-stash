@@ -1,0 +1,34 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "sign-out-button",
+  "type": "registry:ui",
+  "title": "Sign Out Button",
+  "description": "Sign Out Button component harvested from ark-ui with unstyled styling.",
+  "dependencies": [
+    "@ark-ui/react"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/sign-out-button.tsx",
+      "content": "'use client'\nimport { LogOutIcon } from 'lucide-react'\nimport { Button, type ButtonProps } from '~/components/ui/button'\nimport { signOut } from '~/lib/auth-client'\n\nexport const SignOutButton = (props: ButtonProps) => {\n  return (\n    <Button\n      type=\"submit\"\n      variant=\"subtle\"\n      size=\"xs\"\n      width=\"full\"\n      onClick={async () => {\n        await signOut({\n          fetchOptions: {\n            onSuccess() {\n              window.location.href = '/'\n            },\n          },\n        })\n      }}\n      {...props}\n    >\n      Sign Out <LogOutIcon />\n    </Button>\n  )\n}",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Ark UI — MIT © 2022-present Chakra Systems GmbH (https://ark-ui.com)",
+    "source": "ark-ui",
+    "styling": "unstyled",
+    "category": "buttons",
+    "previewStatus": "needs-demo"
+  }
+}

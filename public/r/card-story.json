@@ -1,0 +1,35 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "card-story",
+  "type": "registry:ui",
+  "title": "Card.story",
+  "description": "Card.story component harvested from mantine with css-modules styling.",
+  "dependencies": [
+    "@mantine/core",
+    "@mantine/hooks"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/card-story.tsx",
+      "content": "import { Card } from './Card';\n\nexport default { title: 'Card' };\n\nexport function Usage() {\n  return (\n    <div style={{ maxWidth: 400, padding: 40, margin: 'auto' }}>\n      <Card withBorder>\n        <Card.Section inheritPadding py=\"md\" withBorder>\n          Card section 1\n        </Card.Section>\n        <div>Content 1</div>\n        <Card.Section inheritPadding withBorder>\n          Card section 2\n        </Card.Section>\n        <div>Content 2</div>\n        <Card.Section inheritPadding withBorder>\n          Card section 3\n        </Card.Section>\n\n        <Card.Section inheritPadding withBorder>\n          Card section 4\n        </Card.Section>\n      </Card>\n    </div>\n  );\n}\n\nexport function HorizontalOrientation() {\n  return (\n    <div style={{ maxWidth: 800, padding: 40, margin: 'auto' }}>\n      <Card withBorder orientation=\"horizontal\">\n        <Card.Section bg=\"blue\">Card section 1</Card.Section>\n        <Card.Section bg=\"orange\">Card section 2</Card.Section>\n        <div>Content</div>\n        <Card.Section bg=\"red\" flex={1}>\n          Card section 3\n        </Card.Section>\n      </Card>\n    </div>\n  );\n}",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Mantine — MIT © 2020-present Vitaly Rtishchev (https://mantine.dev)",
+    "source": "mantine",
+    "styling": "css-modules",
+    "category": "data-display",
+    "previewStatus": "unsupported"
+  }
+}

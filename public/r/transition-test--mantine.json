@@ -1,0 +1,35 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "transition-test--mantine",
+  "type": "registry:ui",
+  "title": "Transition.test",
+  "description": "Transition.test component harvested from mantine with css-modules styling.",
+  "dependencies": [
+    "@mantine/core",
+    "@mantine/hooks"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/transition-test--mantine.tsx",
+      "content": "import { useState } from 'react';\nimport { act } from '@testing-library/react';\nimport { flushSync } from 'react-dom';\nimport { render, screen } from '@mantine-tests/core';\nimport { Transition } from './Transition';\n\ndescribe('@mantine/core/Transition', () => {\n  beforeEach(() => {\n    jest.useFakeTimers();\n  });\n\n  afterEach(() => {\n    jest.restoreAllMocks();\n    jest.useRealTimers();\n  });\n\n  it('does not request more frames or call onEntered when it is unmounted by the first frame commit', () => {\n    const frames = new Map<number, FrameRequestCallback>();\n    let lastFrame = 0;\n    jest.spyOn(window, 'requestAnimationFrame').mockImplementation((callback) => {\n      lastFrame += 1;\n      frames.set(lastFrame, callback);\n      return lastFrame;\n    });\n    jest.spyOn(window, 'cancelAnimationFrame').mockImplementation((frame) => {\n      frames.delete(frame);\n    });\n\n    const onEntered = jest.fn();\n    const controls: { show?: () => void; leave?: () => void } = {};\n\n    function Owner() {\n      const [standing, setStanding] = useState(true);\n      const [mounted, setMounted] = useState(false);\n      controls.show = () => setMounted(true);\n      controls.leave = () => setStanding(false);\n\n      return standing ? (\n        <Transition mounted={mounted} duration={100} onEntered={onEntered}>\n          {(styles) => <div style={styles}>content</div>}\n        </Transition>\n      ) : null;\n    }\n\n    render(<Owner />);\n    act(() => controls.show!());\n    expect(frames.size).toBe(1);\n\n    act(() => {\n      flushSync(() => {\n        controls.leave!();\n        const [[frame, callback]] = frames;\n        frames.delete(frame);\n        callback(0);\n      });\n    });\n\n    expect(screen.queryByText('content')).not.toBeInTheDocument();\n    expect(frames.size).toBe(0);\n\n    act(() => {\n      frames.forEach((callback) => callback(0));\n      jest.advanceTimersByTime(100);\n    });\n\n    expect(onEntered).not.toHaveBeenCalled();\n  });\n});",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Mantine — MIT © 2020-present Vitaly Rtishchev (https://mantine.dev)",
+    "source": "mantine",
+    "styling": "css-modules",
+    "category": "animation-primitives",
+    "previewStatus": "primitive"
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "accordionheader-test",
+  "type": "registry:ui",
+  "title": "AccordionHeader.test",
+  "description": "AccordionHeader.test component harvested from base-ui with unstyled styling.",
+  "dependencies": [
+    "@base-ui-components/react"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/accordionheader-test.tsx",
+      "content": "import { expect, vi, describe, it } from 'vitest';\nimport { Accordion } from '@base-ui/react/accordion';\nimport { describeConformance, createRenderer } from '#test-utils';\n\ndescribe('<Accordion.Header />', () => {\n  const { render } = createRenderer();\n\n  it('throws when rendered outside an Accordion.Item', async () => {\n    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});\n\n    try {\n      await expect(render(<Accordion.Header />)).rejects.toThrow(\n        'Base UI: AccordionItemContext is missing. Accordion parts must be placed within <Accordion.Item>.',\n      );\n    } finally {\n      errorSpy.mockRestore();\n    }\n  });\n\n  describeConformance(<Accordion.Header />, () => ({\n    render: (node) =>\n      render(\n        <Accordion.Root>\n          <Accordion.Item>{node}</Accordion.Item>\n        </Accordion.Root>,\n      ),\n    refInstanceof: window.HTMLHeadingElement,\n  }));\n});",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Base UI — MIT © 2020-present MUI (https://base-ui.com)",
+    "source": "base-ui",
+    "styling": "unstyled",
+    "category": "data-display",
+    "previewStatus": "primitive"
+  }
+}

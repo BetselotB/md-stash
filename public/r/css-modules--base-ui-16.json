@@ -1,0 +1,34 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "css-modules--base-ui-16",
+  "type": "registry:ui",
+  "title": "Css Modules",
+  "description": "Css Modules component harvested from base-ui with unstyled styling.",
+  "dependencies": [
+    "@base-ui-components/react"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/css-modules--base-ui-16.tsx",
+      "content": "'use client';\nimport * as React from 'react';\nimport { Button } from '@base-ui/react/button';\nimport styles from './index.module.css';\n\nexport default function ExampleButton() {\n  const [loading, setLoading] = React.useState(false);\n  const labelId = React.useId();\n\n  return (\n    <Button\n      className={styles.Button}\n      disabled={loading}\n      focusableWhenDisabled\n      aria-labelledby={labelId}\n      onClick={() => {\n        setLoading(true);\n        setTimeout(() => {\n          setLoading(false);\n        }, 4000);\n      }}\n    >\n      <span id={labelId}>{loading ? 'Submitting' : 'Submit'}</span>\n    </Button>\n  );\n}",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Base UI — MIT © 2020-present MUI (https://base-ui.com)",
+    "source": "base-ui",
+    "styling": "unstyled",
+    "category": "buttons",
+    "previewStatus": "needs-demo"
+  }
+}

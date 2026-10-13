@@ -185,7 +185,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onScrollNext }) => {
       <div className="hero-stage relative w-full max-w-[85vw] my-auto flex flex-col items-center justify-center z-10 py-2">
         {/* Headline: 3 lines on desktop, font-size reduced ~8% to target ~68% width at 2560 */}
         <h1
-          aria-label="Your markdown, stashed, sorted, ready to drop."
+          aria-label="Your components, stashed, sorted, ready for any agent."
           className="hero-headline font-display text-cream select-none text-shadow-stamp text-center"
           style={{
             fontSize: 'min(clamp(31px, 8.5vw, 222px), clamp(31px, 15.2vh, 222px))',
@@ -216,7 +216,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onScrollNext }) => {
                   aria-hidden="true"
                 />
                 <span className="hl-text relative z-10 transition-colors duration-200">
-                  {'markdown'.split('').map((char, i) => (
+                  {'components'.split('').map((char, i) => (
                     <span key={i} className="hl-char inline-block" data-char={char}>
                       {char}
                     </span>
@@ -263,7 +263,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onScrollNext }) => {
                   aria-hidden="true"
                 />
                 <span className="hl-text relative z-10 transition-colors duration-200">
-                  {'ready to drop.'.split('').map((char, i) => (
+                  {'ready for any agent.'.split('').map((char, i) => (
                     <span key={i} className="hl-char inline-block" data-char={char}>
                       {char === ' ' ? '\u00A0' : char}
                     </span>

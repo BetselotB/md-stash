@@ -1,8 +1,13 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeAll, afterAll } from 'vitest';
 import { renderHook } from '@testing-library/react';
 import { useLandingScroll } from '../../src/hooks/useLandingScroll';
 
 describe('useLandingScroll hook', () => {
+  beforeAll(() => {
+    if (!globalThis.requestAnimationFrame) {
+      globalThis.requestAnimationFrame = (cb) => setTimeout(cb, 0) as unknown as number;
+    }
+  });
   it('initializes navTheme with sage by default', () => {
     const heroRef = { current: document.createElement('div') };
     const creamCurtainRef = { current: document.createElement('div') };

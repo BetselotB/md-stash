@@ -1,0 +1,34 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "avatar-spec",
+  "type": "registry:ui",
+  "title": "Avatar.spec",
+  "description": "Avatar.spec component harvested from base-ui with unstyled styling.",
+  "dependencies": [
+    "@base-ui-components/react"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/avatar-spec.tsx",
+      "content": "import { expectType } from '#test-utils';\nimport { Avatar } from '@base-ui/react/avatar';\nimport type { ImageLoadingStatus } from '@base-ui/react/avatar';\n\n// `Avatar.Image` accepts and forwards the native responsive/loading `<img>` props.\n<Avatar.Root\n  render={(props, state) => {\n    expectType<ImageLoadingStatus, typeof state.imageLoadingStatus>(state.imageLoadingStatus);\n    return <span {...props} />;\n  }}\n>\n  <Avatar.Image\n    crossOrigin=\"anonymous\"\n    keepMounted\n    referrerPolicy=\"no-referrer\"\n    sizes=\"48px\"\n    srcSet=\"avatar.png 1x, avatar@2x.png 2x\"\n    onLoadingStatusChange={(status) => {\n      expectType<ImageLoadingStatus, typeof status>(status);\n    }}\n    render={(props, state) => {\n      expectType<string | undefined, typeof props.src>(props.src);\n      expectType<string | undefined, typeof props.alt>(props.alt);\n      expectType<ImageLoadingStatus, typeof state.imageLoadingStatus>(state.imageLoadingStatus);\n      return <img alt=\"\" {...props} />;\n    }}\n  />\n  <Avatar.Fallback\n    delay={100}\n    render={(props, state) => {\n      expectType<ImageLoadingStatus, typeof state.imageLoadingStatus>(state.imageLoadingStatus);\n      return <span {...props} />;\n    }}\n  />\n</Avatar.Root>;",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Base UI — MIT © 2020-present MUI (https://base-ui.com)",
+    "source": "base-ui",
+    "styling": "unstyled",
+    "category": "data-display",
+    "previewStatus": "needs-demo"
+  }
+}

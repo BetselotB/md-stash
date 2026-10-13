@@ -1,0 +1,36 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "use-animated-state-test",
+  "type": "registry:hook",
+  "title": "Use Animated State.test",
+  "description": "Use Animated State.test component harvested from motion with tailwind styling.",
+  "dependencies": [
+    "motion",
+    "clsx",
+    "tailwind-merge"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "hooks/use-animated-state-test.ts",
+      "content": "import { useEffect } from \"react\"\nimport { render } from \"../../../jest.setup\"\nimport { useAnimatedState } from \"../use-animated-state\"\n\ndescribe(\"useAnimatedState\", () => {\n    test(\"animates values\", async () => {\n        const promise = new Promise((resolve) => {\n            const Component = () => {\n                const [state, setState] = useAnimatedState({ foo: 0 })\n\n                useEffect(() => {\n                    setState({\n                        foo: 100,\n                        transition: { duration: 0.05 },\n                    })\n                }, [])\n\n                useEffect(() => {\n                    if (state.foo === 100) resolve(state.foo)\n                }, [state.foo])\n\n                return <div />\n            }\n\n            render(<Component />)\n        })\n\n        await expect(promise).resolves.toEqual(100)\n    })\n})",
+      "type": "registry:hook"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Motion — MIT © 2018-present Framer B.V. (https://motion.dev)",
+    "source": "motion",
+    "styling": "tailwind",
+    "category": "hooks",
+    "previewStatus": "primitive"
+  }
+}

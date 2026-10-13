@@ -1,0 +1,36 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "customizedaccordions",
+  "type": "registry:ui",
+  "title": "CustomizedAccordions",
+  "description": "CustomizedAccordions component harvested from mui with css-in-js styling.",
+  "dependencies": [
+    "@mui/material",
+    "@emotion/react",
+    "@emotion/styled"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/customizedaccordions.tsx",
+      "content": "import * as React from 'react';\nimport { styled } from '@mui/material/styles';\nimport ArrowForwardIosSharpIcon from '@mui/icons-material/ArrowForwardIosSharp';\nimport MuiAccordion from '@mui/material/Accordion';\nimport type { AccordionProps } from '@mui/material/Accordion';\nimport MuiAccordionSummary, {\n  accordionSummaryClasses,\n} from '@mui/material/AccordionSummary';\nimport type { AccordionSummaryProps } from '@mui/material/AccordionSummary';\nimport MuiAccordionDetails from '@mui/material/AccordionDetails';\nimport Typography from '@mui/material/Typography';\n\nconst Accordion = styled((props: AccordionProps) => (\n  <MuiAccordion disableGutters elevation={0} square {...props} />\n))(({ theme }) => ({\n  border: `1px solid ${theme.palette.divider}`,\n  '&:not(:last-child)': {\n    borderBottom: 0,\n  },\n  '&::before': {\n    display: 'none',\n  },\n}));\n\nconst AccordionSummary = styled((props: AccordionSummaryProps) => (\n  <MuiAccordionSummary\n    expandIcon={<ArrowForwardIosSharpIcon sx={{ fontSize: '0.9rem' }} />}\n    {...props}\n  />\n))(({ theme }) => ({\n  backgroundColor: 'rgba(0, 0, 0, .03)',\n  flexDirection: 'row-reverse',\n  [`& .${accordionSummaryClasses.expandIconWrapper}.${accordionSummaryClasses.expanded}`]:\n    {\n      transform: 'rotate(90deg)',\n    },\n  [`& .${accordionSummaryClasses.content}`]: {\n    marginLeft: theme.spacing(1),\n  },\n  ...theme.applyStyles('dark', {\n    backgroundColor: 'rgba(255, 255, 255, .05)',\n  }),\n}));\n\nconst AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({\n  padding: theme.spacing(2),\n  borderTop: '1px solid rgba(0, 0, 0, .125)',\n}));\n\nexport default function CustomizedAccordions() {\n  // @focus-start @padding 1\n  const [expanded, setExpanded] = React.useState<string | false>('panel1');\n\n  const handleChange =\n    (panel: string) => (event: React.SyntheticEvent, newExpanded: boolean) => {\n      setExpanded(newExpanded ? panel : false);\n    };\n\n  return (\n    <div>\n      <Accordion expanded={expanded === 'panel1'} onChange={handleChange('panel1')}>\n        <AccordionSummary aria-controls=\"panel1d-content\" id=\"panel1d-header\">\n          <Typography component=\"span\">Collapsible Group Item #1</Typography>\n        </AccordionSummary>\n        <AccordionDetails>\n          <Typography>\n            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse\n            malesuada lacus ex, sit amet blandit leo lobortis eget. Lorem ipsum dolor\n            sit amet, consectetur adipiscing elit. Suspendisse malesuada lacus ex,\n            sit amet blandit leo lobortis eget.\n          </Typography>\n        </AccordionDetails>\n      </Accordion>\n      <Accordion expanded={expanded === 'panel2'} onChange={handleChange('panel2')}>\n        <AccordionSummary aria-controls=\"panel2d-content\" id=\"panel2d-header\">\n          <Typography component=\"span\">Collapsible Group Item #2</Typography>\n        </AccordionSummary>\n        <AccordionDetails>\n          <Typography>\n            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse\n            malesuada lacus ex, sit amet blandit leo lobortis eget. Lorem ipsum dolor\n            sit amet, consectetur adipiscing elit. Suspendisse malesuada lacus ex,\n            sit amet blandit leo lobortis eget.\n          </Typography>\n        </AccordionDetails>\n      </Accordion>\n      <Accordion expanded={expanded === 'panel3'} onChange={handleChange('panel3')}>\n        <AccordionSummary aria-controls=\"panel3d-content\" id=\"panel3d-header\">\n          <Typography component=\"span\">Collapsible Group Item #3</Typography>\n        </AccordionSummary>\n        <AccordionDetails>\n          <Typography>\n            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse\n            malesuada lacus ex, sit amet blandit leo lobortis eget. Lorem ipsum dolor\n            sit amet, consectetur adipiscing elit. Suspendisse malesuada lacus ex,\n            sit amet blandit leo lobortis eget.\n          </Typography>\n        </AccordionDetails>\n      </Accordion>\n    </div>\n  );\n  // @focus-end\n}",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Material UI — MIT © 2014-present Call-Em-All / Material-UI (https://mui.com)",
+    "source": "mui",
+    "styling": "css-in-js",
+    "category": "data-display",
+    "previewStatus": "unsupported"
+  }
+}

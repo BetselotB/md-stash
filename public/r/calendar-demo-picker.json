@@ -1,0 +1,35 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "calendar-demo-picker",
+  "type": "registry:ui",
+  "title": "Calendar.demo.picker",
+  "description": "Calendar.demo.picker component harvested from mantine with css-modules styling.",
+  "dependencies": [
+    "@mantine/core",
+    "@mantine/hooks"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/calendar-demo-picker.tsx",
+      "content": "import dayjs from 'dayjs';\nimport { useState } from 'react';\nimport { Calendar } from '@mantine/dates';\nimport { MantineDemo } from '@mantinex/demo';\n\nconst code = `\nimport dayjs from 'dayjs';\nimport { useState } from 'react';\nimport { Calendar } from '@mantine/dates';\n\nfunction Demo() {\n  const [selected, setSelected] = useState<string[]>([]);\n  const handleSelect = (date: string) => {\n    const isSelected = selected.some((s) => dayjs(date).isSame(s, 'date'));\n    if (isSelected) {\n      setSelected((current) => current.filter((d) => !dayjs(d).isSame(date, 'date')));\n    } else if (selected.length < 3) {\n      setSelected((current) => [...current, date]);\n    }\n  };\n\n  return (\n    <Calendar\n      getDayProps={(date) => ({\n        selected: selected.some((s) => dayjs(date).isSame(s, 'date')),\n        onClick: () => handleSelect(date),\n      })}\n    />\n  );\n}\n`;\n\nfunction Demo() {\n  const [selected, setSelected] = useState<string[]>([]);\n  const handleSelect = (date: string) => {\n    const isSelected = selected.some((s) => dayjs(date).isSame(s, 'date'));\n    if (isSelected) {\n      setSelected((current) => current.filter((d) => !dayjs(d).isSame(date, 'date')));\n    } else if (selected.length < 3) {\n      setSelected((current) => [...current, date]);\n    }\n  };\n\n  return (\n    <Calendar\n      getDayProps={(date) => ({\n        selected: selected.some((s) => dayjs(date).isSame(s, 'date')),\n        onClick: () => handleSelect(date),\n      })}\n    />\n  );\n}\n\nexport const picker: MantineDemo = {\n  type: 'code',\n  centered: true,\n  component: Demo,\n  code,\n};",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Mantine — MIT © 2020-present Vitaly Rtishchev (https://mantine.dev)",
+    "source": "mantine",
+    "styling": "css-modules",
+    "category": "data-display",
+    "previewStatus": "unsupported"
+  }
+}

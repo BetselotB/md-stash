@@ -1,0 +1,35 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "combobox-demo-button",
+  "type": "registry:ui",
+  "title": "Combobox.demo.button",
+  "description": "Combobox.demo.button component harvested from mantine with css-modules styling.",
+  "dependencies": [
+    "@mantine/core",
+    "@mantine/hooks"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/combobox-demo-button.tsx",
+      "content": "import { useState } from 'react';\nimport { Box, Button, Combobox, Text, useCombobox } from '@mantine/core';\nimport { MantineDemo } from '@mantinex/demo';\n\nconst code = `\nimport { useState } from 'react';\nimport { Button, Combobox, useCombobox, Text, Box } from '@mantine/core';\n\nconst groceries = ['🍎 Apples', '🍌 Bananas', '🥦 Broccoli', '🥕 Carrots', '🍫 Chocolate'];\n\nfunction Demo() {\n  const [selectedItem, setSelectedItem] = useState<string | null>(null);\n  const combobox = useCombobox({\n    onDropdownClose: () => combobox.resetSelectedOption(),\n  });\n\n  const options = groceries.map((item) => (\n    <Combobox.Option value={item} key={item}>\n      {item}\n    </Combobox.Option>\n  ));\n\n  return (\n    <>\n      <Box mb=\"xs\">\n        <Text span size=\"sm\" c=\"dimmed\">\n          Selected item:{' '}\n        </Text>\n\n        <Text span size=\"sm\">\n          {selectedItem || 'Nothing selected'}\n        </Text>\n      </Box>\n\n      <Combobox\n        store={combobox}\n        width={250}\n        position=\"bottom-start\"\n        withArrow\n        onOptionSubmit={(val) => {\n          setSelectedItem(val);\n          combobox.closeDropdown();\n        }}\n      >\n        <Combobox.Target>\n          <Button onClick={() => combobox.toggleDropdown()}>Pick item</Button>\n        </Combobox.Target>\n\n        <Combobox.Dropdown>\n          <Combobox.Options>{options}</Combobox.Options>\n        </Combobox.Dropdown>\n      </Combobox>\n    </>\n  );\n}\n`;\n\nconst groceries = ['🍎 Apples', '🍌 Bananas', '🥦 Broccoli', '🥕 Carrots', '🍫 Chocolate'];\n\nfunction Demo() {\n  const [selectedItem, setSelectedItem] = useState<string | null>(null);\n  const combobox = useCombobox({\n    onDropdownClose: () => combobox.resetSelectedOption(),\n  });\n\n  const options = groceries.map((item) => (\n    <Combobox.Option value={item} key={item}>\n      {item}\n    </Combobox.Option>\n  ));\n\n  return (\n    <>\n      <Box mb=\"xs\">\n        <Text span size=\"sm\" c=\"dimmed\">\n          Selected item:{' '}\n        </Text>\n\n        <Text span size=\"sm\">\n          {selectedItem || 'Nothing selected'}\n        </Text>\n      </Box>\n\n      <Combobox\n        store={combobox}\n        width={250}\n        position=\"bottom-start\"\n        withArrow\n        onOptionSubmit={(val) => {\n          setSelectedItem(val);\n          combobox.closeDropdown();\n        }}\n      >\n        <Combobox.Target>\n          <Button onClick={() => combobox.toggleDropdown()}>Pick item</Button>\n        </Combobox.Target>\n\n        <Combobox.Dropdown>\n          <Combobox.Options>{options}</Combobox.Options>\n        </Combobox.Dropdown>\n      </Combobox>\n    </>\n  );\n}\n\nexport const button: MantineDemo = {\n  type: 'code',\n  component: Demo,\n  maxWidth: 340,\n  centered: true,\n  defaultExpanded: false,\n  code,\n};",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Mantine — MIT © 2020-present Vitaly Rtishchev (https://mantine.dev)",
+    "source": "mantine",
+    "styling": "css-modules",
+    "category": "buttons",
+    "previewStatus": "unsupported"
+  }
+}

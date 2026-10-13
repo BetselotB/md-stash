@@ -1,0 +1,34 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "link-button",
+  "type": "registry:ui",
+  "title": "Link Button",
+  "description": "Link Button component harvested from chakra-ui with css-in-js styling.",
+  "dependencies": [
+    "@chakra-ui/react"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/link-button.tsx",
+      "content": "\"use client\"\n\nimport type { HTMLChakraProps, RecipeProps } from \"@chakra-ui/react\"\nimport { createRecipeContext } from \"@chakra-ui/react\"\n\nexport interface LinkButtonProps extends HTMLChakraProps<\n  \"a\",\n  RecipeProps<\"button\">\n> {}\n\nconst { withContext } = createRecipeContext({ key: \"button\" })\n\n// Replace \"a\" with your framework's link component\nexport const LinkButton = withContext<HTMLAnchorElement, LinkButtonProps>(\"a\")",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Chakra UI — MIT © 2019-present Segun Adebayo (https://chakra-ui.com)",
+    "source": "chakra-ui",
+    "styling": "css-in-js",
+    "category": "buttons",
+    "previewStatus": "unsupported"
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "accordion-stories--react-aria-2",
+  "type": "registry:ui",
+  "title": "Accordion.stories",
+  "description": "Accordion.stories component harvested from react-aria with unstyled styling.",
+  "dependencies": [
+    "react-aria-components"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/accordion-stories--react-aria-2.tsx",
+      "content": "/*\n * Copyright 2020 Adobe. All rights reserved.\n * This file is licensed to you under the Apache License, Version 2.0 (the \"License\");\n * you may not use this file except in compliance with the License. You may obtain a copy\n * of the License at http://www.apache.org/licenses/LICENSE-2.0\n *\n * Unless required by applicable law or agreed to in writing, software distributed under\n * the License is distributed on an \"AS IS\" BASIS, WITHOUT WARRANTIES OR REPRESENTATIONS\n * OF ANY KIND, either express or implied. See the License for the specific language\n * governing permissions and limitations under the License.\n */\n\nimport {\n  Accordion,\n  AccordionItem,\n  AccordionItemHeader,\n  AccordionItemPanel,\n  AccordionItemTitle\n} from '../src/Accordion';\n\nimport {ActionButton} from '../src/ActionButton';\nimport type {Meta, StoryObj} from '@storybook/react';\nimport NewIcon from '../s2wf-icons/S2_Icon_New_20_N.svg';\nimport React from 'react';\nimport {style} from '../style/spectrum-theme' with {type: 'macro'};\nimport {TextField} from '../src/TextField';\n\nconst meta: Meta<typeof Accordion> = {\n  component: Accordion,\n  parameters: {\n    chromaticProvider: {disableAnimations: true}\n  },\n  title: 'S2 Chromatic/Accordion'\n};\n\nexport default meta;\ntype Story = StoryObj<typeof Accordion>;\n\nexport const Example: Story = {\n  render: args => {\n    return (\n      <div className={style({minHeight: 240})}>\n        <Accordion {...args}>\n          <AccordionItem id=\"files\">\n            <AccordionItemTitle>Files</AccordionItemTitle>\n            <AccordionItemPanel>Files content</AccordionItemPanel>\n          </AccordionItem>\n          <AccordionItem id=\"people\">\n            <AccordionItemTitle>People</AccordionItemTitle>\n            <AccordionItemPanel>\n              <TextField\n                label=\"Name\"\n                styles={style({maxWidth: 176})}\n                placeholder=\"Enter your name\"\n              />\n            </AccordionItemPanel>\n          </AccordionItem>\n        </Accordion>\n      </div>\n    );\n  }\n};\n\nexport const WithLongTitle: Story = {\n  render: args => {\n    return (\n      <div className={style({minHeight: 224})}>\n        <Accordion styles={style({maxWidth: 224})} {...args}>\n          <AccordionItem>\n            <AccordionItemTitle>Files</AccordionItemTitle>\n            <AccordionItemPanel>Files content</AccordionItemPanel>\n          </AccordionItem>\n          <AccordionItem>\n            <AccordionItemTitle>People</AccordionItemTitle>\n            <AccordionItemPanel>People content</AccordionItemPanel>\n          </AccordionItem>\n          <AccordionItem>\n            <AccordionItemTitle>Very very very very very long title that wraps</AccordionItemTitle>\n            <AccordionItemPanel>Accordion content</AccordionItemPanel>\n          </AccordionItem>\n        </Accordion>\n      </div>\n    );\n  }\n};\n\nexport const WithDisabledItem: Story = {\n  render: args => {\n    return (\n      <div className={style({minHeight: 240})}>\n        <Accordion {...args}>\n          <AccordionItem>\n            <AccordionItemTitle>Files</AccordionItemTitle>\n            <AccordionItemPanel>Files content</AccordionItemPanel>\n          </AccordionItem>\n          <AccordionItem isDisabled>\n            <AccordionItemTitle>People</AccordionItemTitle>\n            <AccordionItemPanel>\n              <TextField label=\"Name\" placeholder=\"Enter your name\" />\n            </AccordionItemPanel>\n          </AccordionItem>\n        </Accordion>\n      </div>\n    );\n  }\n};\n\nWithLongTitle.parameters = {\n  docs: {\n    disable: true\n  }\n};\n\nWithDisabledItem.parameters = {\n  docs: {\n    disable: true\n  }\n};\n\nexport const WithActionButton: Story = {\n  render: args => {\n    return (\n      <div className={style({minHeight: 240})}>\n        <Accordion {...args}>\n          <AccordionItem id=\"files\">\n            <AccordionItemHeader>\n              <AccordionItemTitle>Files</AccordionItemTitle>\n              <ActionButton aria-label=\"Add new file\">\n                <NewIcon />\n              </ActionButton>\n            </AccordionItemHeader>\n            <AccordionItemPanel>Files content</AccordionItemPanel>\n          </AccordionItem>\n          <AccordionItem id=\"people\">\n            <AccordionItemHeader>\n              <AccordionItemTitle>People</AccordionItemTitle>\n              <ActionButton aria-label=\"Add new person\">\n                <NewIcon />\n              </ActionButton>\n            </AccordionItemHeader>\n            <AccordionItemPanel>\n              <TextField\n                label=\"Name\"\n                styles={style({maxWidth: 176})}\n                placeholder=\"Enter your name\"\n              />\n            </AccordionItemPanel>\n          </AccordionItem>\n        </Accordion>\n      </div>\n    );\n  }\n};",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "Apache-2.0",
+    "attribution": "React Aria — Apache-2.0 © 2020-present Adobe Inc. (https://react-spectrum.adobe.com/react-aria)",
+    "source": "react-aria",
+    "styling": "unstyled",
+    "category": "data-display",
+    "previewStatus": "primitive"
+  }
+}

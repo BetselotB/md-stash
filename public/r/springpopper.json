@@ -1,0 +1,36 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "springpopper",
+  "type": "registry:ui",
+  "title": "SpringPopper",
+  "description": "SpringPopper component harvested from mui with css-in-js styling.",
+  "dependencies": [
+    "@mui/material",
+    "@emotion/react",
+    "@emotion/styled"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/springpopper.tsx",
+      "content": "import * as React from 'react';\nimport Box from '@mui/material/Box';\nimport Popper from '@mui/material/Popper';\nimport { useSpring, animated } from '@react-spring/web';\n\ninterface FadeProps {\n  children?: React.ReactElement<unknown>;\n  in?: boolean;\n  onEnter?: () => void;\n  onExited?: () => void;\n}\n\nconst Fade = React.forwardRef<HTMLDivElement, FadeProps>(function Fade(props, ref) {\n  const { in: open, children, onEnter, onExited, ...other } = props;\n  const style = useSpring({\n    from: { opacity: 0 },\n    to: { opacity: open ? 1 : 0 },\n    onStart: () => {\n      if (open && onEnter) {\n        onEnter();\n      }\n    },\n    onRest: () => {\n      if (!open && onExited) {\n        onExited();\n      }\n    },\n  });\n\n  return (\n    <animated.div ref={ref} style={style} {...other}>\n      {children}\n    </animated.div>\n  );\n});\n\nexport default function SpringPopper() {\n  const [open, setOpen] = React.useState(false);\n  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);\n\n  const handleClick = (event: React.MouseEvent<HTMLElement>) => {\n    setAnchorEl(event.currentTarget);\n    setOpen((previousOpen) => !previousOpen);\n  };\n\n  const canBeOpen = open && Boolean(anchorEl);\n  const id = canBeOpen ? 'spring-popper' : undefined;\n\n  return (\n    <div>\n      {/* @focus-start */}\n      <button aria-describedby={id} type=\"button\" onClick={handleClick}>\n        Toggle Popper\n      </button>\n      <Popper id={id} open={open} anchorEl={anchorEl} transition>\n        {({ TransitionProps }) => (\n          <Fade {...TransitionProps}>\n            <Box sx={{ border: 1, p: 1, bgcolor: 'background.paper' }}>\n              The content of the Popper.\n            </Box>\n          </Fade>\n        )}\n      </Popper>\n      {/* @focus-end */}\n    </div>\n  );\n}",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Material UI — MIT © 2014-present Call-Em-All / Material-UI (https://mui.com)",
+    "source": "mui",
+    "styling": "css-in-js",
+    "category": "animation-primitives",
+    "previewStatus": "unsupported"
+  }
+}

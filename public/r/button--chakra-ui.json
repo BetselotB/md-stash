@@ -1,0 +1,34 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "button--chakra-ui",
+  "type": "registry:ui",
+  "title": "Button",
+  "description": "Button component harvested from chakra-ui with css-in-js styling.",
+  "dependencies": [
+    "@chakra-ui/react"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/button--chakra-ui.tsx",
+      "content": "import {\n  AbsoluteCenter,\n  Button as ChakraButton,\n  Span,\n  Spinner,\n} from \"@chakra-ui/react\"\nimport * as React from \"react\"\n\nexport const Button = React.forwardRef(function Button(props, ref) {\n  const { loading, disabled, loadingText, children, ...rest } = props\n  return (\n    <ChakraButton disabled={loading || disabled} ref={ref} {...rest}>\n      {loading && !loadingText ? (\n        <>\n          <AbsoluteCenter display=\"inline-flex\">\n            <Spinner size=\"inherit\" color=\"inherit\" />\n          </AbsoluteCenter>\n          <Span opacity={0}>{children}</Span>\n        </>\n      ) : loading && loadingText ? (\n        <>\n          <Spinner size=\"inherit\" color=\"inherit\" />\n          {loadingText}\n        </>\n      ) : (\n        children\n      )}\n    </ChakraButton>\n  )\n})",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Chakra UI — MIT © 2019-present Segun Adebayo (https://chakra-ui.com)",
+    "source": "chakra-ui",
+    "styling": "css-in-js",
+    "category": "buttons",
+    "previewStatus": "unsupported"
+  }
+}

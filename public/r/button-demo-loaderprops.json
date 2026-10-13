@@ -1,0 +1,35 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "button-demo-loaderprops",
+  "type": "registry:ui",
+  "title": "Button.demo.loaderProps",
+  "description": "Button.demo.loaderProps component harvested from mantine with css-modules styling.",
+  "dependencies": [
+    "@mantine/core",
+    "@mantine/hooks"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/button-demo-loaderprops.tsx",
+      "content": "import { Button } from '@mantine/core';\nimport { MantineDemo } from '@mantinex/demo';\n\nconst code = `\nimport { Button } from '@mantine/core';\n\nfunction Demo() {\n  return (\n    <Button loading loaderProps={{ type: 'dots' }}>\n      Loading button\n    </Button>\n  );\n}\n`;\n\nfunction Demo() {\n  return (\n    <Button loading loaderProps={{ type: 'dots' }}>\n      Loading button\n    </Button>\n  );\n}\n\nexport const loaderProps: MantineDemo = {\n  type: 'code',\n  component: Demo,\n  centered: true,\n  code,\n};",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Mantine — MIT © 2020-present Vitaly Rtishchev (https://mantine.dev)",
+    "source": "mantine",
+    "styling": "css-modules",
+    "category": "buttons",
+    "previewStatus": "unsupported"
+  }
+}

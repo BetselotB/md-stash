@@ -1,0 +1,34 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "use-breakpoint-stories",
+  "type": "registry:hook",
+  "title": "Use Breakpoint.stories",
+  "description": "Use Breakpoint.stories component harvested from chakra-ui with css-in-js styling.",
+  "dependencies": [
+    "@chakra-ui/react"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "hooks/use-breakpoint-stories.ts",
+      "content": "import type { Meta } from \"@storybook/react-vite\"\nimport { Box, Flex, useBreakpointValue } from \"../src\"\n\nexport default {\n  title: \"Hooks / useBreakpointValue\",\n  decorators: [\n    (Story) => (\n      <Box p=\"10\">\n        <Story />\n      </Box>\n    ),\n  ],\n} satisfies Meta\n\nexport const Basic = () => {\n  const value = useBreakpointValue({ base: false, lg: true }, { ssr: false })\n  return <Flex>{value ? \"true\" : \"false\"}</Flex>\n}",
+      "type": "registry:hook"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Chakra UI — MIT © 2019-present Segun Adebayo (https://chakra-ui.com)",
+    "source": "chakra-ui",
+    "styling": "css-in-js",
+    "category": "hooks",
+    "previewStatus": "primitive"
+  }
+}

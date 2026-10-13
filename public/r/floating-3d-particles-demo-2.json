@@ -1,0 +1,35 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "floating-3d-particles-demo-2",
+  "type": "registry:ui",
+  "title": "Floating 3d Particles Demo 2",
+  "description": "Floating 3d Particles Demo 2 component harvested from magic-ui with tailwind styling.",
+  "dependencies": [
+    "clsx",
+    "tailwind-merge"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/floating-3d-particles-demo-2.tsx",
+      "content": "\"use client\"\n\nimport { useTheme } from \"next-themes\"\n\nimport { Floating3DParticles } from \"@/registry/magicui/floating-3d-particles\"\n\nexport default function Component() {\n  const { resolvedTheme } = useTheme()\n  const color = resolvedTheme === \"dark\" ? \"#c4b5fd\" : \"#6d28d9\"\n\n  return (\n    <div className=\"bg-background relative h-[500px] w-full overflow-hidden rounded-lg border\">\n      <Floating3DParticles\n        color={color}\n        depth={0.8}\n        opacity={0.55}\n        quantity={1000}\n      />\n    </div>\n  )\n}",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Magic UI — MIT © 2023-present Dillion Verma (https://magicui.design)",
+    "source": "magic-ui",
+    "styling": "tailwind",
+    "category": "backgrounds",
+    "previewStatus": "ready"
+  }
+}

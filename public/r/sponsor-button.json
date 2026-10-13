@@ -1,0 +1,34 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "sponsor-button",
+  "type": "registry:ui",
+  "title": "Sponsor Button",
+  "description": "Sponsor Button component harvested from chakra-ui with css-in-js styling.",
+  "dependencies": [
+    "@chakra-ui/react"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/sponsor-button.tsx",
+      "content": "import { docsConfig } from \"@/docs.config\"\nimport { LinkButton, LinkButtonProps } from \"compositions/ui/link-button\"\nimport { FaHeart } from \"react-icons/fa\"\n\nexport const SponsorButton = (props: LinkButtonProps) => (\n  <LinkButton\n    href={docsConfig.donationUrl}\n    target=\"_blank\"\n    aria-label=\"Sponsor Chakra UI on Open Collective\"\n    rel=\"noopener noreferrer\"\n    variant=\"ghost\"\n    size=\"sm\"\n    {...props}\n    _icon={{\n      color: \"red.500\",\n    }}\n  >\n    <FaHeart />\n    Sponsor\n  </LinkButton>\n)",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Chakra UI — MIT © 2019-present Segun Adebayo (https://chakra-ui.com)",
+    "source": "chakra-ui",
+    "styling": "css-in-js",
+    "category": "buttons",
+    "previewStatus": "unsupported"
+  }
+}

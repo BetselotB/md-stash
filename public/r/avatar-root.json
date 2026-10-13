@@ -1,0 +1,34 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "avatar-root",
+  "type": "registry:ui",
+  "title": "Avatar Root",
+  "description": "Avatar Root component harvested from ark-ui with unstyled styling.",
+  "dependencies": [
+    "@ark-ui/react"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/avatar-root.tsx",
+      "content": "import { mergeProps } from '@zag-js/solid'\nimport { createSplitProps } from '../../utils/create-split-props.ts'\nimport { type HTMLProps, type PolymorphicProps, ark } from '../factory.tsx'\nimport { type UseAvatarProps, useAvatar } from './use-avatar.ts'\nimport { AvatarProvider } from './use-avatar-context.ts'\n\nexport interface AvatarRootBaseProps extends UseAvatarProps, PolymorphicProps<'div'> {}\nexport interface AvatarRootProps extends HTMLProps<'div'>, AvatarRootBaseProps {}\n\nexport const AvatarRoot = (props: AvatarRootProps) => {\n  const [useAvatarProps, localProps] = createSplitProps<UseAvatarProps>()(props, ['id', 'ids', 'onStatusChange'])\n\n  const context = useAvatar(useAvatarProps)\n  const mergedProps = mergeProps(() => context().getRootProps(), localProps)\n\n  return (\n    <AvatarProvider value={context}>\n      <ark.div {...mergedProps} />\n    </AvatarProvider>\n  )\n}",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Ark UI — MIT © 2022-present Chakra Systems GmbH (https://ark-ui.com)",
+    "source": "ark-ui",
+    "styling": "unstyled",
+    "category": "data-display",
+    "previewStatus": "primitive"
+  }
+}

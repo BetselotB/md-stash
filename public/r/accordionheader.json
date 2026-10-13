@@ -1,0 +1,34 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "accordionheader",
+  "type": "registry:ui",
+  "title": "AccordionHeader",
+  "description": "AccordionHeader component harvested from base-ui with unstyled styling.",
+  "dependencies": [
+    "@base-ui-components/react"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/accordionheader.tsx",
+      "content": "'use client';\nimport * as React from 'react';\nimport type { BaseUIComponentProps } from '../../internals/types';\nimport { useRenderElement } from '../../internals/useRenderElement';\nimport type { AccordionItemState } from '../item/AccordionItem';\nimport { useAccordionItemContext } from '../item/AccordionItemContext';\nimport { accordionStateAttributesMapping } from '../item/stateAttributesMapping';\n\n/**\n * A heading that labels the corresponding panel.\n * Renders an `<h3>` element.\n *\n * Documentation: [Base UI Accordion](https://base-ui.com/react/components/accordion)\n */\nexport const AccordionHeader = React.forwardRef(function AccordionHeader(\n  componentProps: AccordionHeader.Props,\n  forwardedRef: React.ForwardedRef<HTMLHeadingElement>,\n) {\n  const { render, className, style, ...elementProps } = componentProps;\n\n  const { state } = useAccordionItemContext();\n\n  const element = useRenderElement('h3', componentProps, {\n    state,\n    ref: forwardedRef,\n    props: elementProps,\n    stateAttributesMapping: accordionStateAttributesMapping,\n  });\n\n  return element;\n});\n\nexport interface AccordionHeaderState extends AccordionItemState {}\n\nexport interface AccordionHeaderProps extends BaseUIComponentProps<'h3', AccordionHeaderState> {}\n\nexport namespace AccordionHeader {\n  export type State = AccordionHeaderState;\n  export type Props = AccordionHeaderProps;\n}",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Base UI — MIT © 2020-present MUI (https://base-ui.com)",
+    "source": "base-ui",
+    "styling": "unstyled",
+    "category": "data-display",
+    "previewStatus": "needs-demo"
+  }
+}

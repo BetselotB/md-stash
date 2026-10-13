@@ -1,0 +1,34 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "use-controllable-state-reducer",
+  "type": "registry:hook",
+  "title": "Use Controllable State Reducer",
+  "description": "Use Controllable State Reducer component harvested from radix-ui with unstyled styling.",
+  "dependencies": [
+    "@radix-ui/react-primitive"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "hooks/use-controllable-state-reducer.ts",
+      "content": "import * as React from 'react';\nimport { IS_DEVELOPMENT } from '@radix-ui/primitive/is-development';\nimport { useEffectEvent } from '@radix-ui/react-use-effect-event';\n\ntype ChangeHandler<T> = (state: T) => void;\n\ninterface UseControllableStateParams<T> {\n  prop: T | undefined;\n  defaultProp: T;\n  onChange: ChangeHandler<T> | undefined;\n  caller: string;\n}\n\ninterface AnyAction {\n  type: string;\n}\n\nconst SYNC_STATE = Symbol('RADIX:SYNC_STATE');\n\ninterface SyncStateAction<T> {\n  type: typeof SYNC_STATE;\n  state: T;\n}\n\nexport function useControllableStateReducer<T, S extends {}, A extends AnyAction>(\n  reducer: (prevState: S & { state: T }, action: A) => S & { state: T },\n  userArgs: UseControllableStateParams<T>,\n  initialState: S,\n): [S & { state: T }, React.Dispatch<A>];\n\nexport function useControllableStateReducer<T, S extends {}, I, A extends AnyAction>(\n  reducer: (prevState: S & { state: T }, action: A) => S & { state: T },\n  userArgs: UseControllableStateParams<T>,\n  initialArg: I,\n  init: (i: I & { state: T }) => S,\n): [S & { state: T }, React.Dispatch<A>];\n\nexport function useControllableStateReducer<T, S extends {}, A extends AnyAction>(\n  reducer: (prevState: S & { state: T }, action: A) => S & { state: T },\n  userArgs: UseControllableStateParams<T>,\n  initialArg: any,\n  init?: (i: any) => Omit<S, 'state'>,\n): [S & { state: T }, React.Dispatch<A>] {\n  const { prop: controlledState, defaultProp, onChange: onChangeProp, caller } = userArgs;\n  const isControlled = controlledState !== undefined;\n\n  const onChange = useEffectEvent(onChangeProp);\n\n  // OK to disable conditionally calling hooks here because they will always run\n  // consistently in the same environment. Bundlers should be able to remove the\n  // code block entirely in production.\n  /* eslint-disable react-hooks/rules-of-hooks */\n  if (IS_DEVELOPMENT) {\n    const isControlledRef = React.useRef(controlledState !== undefined);\n    React.useEffect(() => {\n      const wasControlled = isControlledRef.current;\n      if (wasControlled !== isControlled) {\n        const from = wasControlled ? 'controlled' : 'uncontrolled';\n        const to = isControlled ? 'controlled' : 'uncontrolled';\n        console.warn(\n          `${caller} is changing from ${from} to ${to}. Components should not switch from controlled to uncontrolled (or vice versa). Decide between using a controlled or uncontrolled value for the lifetime of the component.`,\n        );\n      }\n      isControlledRef.current = isControlled;\n    }, [isControlled, caller]);\n  }\n  /* eslint-enable react-hooks/rules-of-hooks */\n\n  type InternalState = S & { state: T };\n  const args: [InternalState] = [{ ...initialArg, state: defaultProp }];\n  if (init) {\n    // @ts-expect-error\n    args.push(init);\n  }\n\n  const [internalState, dispatch] = React.useReducer(\n    (state: InternalState, action: A | SyncStateAction<T>): InternalState => {\n      if (action.type === SYNC_STATE) {\n        return { ...state, state: action.state };\n      }\n\n      const next = reducer(state, action);\n      if (isControlled && !Object.is(next.state, state.state)) {\n        onChange(next.state);\n      }\n      return next;\n    },\n    ...args,\n  );\n\n  const uncontrolledState = internalState.state;\n  const prevValueRef = React.useRef(uncontrolledState);\n  React.useEffect(() => {\n    if (prevValueRef.current !== uncontrolledState) {\n      prevValueRef.current = uncontrolledState;\n      if (!isControlled) {\n        onChange(uncontrolledState);\n      }\n    }\n  }, [uncontrolledState, prevValueRef, isControlled]);\n\n  const state = React.useMemo(() => {\n    const isControlled = controlledState !== undefined;\n    if (isControlled) {\n      return { ...internalState, state: controlledState };\n    }\n\n    return internalState;\n  }, [internalState, controlledState]);\n\n  React.useEffect(() => {\n    // Sync internal state for controlled components so that reducer is called\n    // with the correct state values\n    if (isControlled && !Object.is(controlledState, internalState.state)) {\n      dispatch({ type: SYNC_STATE, state: controlledState });\n    }\n  }, [controlledState, internalState.state, isControlled]);\n\n  return [state, dispatch as React.Dispatch<A>];\n}",
+      "type": "registry:hook"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Radix Primitives — MIT © 2022 WorkOS (https://radix-ui.com)",
+    "source": "radix-ui",
+    "styling": "unstyled",
+    "category": "hooks",
+    "previewStatus": "primitive"
+  }
+}

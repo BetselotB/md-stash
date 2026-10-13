@@ -1,0 +1,36 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "customizedtimeline",
+  "type": "registry:ui",
+  "title": "CustomizedTimeline",
+  "description": "CustomizedTimeline component harvested from mui with css-in-js styling.",
+  "dependencies": [
+    "@mui/material",
+    "@emotion/react",
+    "@emotion/styled"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/customizedtimeline.tsx",
+      "content": "import Timeline from '@mui/lab/Timeline';\nimport TimelineItem from '@mui/lab/TimelineItem';\nimport TimelineSeparator from '@mui/lab/TimelineSeparator';\nimport TimelineConnector from '@mui/lab/TimelineConnector';\nimport TimelineContent from '@mui/lab/TimelineContent';\nimport TimelineOppositeContent from '@mui/lab/TimelineOppositeContent';\nimport TimelineDot from '@mui/lab/TimelineDot';\nimport FastfoodIcon from '@mui/icons-material/Fastfood';\nimport LaptopMacIcon from '@mui/icons-material/LaptopMac';\nimport HotelIcon from '@mui/icons-material/Hotel';\nimport RepeatIcon from '@mui/icons-material/Repeat';\nimport Typography from '@mui/material/Typography';\n\nexport default function CustomizedTimeline() {\n  return (\n    // @focus-start @padding 2\n    <Timeline position=\"alternate\">\n      <TimelineItem>\n        <TimelineOppositeContent\n          align=\"right\"\n          variant=\"body2\"\n          sx={{\n            color: 'text.secondary',\n            m: 'auto 0',\n          }}\n        >\n          9:30 am\n        </TimelineOppositeContent>\n        <TimelineSeparator>\n          <TimelineConnector />\n          <TimelineDot>\n            <FastfoodIcon />\n          </TimelineDot>\n          <TimelineConnector />\n        </TimelineSeparator>\n        <TimelineContent sx={{ py: '12px', px: 2 }}>\n          <Typography variant=\"h6\" component=\"span\">\n            Eat\n          </Typography>\n          <Typography>Because you need strength</Typography>\n        </TimelineContent>\n      </TimelineItem>\n      <TimelineItem>\n        <TimelineOppositeContent\n          variant=\"body2\"\n          sx={{\n            color: 'text.secondary',\n            m: 'auto 0',\n          }}\n        >\n          10:00 am\n        </TimelineOppositeContent>\n        <TimelineSeparator>\n          <TimelineConnector />\n          <TimelineDot color=\"primary\">\n            <LaptopMacIcon />\n          </TimelineDot>\n          <TimelineConnector />\n        </TimelineSeparator>\n        <TimelineContent sx={{ py: '12px', px: 2 }}>\n          <Typography variant=\"h6\" component=\"span\">\n            Code\n          </Typography>\n          <Typography>Because it&apos;s awesome!</Typography>\n        </TimelineContent>\n      </TimelineItem>\n      <TimelineItem>\n        <TimelineSeparator>\n          <TimelineConnector />\n          <TimelineDot color=\"primary\" variant=\"outlined\">\n            <HotelIcon />\n          </TimelineDot>\n          <TimelineConnector sx={{ bgcolor: 'secondary.main' }} />\n        </TimelineSeparator>\n        <TimelineContent sx={{ py: '12px', px: 2 }}>\n          <Typography variant=\"h6\" component=\"span\">\n            Sleep\n          </Typography>\n          <Typography>Because you need rest</Typography>\n        </TimelineContent>\n      </TimelineItem>\n      <TimelineItem>\n        <TimelineSeparator>\n          <TimelineConnector sx={{ bgcolor: 'secondary.main' }} />\n          <TimelineDot color=\"secondary\">\n            <RepeatIcon />\n          </TimelineDot>\n          <TimelineConnector />\n        </TimelineSeparator>\n        <TimelineContent sx={{ py: '12px', px: 2 }}>\n          <Typography variant=\"h6\" component=\"span\">\n            Repeat\n          </Typography>\n          <Typography>Because this is the life you love!</Typography>\n        </TimelineContent>\n      </TimelineItem>\n    </Timeline>\n    // @focus-end\n  );\n}",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Material UI — MIT © 2014-present Call-Em-All / Material-UI (https://mui.com)",
+    "source": "mui",
+    "styling": "css-in-js",
+    "category": "data-display",
+    "previewStatus": "unsupported"
+  }
+}

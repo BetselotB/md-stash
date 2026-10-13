@@ -1,0 +1,34 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "button-spec",
+  "type": "registry:ui",
+  "title": "Button.spec",
+  "description": "Button.spec component harvested from base-ui with unstyled styling.",
+  "dependencies": [
+    "@base-ui-components/react"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/button-spec.tsx",
+      "content": "import { Button } from '@base-ui/react/button';\n\n<Button />;\n<Button type=\"submit\" form=\"form-id\" name=\"action\" />;\n\n<Button nativeButton={false} render={<span />} />;\n<Button nativeButton={false} render={(props) => <div {...props} />} />;\n<Button nativeButton={false} disabled render={<span />} />;\n\n<Button nativeButton={false} type=\"submit\" />;",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Base UI — MIT © 2020-present MUI (https://base-ui.com)",
+    "source": "base-ui",
+    "styling": "unstyled",
+    "category": "buttons",
+    "previewStatus": "needs-demo"
+  }
+}

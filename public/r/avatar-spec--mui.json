@@ -1,0 +1,36 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "avatar-spec--mui",
+  "type": "registry:ui",
+  "title": "Avatar.spec",
+  "description": "Avatar.spec component harvested from mui with css-in-js styling.",
+  "dependencies": [
+    "@mui/material",
+    "@emotion/react",
+    "@emotion/styled"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/avatar-spec--mui.tsx",
+      "content": "import * as React from 'react';\nimport Avatar from '@mui/material/Avatar';\n\nfunction SlotPropsImgShouldSupportSx() {\n  <Avatar slotProps={{ img: { sx: { objectFit: 'contain' } } }} />;\n}\n\nfunction CustomImg() {\n  return <img alt=\"\" />;\n}\n<Avatar slotProps={{ img: { alt: '' } }} />;\n<Avatar slots={{ img: CustomImg }} />;\n\n// Next.js Image component\ninterface StaticImageData {\n  src: string;\n  height: number;\n  width: number;\n  blurDataURL?: string;\n  blurWidth?: number;\n  blurHeight?: number;\n}\ninterface StaticRequire {\n  default: StaticImageData;\n}\ntype StaticImport = StaticRequire | StaticImageData;\n\ntype ImageLoaderProps = {\n  src: string;\n  width: number;\n  quality?: number;\n};\n\ntype ImageLoader = (p: ImageLoaderProps) => string;\n\ntype PlaceholderValue = 'blur' | 'empty' | `data:image/${string}`;\n\ntype OnLoadingComplete = (img: HTMLImageElement) => void;\n\ndeclare const Image: React.ForwardRefExoticComponent<\n  Omit<\n    React.DetailedHTMLProps<React.ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement>,\n    'height' | 'width' | 'loading' | 'ref' | 'alt' | 'src' | 'srcSet'\n  > & {\n    src: string | StaticImport;\n    alt: string;\n    width?: number | `${number}`;\n    height?: number | `${number}`;\n    fill?: boolean;\n    loader?: ImageLoader;\n    quality?: number | `${number}`;\n    priority?: boolean;\n    loading?: 'eager' | 'lazy' | undefined;\n    placeholder?: PlaceholderValue;\n    blurDataURL?: string;\n    unoptimized?: boolean;\n    overrideSrc?: string;\n    onLoadingComplete?: OnLoadingComplete;\n    layout?: string;\n    objectFit?: string;\n    objectPosition?: string;\n    lazyBoundary?: string;\n    lazyRoot?: string;\n  } & React.RefAttributes<HTMLImageElement | null>\n>;\n\n<Avatar slots={{ img: Image }} />;",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Material UI — MIT © 2014-present Call-Em-All / Material-UI (https://mui.com)",
+    "source": "mui",
+    "styling": "css-in-js",
+    "category": "data-display",
+    "previewStatus": "unsupported"
+  }
+}

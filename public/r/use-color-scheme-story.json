@@ -1,0 +1,35 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "use-color-scheme-story",
+  "type": "registry:hook",
+  "title": "Use Color Scheme.story",
+  "description": "Use Color Scheme.story component harvested from mantine with css-modules styling.",
+  "dependencies": [
+    "@mantine/core",
+    "@mantine/hooks"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "hooks/use-color-scheme-story.ts",
+      "content": "import { useColorScheme } from './use-color-scheme';\n\nexport default { title: 'useColorScheme' };\n\nexport function Usage() {\n  const colorScheme = useColorScheme();\n\n  return (\n    <div\n      style={{\n        padding: 40,\n        background: colorScheme === 'dark' ? '#1a1a1a' : '#ffffff',\n        color: colorScheme === 'dark' ? '#ffffff' : '#000000',\n        minHeight: '100vh',\n      }}\n    >\n      <div style={{ fontFamily: 'monospace', fontSize: 24 }}>Color scheme: {colorScheme}</div>\n      <p style={{ marginTop: 16 }}>\n        Change your system color scheme preference to see this value update.\n      </p>\n    </div>\n  );\n}",
+      "type": "registry:hook"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Mantine — MIT © 2020-present Vitaly Rtishchev (https://mantine.dev)",
+    "source": "mantine",
+    "styling": "css-modules",
+    "category": "hooks",
+    "previewStatus": "primitive"
+  }
+}

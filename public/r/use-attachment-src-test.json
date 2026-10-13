@@ -1,0 +1,34 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "use-attachment-src-test",
+  "type": "registry:hook",
+  "title": "Use Attachment Src.test",
+  "description": "Use Attachment Src.test component harvested from assistant-ui with mixed styling.",
+  "dependencies": [
+    "@assistant-ui/react"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "hooks/use-attachment-src-test.ts",
+      "content": "import { act, renderHook } from \"@testing-library/react\";\nimport { StrictMode } from \"react\";\nimport { afterEach, beforeEach, describe, expect, it, vi } from \"vitest\";\nimport { useAttachmentSrc } from \"./use-attachment-src\";\n\nconst mockState = vi.hoisted(() => ({\n  current: { attachment: { type: \"document\" } } as any,\n}));\n\nvi.mock(\"@assistant-ui/react\", async (importOriginal) => ({\n  ...(await importOriginal<object>()),\n  useAuiState: (selector: (s: any) => unknown) => selector(mockState.current),\n}));\n\nconst makeFile = (name: string) =>\n  new File([\"content\"], name, { type: \"image/png\" });\n\ndescribe(\"useAttachmentSrc\", () => {\n  let created: string[];\n  let revoked: string[];\n\n  beforeEach(() => {\n    created = [];\n    revoked = [];\n    let counter = 0;\n    vi.stubGlobal(\"URL\", {\n      ...URL,\n      createObjectURL: vi.fn(() => {\n        const url = `blob:mock-${counter++}`;\n        created.push(url);\n        return url;\n      }),\n      revokeObjectURL: vi.fn((url: string) => {\n        revoked.push(url);\n      }),\n    });\n  });\n\n  afterEach(() => {\n    vi.unstubAllGlobals();\n  });\n\n  it(\"returns undefined for a non-image attachment\", () => {\n    mockState.current = { attachment: { type: \"document\" } };\n    const { result } = renderHook(() => useAttachmentSrc());\n    expect(result.current).toBeUndefined();\n    expect(created).toHaveLength(0);\n  });\n\n  it(\"returns the remote image content src when no file is present\", () => {\n    mockState.current = {\n      attachment: {\n        type: \"image\",\n        content: [{ type: \"image\", image: \"https://example.com/a.png\" }],\n      },\n    };\n    const { result } = renderHook(() => useAttachmentSrc());\n    expect(result.current).toBe(\"https://example.com/a.png\");\n    expect(created).toHaveLength(0);\n  });\n\n  it(\"creates an object URL for a file preview\", () => {\n    mockState.current = {\n      attachment: { type: \"image\", file: makeFile(\"a.png\") },\n    };\n    const { result } = renderHook(() => useAttachmentSrc());\n    expect(result.current).toBe(created[0]);\n    expect(revoked).toHaveLength(0);\n  });\n\n  it(\"never renders the previous object URL after the file is replaced\", () => {\n    mockState.current = {\n      attachment: { type: \"image\", file: makeFile(\"a.png\") },\n    };\n    const rendered: (string | undefined)[] = [];\n    const { result, rerender } = renderHook(() => {\n      const value = useAttachmentSrc();\n      rendered.push(value);\n      return value;\n    });\n    const firstUrl = created[0]!;\n    expect(result.current).toBe(firstUrl);\n\n    const sliceStart = rendered.length;\n    mockState.current = {\n      attachment: { type: \"image\", file: makeFile(\"b.png\") },\n    };\n    act(() => {\n      rerender();\n    });\n\n    expect(result.current).toBe(created[1]);\n    expect(rendered.slice(sliceStart)).not.toContain(firstUrl);\n    expect(revoked).toEqual([firstUrl]);\n  });\n\n  it(\"renders only the live URL under StrictMode double effect mounting\", () => {\n    mockState.current = {\n      attachment: { type: \"image\", file: makeFile(\"a.png\") },\n    };\n    const rendered: (string | undefined)[] = [];\n    const { result } = renderHook(\n      () => {\n        const value = useAttachmentSrc();\n        rendered.push(value);\n        return value;\n      },\n      { wrapper: StrictMode },\n    );\n\n    expect(created.length).toBeGreaterThanOrEqual(2);\n    const liveUrl = created[created.length - 1]!;\n    expect(result.current).toBe(liveUrl);\n    for (const url of revoked) {\n      expect(rendered).not.toContain(url);\n    }\n  });\n\n  it(\"revokes the object URL on unmount\", () => {\n    mockState.current = {\n      attachment: { type: \"image\", file: makeFile(\"a.png\") },\n    };\n    const { unmount } = renderHook(() => useAttachmentSrc());\n    const url = created[0]!;\n    unmount();\n    expect(revoked).toEqual([url]);\n  });\n});",
+      "type": "registry:hook"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "Apache-2.0",
+    "attribution": "assistant-ui — Apache-2.0 © assistant-ui authors (https://assistant-ui.com)",
+    "source": "assistant-ui",
+    "styling": "mixed",
+    "category": "hooks",
+    "previewStatus": "primitive"
+  }
+}

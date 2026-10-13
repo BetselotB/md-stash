@@ -1,0 +1,36 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "columngroupingtable",
+  "type": "registry:ui",
+  "title": "ColumnGroupingTable",
+  "description": "ColumnGroupingTable component harvested from mui with css-in-js styling.",
+  "dependencies": [
+    "@mui/material",
+    "@emotion/react",
+    "@emotion/styled"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/columngroupingtable.tsx",
+      "content": "import * as React from 'react';\nimport Paper from '@mui/material/Paper';\nimport Table from '@mui/material/Table';\nimport TableBody from '@mui/material/TableBody';\nimport TableCell from '@mui/material/TableCell';\nimport TableContainer from '@mui/material/TableContainer';\nimport TableHead from '@mui/material/TableHead';\nimport TablePagination from '@mui/material/TablePagination';\nimport TableRow from '@mui/material/TableRow';\n\ninterface Column {\n  id: 'name' | 'code' | 'population' | 'size' | 'density';\n  label: string;\n  minWidth?: number;\n  align?: 'right';\n  format?: (value: number) => string;\n}\n\nconst columns: Column[] = [\n  { id: 'name', label: 'Name', minWidth: 170 },\n  { id: 'code', label: 'ISO\\u00a0Code', minWidth: 100 },\n  {\n    id: 'population',\n    label: 'Population',\n    minWidth: 170,\n    align: 'right',\n    format: (value: number) => value.toLocaleString('en-US'),\n  },\n  {\n    id: 'size',\n    label: 'Size\\u00a0(km\\u00b2)',\n    minWidth: 170,\n    align: 'right',\n    format: (value: number) => value.toLocaleString('en-US'),\n  },\n  {\n    id: 'density',\n    label: 'Density',\n    minWidth: 170,\n    align: 'right',\n    format: (value: number) => value.toFixed(2),\n  },\n];\n\ninterface Data {\n  name: string;\n  code: string;\n  population: number;\n  size: number;\n  density: number;\n}\n\nfunction createData(\n  name: string,\n  code: string,\n  population: number,\n  size: number,\n): Data {\n  const density = population / size;\n  return { name, code, population, size, density };\n}\n\nconst rows = [\n  createData('India', 'IN', 1324171354, 3287263),\n  createData('China', 'CN', 1403500365, 9596961),\n  createData('Italy', 'IT', 60483973, 301340),\n  createData('United States', 'US', 327167434, 9833520),\n  createData('Canada', 'CA', 37602103, 9984670),\n  createData('Australia', 'AU', 25475400, 7692024),\n  createData('Germany', 'DE', 83019200, 357578),\n  createData('Ireland', 'IE', 4857000, 70273),\n  createData('Mexico', 'MX', 126577691, 1972550),\n  createData('Japan', 'JP', 126317000, 377973),\n  createData('France', 'FR', 67022000, 640679),\n  createData('United Kingdom', 'GB', 67545757, 242495),\n  createData('Russia', 'RU', 146793744, 17098246),\n  createData('Nigeria', 'NG', 200962417, 923768),\n  createData('Brazil', 'BR', 210147125, 8515767),\n];\n\nexport default function ColumnGroupingTable() {\n  // @focus-start @padding 1\n  const [page, setPage] = React.useState(0);\n  const [rowsPerPage, setRowsPerPage] = React.useState(10);\n\n  const handleChangePage = (event: unknown, newPage: number) => {\n    setPage(newPage);\n  };\n\n  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {\n    setRowsPerPage(+event.target.value);\n    setPage(0);\n  };\n\n  return (\n    <Paper sx={{ width: '100%' }}>\n      <TableContainer sx={{ maxHeight: 440 }}>\n        <Table stickyHeader aria-label=\"sticky table\">\n          <TableHead>\n            <TableRow>\n              <TableCell align=\"center\" colSpan={2}>\n                Country\n              </TableCell>\n              <TableCell align=\"center\" colSpan={3}>\n                Details\n              </TableCell>\n            </TableRow>\n            <TableRow>\n              {columns.map((column) => (\n                <TableCell\n                  key={column.id}\n                  align={column.align}\n                  style={{ top: 57, minWidth: column.minWidth }}\n                >\n                  {column.label}\n                </TableCell>\n              ))}\n            </TableRow>\n          </TableHead>\n          <TableBody>\n            {rows\n              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)\n              .map((row) => {\n                return (\n                  <TableRow hover key={row.code}>\n                    {columns.map((column) => {\n                      const value = row[column.id];\n                      return (\n                        <TableCell\n                          key={column.id}\n                          component={column.id === 'name' ? 'th' : 'td'}\n                          scope={column.id === 'name' ? 'row' : undefined}\n                          align={column.align}\n                        >\n                          {column.format && typeof value === 'number'\n                            ? column.format(value)\n                            : value}\n                        </TableCell>\n                      );\n                    })}\n                  </TableRow>\n                );\n              })}\n          </TableBody>\n        </Table>\n      </TableContainer>\n      <TablePagination\n        rowsPerPageOptions={[10, 25, 100]}\n        component=\"div\"\n        count={rows.length}\n        rowsPerPage={rowsPerPage}\n        page={page}\n        onPageChange={handleChangePage}\n        onRowsPerPageChange={handleChangeRowsPerPage}\n      />\n    </Paper>\n  );\n  // @focus-end\n}",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Material UI — MIT © 2014-present Call-Em-All / Material-UI (https://mui.com)",
+    "source": "mui",
+    "styling": "css-in-js",
+    "category": "data-display",
+    "previewStatus": "unsupported"
+  }
+}

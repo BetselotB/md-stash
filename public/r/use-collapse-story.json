@@ -1,0 +1,35 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "use-collapse-story",
+  "type": "registry:hook",
+  "title": "Use Collapse.story",
+  "description": "Use Collapse.story component harvested from mantine with css-modules styling.",
+  "dependencies": [
+    "@mantine/core",
+    "@mantine/hooks"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "hooks/use-collapse-story.ts",
+      "content": "import { useState } from 'react';\nimport { useCollapse } from './use-collapse';\n\nexport default { title: 'useCollapse' };\n\nexport function Usage() {\n  const [expanded, setExpanded] = useState(false);\n  const { getCollapseProps, state } = useCollapse({ expanded });\n\n  return (\n    <div style={{ padding: 40 }}>\n      <button\n        onClick={() => setExpanded((v) => !v)}\n        style={{ padding: '8px 16px', cursor: 'pointer', marginBottom: 8 }}\n      >\n        {expanded ? 'Collapse' : 'Expand'} (state: {state})\n      </button>\n      <div {...getCollapseProps()}>\n        <div style={{ padding: 20, background: '#228be6', color: 'white', borderRadius: 8 }}>\n          <p>This content is collapsible.</p>\n          <p>It animates its height when toggled.</p>\n          <p>Third line of content for height.</p>\n        </div>\n      </div>\n    </div>\n  );\n}\n\nexport function InitiallyExpanded() {\n  const [expanded, setExpanded] = useState(true);\n  const { getCollapseProps, state } = useCollapse({ expanded });\n\n  return (\n    <div style={{ padding: 40 }}>\n      <button\n        onClick={() => setExpanded((v) => !v)}\n        style={{ padding: '8px 16px', cursor: 'pointer', marginBottom: 8 }}\n      >\n        {expanded ? 'Collapse' : 'Expand'} (state: {state})\n      </button>\n      <div {...getCollapseProps()}>\n        <div style={{ padding: 20, background: '#be4bdb', color: 'white', borderRadius: 8 }}>\n          <p>This starts expanded.</p>\n          <p>Click the button to collapse it.</p>\n        </div>\n      </div>\n    </div>\n  );\n}",
+      "type": "registry:hook"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Mantine — MIT © 2020-present Vitaly Rtishchev (https://mantine.dev)",
+    "source": "mantine",
+    "styling": "css-modules",
+    "category": "hooks",
+    "previewStatus": "primitive"
+  }
+}

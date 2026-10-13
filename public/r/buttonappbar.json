@@ -1,0 +1,36 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "buttonappbar",
+  "type": "registry:ui",
+  "title": "ButtonAppBar",
+  "description": "ButtonAppBar component harvested from mui with css-in-js styling.",
+  "dependencies": [
+    "@mui/material",
+    "@emotion/react",
+    "@emotion/styled"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/buttonappbar.tsx",
+      "content": "import AppBar from '@mui/material/AppBar';\nimport Box from '@mui/material/Box';\nimport Toolbar from '@mui/material/Toolbar';\nimport Typography from '@mui/material/Typography';\nimport Button from '@mui/material/Button';\nimport IconButton from '@mui/material/IconButton';\nimport MenuIcon from '@mui/icons-material/Menu';\n\nexport default function ButtonAppBar() {\n  return (\n    <Box sx={{ flexGrow: 1 }}>\n      {/* @focus-start */}\n      <AppBar position=\"static\">\n        <Toolbar>\n          <IconButton\n            size=\"large\"\n            edge=\"start\"\n            color=\"inherit\"\n            aria-label=\"menu\"\n            sx={{ mr: 2 }}\n          >\n            <MenuIcon />\n          </IconButton>\n          <Typography variant=\"h6\" component=\"div\" sx={{ flexGrow: 1 }}>\n            News\n          </Typography>\n          <Button color=\"inherit\">Login</Button>\n        </Toolbar>\n      </AppBar>\n      {/* @focus-end */}\n    </Box>\n  );\n}",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Material UI — MIT © 2014-present Call-Em-All / Material-UI (https://mui.com)",
+    "source": "mui",
+    "styling": "css-in-js",
+    "category": "buttons",
+    "previewStatus": "unsupported"
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "accordion-demo-stylesapi",
+  "type": "registry:ui",
+  "title": "Accordion.demo.stylesApi",
+  "description": "Accordion.demo.stylesApi component harvested from mantine with css-modules styling.",
+  "dependencies": [
+    "@mantine/core",
+    "@mantine/hooks"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/accordion-demo-stylesapi.tsx",
+      "content": "import { Accordion, AccordionProps } from '@mantine/core';\nimport { MantineDemo } from '@mantinex/demo';\nimport { AccordionStylesApi } from '@docs/styles-api';\nimport { data } from './_base';\n\nconst code = `\nimport { Accordion } from '@mantine/core';\nimport { data } from './data';\n\nfunction Demo() {\n  const items = data.map((item) => (\n    <Accordion.Item key={item.value} value={item.value}>\n      <Accordion.Control icon={item.emoji}>{item.value}</Accordion.Control>\n      <Accordion.Panel>{item.description}</Accordion.Panel>\n    </Accordion.Item>\n  ));\n\n  return (\n    <Accordion value=\"Apples\" order={3}{{props}}>\n      {items}\n    </Accordion>\n  );\n}\n`;\n\nfunction Demo(props: AccordionProps) {\n  const items = data.map((item) => (\n    <Accordion.Item key={item.value} value={item.value}>\n      <Accordion.Control icon={item.emoji}>{item.value}</Accordion.Control>\n      <Accordion.Panel>{item.description}</Accordion.Panel>\n    </Accordion.Item>\n  ));\n\n  return (\n    <Accordion value=\"Apples\" order={3} {...props}>\n      {items}\n    </Accordion>\n  );\n}\n\nexport const stylesApi: MantineDemo = {\n  type: 'styles-api',\n  data: AccordionStylesApi,\n  component: Demo,\n  centered: true,\n  maxWidth: '100%',\n  code,\n};",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Mantine — MIT © 2020-present Vitaly Rtishchev (https://mantine.dev)",
+    "source": "mantine",
+    "styling": "css-modules",
+    "category": "data-display",
+    "previewStatus": "unsupported"
+  }
+}

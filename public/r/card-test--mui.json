@@ -1,0 +1,36 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "card-test--mui",
+  "type": "registry:ui",
+  "title": "Card.test",
+  "description": "Card.test component harvested from mui with css-in-js styling.",
+  "dependencies": [
+    "@mui/material",
+    "@emotion/react",
+    "@emotion/styled"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/card-test--mui.tsx",
+      "content": "import { describe, it, expect } from 'vitest';\nimport { createRenderer } from '@mui/internal-test-utils';\nimport Card, { cardClasses as classes } from '@mui/material/Card';\nimport Paper from '@mui/material/Paper';\nimport describeConformance from '../../test/describeConformance';\n\ndescribe('<Card />', () => {\n  const { render } = createRenderer();\n\n  describeConformance(<Card />, () => ({\n    classes,\n    inheritComponent: Paper,\n    render,\n    muiName: 'MuiCard',\n    refInstanceof: window.HTMLDivElement,\n    testVariantProps: { raised: true },\n  }));\n\n  it('when raised should render Paper with 8dp', () => {\n    const { container } = render(\n      <Card\n        raised\n        classes={{\n          // @ts-expect-error unknown class that's also ignored at runtime\n          elevation8: 'card-elevation-8',\n        }}\n      />,\n    );\n    expect(container.firstChild).to.have.class('MuiPaper-elevation8');\n    expect(container.firstChild).not.to.have.class('card-elevation-8');\n  });\n\n  it('should support variant=\"outlined\"', () => {\n    const { container } = render(<Card variant=\"outlined\" />);\n    expect(container.firstChild).to.have.class('MuiPaper-outlined');\n  });\n});",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Material UI — MIT © 2014-present Call-Em-All / Material-UI (https://mui.com)",
+    "source": "mui",
+    "styling": "css-in-js",
+    "category": "data-display",
+    "previewStatus": "primitive"
+  }
+}

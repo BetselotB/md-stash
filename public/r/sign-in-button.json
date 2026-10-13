@@ -1,0 +1,34 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "sign-in-button",
+  "type": "registry:ui",
+  "title": "Sign In Button",
+  "description": "Sign In Button component harvested from ark-ui with unstyled styling.",
+  "dependencies": [
+    "@ark-ui/react"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/sign-in-button.tsx",
+      "content": "'use client'\nimport NextLink from 'next/link'\nimport { usePathname, useSearchParams } from 'next/navigation'\nimport { Button, type ButtonProps } from '~/components/ui/button'\n\nexport const SignInButton = (props: ButtonProps) => {\n  const { children, ...buttonProps } = props\n  const pathname = usePathname()\n  const searchParams = useSearchParams()\n\n  const callbackURL = searchParams.toString() ? `${pathname}?${searchParams.toString()}` : pathname\n\n  return (\n    <Button asChild {...buttonProps}>\n      <NextLink href={{ pathname: '/auth/signin', query: { callbackURL } }}>{children || 'Sign In'}</NextLink>\n    </Button>\n  )\n}",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Ark UI — MIT © 2022-present Chakra Systems GmbH (https://ark-ui.com)",
+    "source": "ark-ui",
+    "styling": "unstyled",
+    "category": "buttons",
+    "previewStatus": "needs-demo"
+  }
+}

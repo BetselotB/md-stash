@@ -1,0 +1,34 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "accordiontrigger-test",
+  "type": "registry:ui",
+  "title": "AccordionTrigger.test",
+  "description": "AccordionTrigger.test component harvested from base-ui with unstyled styling.",
+  "dependencies": [
+    "@base-ui-components/react"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/accordiontrigger-test.tsx",
+      "content": "import { expect, describe, it } from 'vitest';\nimport { Accordion } from '@base-ui/react/accordion';\nimport { screen } from '@mui/internal-test-utils';\nimport { describeConformance, createRenderer } from '#test-utils';\n\ndescribe('<Accordion.Trigger />', () => {\n  const { render } = createRenderer();\n\n  describeConformance(<Accordion.Trigger />, () => ({\n    refInstanceof: window.HTMLButtonElement,\n    testRenderPropWith: 'button',\n    button: true,\n    render: (node) =>\n      render(\n        <Accordion.Root>\n          <Accordion.Item>{node}</Accordion.Item>\n        </Accordion.Root>,\n      ),\n  }));\n\n  it('renders the disabled attribute when disabled', async () => {\n    await render(\n      <Accordion.Root>\n        <Accordion.Item disabled>\n          <Accordion.Header>\n            <Accordion.Trigger>Trigger</Accordion.Trigger>\n          </Accordion.Header>\n          <Accordion.Panel>Panel</Accordion.Panel>\n        </Accordion.Item>\n      </Accordion.Root>,\n    );\n\n    const trigger = screen.getByRole('button', { name: 'Trigger' });\n    expect(trigger).toBeDisabled();\n    expect(trigger).not.toHaveAttribute('aria-disabled');\n  });\n\n  it('removes a disabled non-native trigger from the tab order', async () => {\n    const { user } = await render(\n      <Accordion.Root>\n        <Accordion.Item disabled>\n          <Accordion.Header>\n            <Accordion.Trigger nativeButton={false} render={<span />}>\n              Trigger\n            </Accordion.Trigger>\n          </Accordion.Header>\n        </Accordion.Item>\n      </Accordion.Root>,\n    );\n\n    const trigger = screen.getByRole('button', { name: 'Trigger' });\n    expect(trigger).toHaveAttribute('aria-disabled', 'true');\n    expect(trigger).toHaveAttribute('tabindex', '-1');\n    expect(trigger).not.toHaveAttribute('disabled');\n\n    await user.keyboard('[Tab]');\n    expect(trigger).not.toHaveFocus();\n  });\n\n  it('keeps a non-native trigger tabbable', async () => {\n    await render(\n      <Accordion.Root>\n        <Accordion.Item>\n          <Accordion.Header>\n            <Accordion.Trigger nativeButton={false} render={<span />}>\n              Trigger\n            </Accordion.Trigger>\n          </Accordion.Header>\n          <Accordion.Panel>Panel</Accordion.Panel>\n        </Accordion.Item>\n      </Accordion.Root>,\n    );\n\n    const trigger = screen.getByRole('button', { name: 'Trigger' });\n    expect(trigger).toHaveAttribute('tabindex', '0');\n  });\n\n  it('does not render the root value as data-value', async () => {\n    await render(\n      <Accordion.Root value={['a', 'b']} multiple>\n        <Accordion.Item value=\"a\">\n          <Accordion.Header>\n            <Accordion.Trigger>header a</Accordion.Trigger>\n          </Accordion.Header>\n          <Accordion.Panel>panel a</Accordion.Panel>\n        </Accordion.Item>\n        <Accordion.Item value=\"b\">\n          <Accordion.Header>\n            <Accordion.Trigger>header b</Accordion.Trigger>\n          </Accordion.Header>\n          <Accordion.Panel>panel b</Accordion.Panel>\n        </Accordion.Item>\n      </Accordion.Root>,\n    );\n\n    const triggers = screen.getAllByRole('button');\n    expect(triggers[0]).not.toHaveAttribute('data-value');\n    expect(triggers[1]).not.toHaveAttribute('data-value');\n  });\n\n  it('renders data-index on every trigger including the first', async () => {\n    await render(\n      <Accordion.Root>\n        <Accordion.Item>\n          <Accordion.Header>\n            <Accordion.Trigger>first</Accordion.Trigger>\n          </Accordion.Header>\n        </Accordion.Item>\n        <Accordion.Item>\n          <Accordion.Header>\n            <Accordion.Trigger>second</Accordion.Trigger>\n          </Accordion.Header>\n        </Accordion.Item>\n      </Accordion.Root>,\n    );\n\n    const triggers = screen.getAllByRole('button');\n    expect(triggers[0]).toHaveAttribute('data-index', '0');\n    expect(triggers[1]).toHaveAttribute('data-index', '1');\n  });\n\n  it('keeps data-panel-open instead of data-open', async () => {\n    await render(\n      <Accordion.Root value={['a']}>\n        <Accordion.Item value=\"a\">\n          <Accordion.Header>\n            <Accordion.Trigger>header a</Accordion.Trigger>\n          </Accordion.Header>\n          <Accordion.Panel>panel a</Accordion.Panel>\n        </Accordion.Item>\n      </Accordion.Root>,\n    );\n\n    const trigger = screen.getByRole('button', { name: 'header a' });\n    expect(trigger).toHaveAttribute('data-panel-open');\n    expect(trigger).not.toHaveAttribute('data-open');\n  });\n});",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Base UI — MIT © 2020-present MUI (https://base-ui.com)",
+    "source": "base-ui",
+    "styling": "unstyled",
+    "category": "data-display",
+    "previewStatus": "primitive"
+  }
+}

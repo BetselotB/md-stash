@@ -1,0 +1,34 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "user-button",
+  "type": "registry:hook",
+  "title": "User Button",
+  "description": "User Button component harvested from ark-ui with unstyled styling.",
+  "dependencies": [
+    "@ark-ui/react"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "hooks/user-button.ts",
+      "content": "'use client'\nimport { Box, Stack } from 'styled-system/jsx'\nimport { Avatar } from '~/components/ui/avatar'\nimport { Popover } from '~/components/ui/popover'\nimport { useSession } from '~/lib/auth-client'\nimport { SignOutButton } from './sign-out-button'\n\nexport const UserButton = () => {\n  const { data: session, refetch } = useSession()\n\n  if (session?.user) {\n    return (\n      <Popover.Root positioning={{ placement: 'bottom-end', gutter: 4 }} onOpenChange={({ open }) => open && refetch()}>\n        <Popover.Trigger cursor=\"pointer\">\n          <Avatar src={session.user.image} name={session.user.name} size=\"xs\" overflow=\"hidden\" />\n        </Popover.Trigger>\n        <Popover.Positioner>\n          <Popover.Content>\n            <Popover.Arrow>\n              <Popover.ArrowTip />\n            </Popover.Arrow>\n            <Stack gap=\"4\">\n              <Box>\n                <Popover.Title>{session.user.name}</Popover.Title>\n                <Popover.Description>{session.user.email}</Popover.Description>\n              </Box>\n              <SignOutButton />\n            </Stack>\n          </Popover.Content>\n        </Popover.Positioner>\n      </Popover.Root>\n    )\n  }\n}",
+      "type": "registry:hook"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Ark UI — MIT © 2022-present Chakra Systems GmbH (https://ark-ui.com)",
+    "source": "ark-ui",
+    "styling": "unstyled",
+    "category": "buttons",
+    "previewStatus": "primitive"
+  }
+}

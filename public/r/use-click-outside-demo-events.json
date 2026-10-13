@@ -1,0 +1,35 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "use-click-outside-demo-events",
+  "type": "registry:hook",
+  "title": "Use Click Outside.demo.events",
+  "description": "Use Click Outside.demo.events component harvested from mantine with css-modules styling.",
+  "dependencies": [
+    "@mantine/core",
+    "@mantine/hooks"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "hooks/use-click-outside-demo-events.ts",
+      "content": "import { useState } from 'react';\nimport { Button, Group, Paper } from '@mantine/core';\nimport { useClickOutside } from '@mantine/hooks';\nimport { MantineDemo } from '@mantinex/demo';\n\nconst code = `\nimport { useState } from 'react';\nimport { Paper, Button } from '@mantine/core';\nimport { useClickOutside } from '@mantine/hooks';\n\nfunction Demo() {\n  const [opened, setOpened] = useState(false);\n  const ref = useClickOutside(() => setOpened(false), ['mouseup', 'touchend']);\n\n  return (\n    <>\n      <Button onClick={() => setOpened(true)}>Open dropdown</Button>\n\n      {opened && (\n        <Paper ref={ref} shadow=\"sm\">\n          <span>Click outside to close</span>\n        </Paper>\n      )}\n    </>\n  );\n}\n`;\n\nfunction Demo() {\n  const [opened, setOpened] = useState(false);\n  const ref = useClickOutside(() => setOpened(false), ['mouseup', 'touchend']);\n\n  return (\n    <div style={{ position: 'relative' }}>\n      <Group justify=\"center\">\n        <Button onClick={() => setOpened(true)}>Open dropdown</Button>\n      </Group>\n\n      {opened && (\n        <Paper\n          ref={ref}\n          shadow=\"sm\"\n          style={{\n            width: 300,\n            height: 60,\n            position: 'absolute',\n            top: 0,\n            left: 'calc(50% - 150px)',\n            display: 'flex',\n            alignItems: 'center',\n            justifyContent: 'center',\n            zIndex: 1,\n          }}\n        >\n          <span>Click outside to close</span>\n        </Paper>\n      )}\n    </div>\n  );\n}\n\nexport const events: MantineDemo = {\n  type: 'code',\n  component: Demo,\n  code,\n  dimmed: true,\n};",
+      "type": "registry:hook"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Mantine — MIT © 2020-present Vitaly Rtishchev (https://mantine.dev)",
+    "source": "mantine",
+    "styling": "css-modules",
+    "category": "hooks",
+    "previewStatus": "primitive"
+  }
+}

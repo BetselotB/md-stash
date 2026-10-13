@@ -1,0 +1,35 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "accordion-story",
+  "type": "registry:ui",
+  "title": "Accordion.story",
+  "description": "Accordion.story component harvested from mantine with css-modules styling.",
+  "dependencies": [
+    "@mantine/core",
+    "@mantine/hooks"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/accordion-story.tsx",
+      "content": "import { useEffect, useState } from 'react';\nimport { TextInput } from '../TextInput';\nimport { Accordion } from './Accordion';\n\nexport default { title: 'Accordion' };\n\nconst _items = (\n  <>\n    <Accordion.Item value=\"customize\">\n      <Accordion.Control>Customization</Accordion.Control>\n      <Accordion.Panel>\n        Colors, fonts, shadows and many other parts are customizable to fit your design needs\n      </Accordion.Panel>\n    </Accordion.Item>\n\n    <Accordion.Item value=\"flex\">\n      <Accordion.Control>Flexibility</Accordion.Control>\n      <Accordion.Panel>\n        Configure components appearance and behavior with vast amount of settings or overwrite any\n        part of component styles\n      </Accordion.Panel>\n    </Accordion.Item>\n\n    <Accordion.Item value=\"focus\">\n      <Accordion.Control>No annoying focus ring</Accordion.Control>\n      <Accordion.Panel>\n        With new :focus-visible pseudo-class focus ring appears only when user navigates with\n        keyboard\n      </Accordion.Panel>\n    </Accordion.Item>\n  </>\n);\n\nexport function Variants() {\n  return (\n    <>\n      <Accordion\n        defaultValue=\"flex\"\n        style={{ maxWidth: 400 }}\n        mx=\"auto\"\n        mt=\"xl\"\n        variant=\"default\"\n        keepMounted={false}\n      >\n        {_items}\n      </Accordion>\n\n      <Accordion\n        defaultValue=\"flex\"\n        style={{ maxWidth: 400 }}\n        mx=\"auto\"\n        mt={50}\n        variant=\"contained\"\n        radius=\"lg\"\n      >\n        {_items}\n      </Accordion>\n\n      <Accordion defaultValue=\"flex\" style={{ maxWidth: 400 }} mx=\"auto\" mt={50} variant=\"filled\">\n        {_items}\n      </Accordion>\n\n      <Accordion\n        defaultValue=\"flex\"\n        style={{ maxWidth: 400 }}\n        mx=\"auto\"\n        mt={50}\n        variant=\"separated\"\n      >\n        {_items}\n      </Accordion>\n    </>\n  );\n}\n\nexport function NestedAccordions() {\n  return (\n    <Accordion multiple style={{ maxWidth: 400 }} mx=\"auto\">\n      <Accordion.Item value=\"item-1\">\n        <Accordion.Control>Nested 1</Accordion.Control>\n        <Accordion.Panel>\n          <Accordion>{_items}</Accordion>\n        </Accordion.Panel>\n      </Accordion.Item>\n\n      <Accordion.Item value=\"item-2\">\n        <Accordion.Control>Nested 2</Accordion.Control>\n        <Accordion.Panel>\n          <Accordion>{_items}</Accordion>\n        </Accordion.Panel>\n      </Accordion.Item>\n    </Accordion>\n  );\n}\n\nexport function WithInputs() {\n  return (\n    <div style={{ maxWidth: 400, padding: 40 }}>\n      <Accordion multiple>\n        <Accordion.Item value=\"item-1\">\n          <Accordion.Control>First item</Accordion.Control>\n          <Accordion.Panel>\n            <TextInput label=\"Text input\" placeholder=\"Text input\" />\n          </Accordion.Panel>\n        </Accordion.Item>\n        <Accordion.Item value=\"item-2\">\n          <Accordion.Control>Second item</Accordion.Control>\n          <Accordion.Panel>\n            <TextInput label=\"Text input\" placeholder=\"Text input\" />\n          </Accordion.Panel>\n        </Accordion.Item>\n      </Accordion>\n\n      <TextInput label=\"Text input\" />\n    </div>\n  );\n}\n\nfunction Timer() {\n  const [seconds, setSeconds] = useState(0);\n  useEffect(() => {\n    const interval = setInterval(() => setSeconds((s) => s + 1), 1000);\n    return () => clearInterval(interval);\n  }, []);\n  return (\n    <div style={{ padding: 10, background: 'rgba(0,0,0,0.05)', borderRadius: 4 }}>\n      Timer running: {seconds}s\n    </div>\n  );\n}\n\nexport function KeepMountedMode() {\n  return (\n    <div style={{ maxWidth: 500, margin: 'auto', padding: 40 }}>\n      <h3>keepMountedMode=\"display-none\" (Timer keeps running when collapsed)</h3>\n      <Accordion keepMounted keepMountedMode=\"display-none\" defaultValue=\"item-1\">\n        <Accordion.Item value=\"item-1\">\n          <Accordion.Control>Panel with Timer (Keep mounted display-none)</Accordion.Control>\n          <Accordion.Panel>\n            <Timer />\n          </Accordion.Panel>\n        </Accordion.Item>\n      </Accordion>\n\n      <h3 style={{ marginTop: 40 }}>\n        keepMountedMode=\"activity\" (Timer pauses/resets when collapsed)\n      </h3>\n      <Accordion keepMounted keepMountedMode=\"activity\" defaultValue=\"item-1\">\n        <Accordion.Item value=\"item-1\">\n          <Accordion.Control>Panel with Timer (Keep mounted activity)</Accordion.Control>\n          <Accordion.Panel>\n            <Timer />\n          </Accordion.Panel>\n        </Accordion.Item>\n      </Accordion>\n    </div>\n  );\n}\n\nexport function VariantsWithOrder() {\n  return (\n    <>\n      {(['default', 'contained', 'filled', 'separated'] as const).map((variant) => (\n        <Accordion\n          key={variant}\n          defaultValue=\"flex\"\n          style={{ maxWidth: 400 }}\n          mx=\"auto\"\n          mt={50}\n          variant={variant}\n          radius=\"lg\"\n          order={3}\n        >\n          {_items}\n        </Accordion>\n      ))}\n    </>\n  );\n}",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Mantine — MIT © 2020-present Vitaly Rtishchev (https://mantine.dev)",
+    "source": "mantine",
+    "styling": "css-modules",
+    "category": "data-display",
+    "previewStatus": "unsupported"
+  }
+}

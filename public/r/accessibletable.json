@@ -1,0 +1,36 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "accessibletable",
+  "type": "registry:ui",
+  "title": "AccessibleTable",
+  "description": "AccessibleTable component harvested from mui with css-in-js styling.",
+  "dependencies": [
+    "@mui/material",
+    "@emotion/react",
+    "@emotion/styled"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/accessibletable.tsx",
+      "content": "import Table from '@mui/material/Table';\nimport TableBody from '@mui/material/TableBody';\nimport TableCell from '@mui/material/TableCell';\nimport TableContainer from '@mui/material/TableContainer';\nimport TableHead from '@mui/material/TableHead';\nimport TableRow from '@mui/material/TableRow';\nimport Paper from '@mui/material/Paper';\n\nfunction createData(\n  name: string,\n  calories: number,\n  fat: number,\n  carbs: number,\n  protein: number,\n) {\n  return { name, calories, fat, carbs, protein };\n}\n\nconst rows = [\n  createData('Frozen yoghurt', 159, 6.0, 24, 4.0),\n  createData('Ice cream sandwich', 237, 9.0, 37, 4.3),\n  createData('Eclair', 262, 16.0, 24, 6.0),\n];\n\nexport default function AccessibleTable() {\n  return (\n    // @focus-start @padding 2\n    <TableContainer component={Paper}>\n      <Table sx={{ minWidth: 650 }} aria-label=\"caption table\">\n        <caption>A basic table example with a caption</caption>\n        <TableHead>\n          <TableRow>\n            <TableCell>Dessert (100g serving)</TableCell>\n            <TableCell align=\"right\">Calories</TableCell>\n            <TableCell align=\"right\">Fat&nbsp;(g)</TableCell>\n            <TableCell align=\"right\">Carbs&nbsp;(g)</TableCell>\n            <TableCell align=\"right\">Protein&nbsp;(g)</TableCell>\n          </TableRow>\n        </TableHead>\n        <TableBody>\n          {rows.map((row) => (\n            <TableRow key={row.name}>\n              <TableCell component=\"th\" scope=\"row\">\n                {row.name}\n              </TableCell>\n              <TableCell align=\"right\">{row.calories}</TableCell>\n              <TableCell align=\"right\">{row.fat}</TableCell>\n              <TableCell align=\"right\">{row.carbs}</TableCell>\n              <TableCell align=\"right\">{row.protein}</TableCell>\n            </TableRow>\n          ))}\n        </TableBody>\n      </Table>\n    </TableContainer>\n    // @focus-end\n  );\n}",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Material UI — MIT © 2014-present Call-Em-All / Material-UI (https://mui.com)",
+    "source": "mui",
+    "styling": "css-in-js",
+    "category": "data-display",
+    "previewStatus": "unsupported"
+  }
+}

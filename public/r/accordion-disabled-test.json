@@ -1,0 +1,34 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "accordion-disabled-test",
+  "type": "registry:ui",
+  "title": "Accordion Disabled.test",
+  "description": "Accordion Disabled.test component harvested from ark-ui with unstyled styling.",
+  "dependencies": [
+    "@ark-ui/react"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/accordion-disabled-test.tsx",
+      "content": "<script setup lang=\"ts\">\nimport { Accordion } from '@ark-ui/vue/accordion'\n</script>\n\n<template>\n  <Accordion.Root disabled>\n    <Accordion.Item value=\"React\">\n      <Accordion.ItemTrigger>React Trigger</Accordion.ItemTrigger>\n      <Accordion.ItemContent>React Content</Accordion.ItemContent>\n    </Accordion.Item>\n  </Accordion.Root>\n</template>",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Ark UI — MIT © 2022-present Chakra Systems GmbH (https://ark-ui.com)",
+    "source": "ark-ui",
+    "styling": "unstyled",
+    "category": "data-display",
+    "previewStatus": "primitive"
+  }
+}

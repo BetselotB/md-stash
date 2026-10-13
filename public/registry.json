@@ -1,0 +1,3226 @@
+[
+  {
+    "name": "3d",
+    "type": "registry:ui",
+    "title": "3D",
+    "description": "3D component harvested from react-aria with unstyled styling.",
+    "dependencies": [
+      "react-aria-components"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "cubes",
+    "type": "registry:ui",
+    "title": "Cubes",
+    "description": "Cubes component harvested from react-bits with tailwind styling.",
+    "dependencies": [
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "globe",
+    "type": "registry:ui",
+    "title": "Globe",
+    "description": "Globe component harvested from magic-ui with tailwind styling.",
+    "dependencies": [
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "globe-demo",
+    "type": "registry:ui",
+    "title": "Globe Demo",
+    "description": "Globe Demo component harvested from magic-ui with tailwind styling.",
+    "dependencies": [
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "chat--react-aria",
+    "type": "registry:ui",
+    "title": "Chat",
+    "description": "Chat component harvested from react-aria with unstyled styling.",
+    "dependencies": [
+      "react-aria-components"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "useassistanttransportruntime-fast-refresh-test",
+    "type": "registry:hook",
+    "title": "UseAssistantTransportRuntime.fast Refresh.test",
+    "description": "UseAssistantTransportRuntime.fast Refresh.test component harvested from assistant-ui with mixed styling.",
+    "dependencies": [
+      "@assistant-ui/react"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "useassistanttransportruntime-test",
+    "type": "registry:hook",
+    "title": "UseAssistantTransportRuntime.test",
+    "description": "UseAssistantTransportRuntime.test component harvested from assistant-ui with mixed styling.",
+    "dependencies": [
+      "@assistant-ui/react"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "usemessage",
+    "type": "registry:hook",
+    "title": "UseMessage",
+    "description": "UseMessage component harvested from ant-design with css-in-js styling.",
+    "dependencies": [
+      "antd"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "usethreadviewportautoscroll-test",
+    "type": "registry:hook",
+    "title": "UseThreadViewportAutoScroll.test",
+    "description": "UseThreadViewportAutoScroll.test component harvested from assistant-ui with mixed styling.",
+    "dependencies": [
+      "@assistant-ui/react"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "blur-fade",
+    "type": "registry:ui",
+    "title": "Blur Fade",
+    "description": "Blur Fade component harvested from magic-ui with tailwind styling.",
+    "dependencies": [
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "blur-fade-demo",
+    "type": "registry:ui",
+    "title": "Blur Fade Demo",
+    "description": "Blur Fade Demo component harvested from magic-ui with tailwind styling.",
+    "dependencies": [
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "components-animate-code",
+    "type": "registry:ui",
+    "title": "Components Animate Code",
+    "description": "Components Animate Code component harvested from animate-ui with tailwind styling.",
+    "dependencies": [
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "fademenu",
+    "type": "registry:ui",
+    "title": "FadeMenu",
+    "description": "FadeMenu component harvested from mui with css-in-js styling.",
+    "dependencies": [
+      "@mui/material",
+      "@emotion/react",
+      "@emotion/styled"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "loadingbuttonstransition",
+    "type": "registry:ui",
+    "title": "LoadingButtonsTransition",
+    "description": "LoadingButtonsTransition component harvested from mui with css-in-js styling.",
+    "dependencies": [
+      "@mui/material",
+      "@emotion/react",
+      "@emotion/styled"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "springpopper",
+    "type": "registry:ui",
+    "title": "SpringPopper",
+    "description": "SpringPopper component harvested from mui with css-in-js styling.",
+    "dependencies": [
+      "@mui/material",
+      "@emotion/react",
+      "@emotion/styled"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "transition--mantine",
+    "type": "registry:ui",
+    "title": "Transition",
+    "description": "Transition component harvested from mantine with css-modules styling.",
+    "dependencies": [
+      "@mantine/core",
+      "@mantine/hooks"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "transition--mui",
+    "type": "registry:ui",
+    "title": "Transition",
+    "description": "Transition component harvested from mui with css-in-js styling.",
+    "dependencies": [
+      "@mui/material",
+      "@emotion/react",
+      "@emotion/styled"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "transition-demo-custom",
+    "type": "registry:ui",
+    "title": "Transition.demo.custom",
+    "description": "Transition.demo.custom component harvested from mantine with css-modules styling.",
+    "dependencies": [
+      "@mantine/core",
+      "@mantine/hooks"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "transition-spec",
+    "type": "registry:ui",
+    "title": "Transition.spec",
+    "description": "Transition.spec component harvested from mui with css-in-js styling.",
+    "dependencies": [
+      "@mui/material",
+      "@emotion/react",
+      "@emotion/styled"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "transition-story",
+    "type": "registry:ui",
+    "title": "Transition.story",
+    "description": "Transition.story component harvested from mantine with css-modules styling.",
+    "dependencies": [
+      "@mantine/core",
+      "@mantine/hooks"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "transition-test--mantine",
+    "type": "registry:ui",
+    "title": "Transition.test",
+    "description": "Transition.test component harvested from mantine with css-modules styling.",
+    "dependencies": [
+      "@mantine/core",
+      "@mantine/hooks"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "transition-test--mui",
+    "type": "registry:ui",
+    "title": "Transition.test",
+    "description": "Transition.test component harvested from mui with css-in-js styling.",
+    "dependencies": [
+      "@mui/material",
+      "@emotion/react",
+      "@emotion/styled"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "animated-beam",
+    "type": "registry:ui",
+    "title": "Animated Beam",
+    "description": "Animated Beam component harvested from magic-ui with tailwind styling.",
+    "dependencies": [
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "animated-beam-bidirectional",
+    "type": "registry:ui",
+    "title": "Animated Beam Bidirectional",
+    "description": "Animated Beam Bidirectional component harvested from magic-ui with tailwind styling.",
+    "dependencies": [
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "animated-beam-unidirectional",
+    "type": "registry:ui",
+    "title": "Animated Beam Unidirectional",
+    "description": "Animated Beam Unidirectional component harvested from magic-ui with tailwind styling.",
+    "dependencies": [
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "backgroundletteravatars",
+    "type": "registry:ui",
+    "title": "BackgroundLetterAvatars",
+    "description": "BackgroundLetterAvatars component harvested from mui with css-in-js styling.",
+    "dependencies": [
+      "@mui/material",
+      "@emotion/react",
+      "@emotion/styled"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "border-beam",
+    "type": "registry:ui",
+    "title": "Border Beam",
+    "description": "Border Beam component harvested from magic-ui with tailwind styling.",
+    "dependencies": [
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "border-beam-demo-2",
+    "type": "registry:ui",
+    "title": "Border Beam Demo 2",
+    "description": "Border Beam Demo 2 component harvested from magic-ui with tailwind styling.",
+    "dependencies": [
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "border-beam-demo-3",
+    "type": "registry:ui",
+    "title": "Border Beam Demo 3",
+    "description": "Border Beam Demo 3 component harvested from magic-ui with tailwind styling.",
+    "dependencies": [
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "border-beam-demo-4",
+    "type": "registry:ui",
+    "title": "Border Beam Demo 4",
+    "description": "Border Beam Demo 4 component harvested from magic-ui with tailwind styling.",
+    "dependencies": [
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "components-animate-github-stars-wheel",
+    "type": "registry:ui",
+    "title": "Components Animate Github Stars Wheel",
+    "description": "Components Animate Github Stars Wheel component harvested from animate-ui with tailwind styling.",
+    "dependencies": [
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "components-backgrounds-bubble",
+    "type": "registry:ui",
+    "title": "Components Backgrounds Bubble",
+    "description": "Components Backgrounds Bubble component harvested from animate-ui with tailwind styling.",
+    "dependencies": [
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "components-backgrounds-gravity-stars",
+    "type": "registry:ui",
+    "title": "Components Backgrounds Gravity Stars",
+    "description": "Components Backgrounds Gravity Stars component harvested from animate-ui with tailwind styling.",
+    "dependencies": [
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "components-backgrounds-stars",
+    "type": "registry:ui",
+    "title": "Components Backgrounds Stars",
+    "description": "Components Backgrounds Stars component harvested from animate-ui with tailwind styling.",
+    "dependencies": [
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "confetti-stars",
+    "type": "registry:ui",
+    "title": "Confetti Stars",
+    "description": "Confetti Stars component harvested from magic-ui with tailwind styling.",
+    "dependencies": [
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "dotsmobilestepper",
+    "type": "registry:ui",
+    "title": "DotsMobileStepper",
+    "description": "DotsMobileStepper component harvested from mui with css-in-js styling.",
+    "dependencies": [
+      "@mui/material",
+      "@emotion/react",
+      "@emotion/styled"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "floating-3d-particles",
+    "type": "registry:ui",
+    "title": "Floating 3d Particles",
+    "description": "Floating 3d Particles component harvested from magic-ui with tailwind styling.",
+    "dependencies": [
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "floating-3d-particles-demo",
+    "type": "registry:ui",
+    "title": "Floating 3d Particles Demo",
+    "description": "Floating 3d Particles Demo component harvested from magic-ui with tailwind styling.",
+    "dependencies": [
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "floating-3d-particles-demo-2",
+    "type": "registry:ui",
+    "title": "Floating 3d Particles Demo 2",
+    "description": "Floating 3d Particles Demo 2 component harvested from magic-ui with tailwind styling.",
+    "dependencies": [
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "it-supports-background-props",
+    "type": "registry:ui",
+    "title": "It Supports Background Props",
+    "description": "It Supports Background Props component harvested from mantine with css-modules styling.",
+    "dependencies": [
+      "@mantine/core",
+      "@mantine/hooks"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "meteors",
+    "type": "registry:ui",
+    "title": "Meteors",
+    "description": "Meteors component harvested from magic-ui with tailwind styling.",
+    "dependencies": [
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "meteors-demo",
+    "type": "registry:ui",
+    "title": "Meteors Demo",
+    "description": "Meteors Demo component harvested from magic-ui with tailwind styling.",
+    "dependencies": [
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "particles",
+    "type": "registry:ui",
+    "title": "Particles",
+    "description": "Particles component harvested from react-bits with tailwind styling.",
+    "dependencies": [
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "particles--magic-ui",
+    "type": "registry:ui",
+    "title": "Particles",
+    "description": "Particles component harvested from magic-ui with tailwind styling.",
+    "dependencies": [
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "warp-background",
+    "type": "registry:ui",
+    "title": "Warp Background",
+    "description": "Warp Background component harvested from magic-ui with tailwind styling.",
+    "dependencies": [
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "warp-background-demo",
+    "type": "registry:ui",
+    "title": "Warp Background Demo",
+    "description": "Warp Background Demo component harvested from magic-ui with tailwind styling.",
+    "dependencies": [
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "actionbutton-stories",
+    "type": "registry:ui",
+    "title": "ActionButton.stories",
+    "description": "ActionButton.stories component harvested from react-aria with unstyled styling.",
+    "dependencies": [
+      "react-aria-components"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "actionbutton-stories--react-aria",
+    "type": "registry:ui",
+    "title": "ActionButton.stories",
+    "description": "ActionButton.stories component harvested from react-aria with unstyled styling.",
+    "dependencies": [
+      "react-aria-components"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "actionbuttonlanguages-stories",
+    "type": "registry:ui",
+    "title": "ActionButtonLanguages.stories",
+    "description": "ActionButtonLanguages.stories component harvested from react-aria with unstyled styling.",
+    "dependencies": [
+      "react-aria-components"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "animated-subscribe-button",
+    "type": "registry:ui",
+    "title": "Animated Subscribe Button",
+    "description": "Animated Subscribe Button component harvested from magic-ui with tailwind styling.",
+    "dependencies": [
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "basicbuttongroup",
+    "type": "registry:ui",
+    "title": "BasicButtonGroup",
+    "description": "BasicButtonGroup component harvested from mui with css-in-js styling.",
+    "dependencies": [
+      "@mui/material",
+      "@emotion/react",
+      "@emotion/styled"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "button",
+    "type": "registry:ui",
+    "title": "Button",
+    "description": "Button component harvested from shadcn-ui with tailwind styling.",
+    "dependencies": [
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "button--animata",
+    "type": "registry:ui",
+    "title": "Button",
+    "description": "Button component harvested from animata with tailwind styling.",
+    "dependencies": [
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "button--ark-ui",
+    "type": "registry:ui",
+    "title": "Button",
+    "description": "Button component harvested from ark-ui with unstyled styling.",
+    "dependencies": [
+      "@ark-ui/react"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "button--base-ui",
+    "type": "registry:ui",
+    "title": "Button",
+    "description": "Button component harvested from base-ui with unstyled styling.",
+    "dependencies": [
+      "@base-ui-components/react"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "button--base-ui-2",
+    "type": "registry:ui",
+    "title": "Button",
+    "description": "Button component harvested from base-ui with unstyled styling.",
+    "dependencies": [
+      "@base-ui-components/react"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "button--base-ui-3",
+    "type": "registry:ui",
+    "title": "Button",
+    "description": "Button component harvested from base-ui with unstyled styling.",
+    "dependencies": [
+      "@base-ui-components/react"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "button--chakra-ui",
+    "type": "registry:ui",
+    "title": "Button",
+    "description": "Button component harvested from chakra-ui with css-in-js styling.",
+    "dependencies": [
+      "@chakra-ui/react"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "button--chakra-ui-2",
+    "type": "registry:ui",
+    "title": "Button",
+    "description": "Button component harvested from chakra-ui with css-in-js styling.",
+    "dependencies": [
+      "@chakra-ui/react"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "button--mantine",
+    "type": "registry:ui",
+    "title": "Button",
+    "description": "Button component harvested from mantine with css-modules styling.",
+    "dependencies": [
+      "@mantine/core",
+      "@mantine/hooks"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "button--mui",
+    "type": "registry:ui",
+    "title": "Button",
+    "description": "Button component harvested from mui with css-in-js styling.",
+    "dependencies": [
+      "@mui/material",
+      "@emotion/react",
+      "@emotion/styled"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "button--react-aria",
+    "type": "registry:ui",
+    "title": "Button",
+    "description": "Button component harvested from react-aria with unstyled styling.",
+    "dependencies": [
+      "react-aria-components"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "button-demo-autocontrast",
+    "type": "registry:ui",
+    "title": "Button.demo.autoContrast",
+    "description": "Button.demo.autoContrast component harvested from mantine with css-modules styling.",
+    "dependencies": [
+      "@mantine/core",
+      "@mantine/hooks"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "button-demo-compact",
+    "type": "registry:ui",
+    "title": "Button.demo.compact",
+    "description": "Button.demo.compact component harvested from mantine with css-modules styling.",
+    "dependencies": [
+      "@mantine/core",
+      "@mantine/hooks"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "button-demo-customvariant",
+    "type": "registry:ui",
+    "title": "Button.demo.customVariant",
+    "description": "Button.demo.customVariant component harvested from mantine with css-modules styling.",
+    "dependencies": [
+      "@mantine/core",
+      "@mantine/hooks"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "button-demo-disabledstyles",
+    "type": "registry:ui",
+    "title": "Button.demo.disabledStyles",
+    "description": "Button.demo.disabledStyles component harvested from mantine with css-modules styling.",
+    "dependencies": [
+      "@mantine/core",
+      "@mantine/hooks"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "button-demo-disabledtooltip",
+    "type": "registry:ui",
+    "title": "Button.demo.disabledTooltip",
+    "description": "Button.demo.disabledTooltip component harvested from mantine with css-modules styling.",
+    "dependencies": [
+      "@mantine/core",
+      "@mantine/hooks"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "button-demo-group",
+    "type": "registry:ui",
+    "title": "Button.demo.group",
+    "description": "Button.demo.group component harvested from mantine with css-modules styling.",
+    "dependencies": [
+      "@mantine/core",
+      "@mantine/hooks"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "button-demo-groupsection",
+    "type": "registry:block",
+    "title": "Button.demo.groupSection",
+    "description": "Button.demo.groupSection component harvested from mantine with css-modules styling.",
+    "dependencies": [
+      "@mantine/core",
+      "@mantine/hooks"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "button-demo-loaderprops",
+    "type": "registry:ui",
+    "title": "Button.demo.loaderProps",
+    "description": "Button.demo.loaderProps component harvested from mantine with css-modules styling.",
+    "dependencies": [
+      "@mantine/core",
+      "@mantine/hooks"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "button-demo-loading",
+    "type": "registry:ui",
+    "title": "Button.demo.loading",
+    "description": "Button.demo.loading component harvested from mantine with css-modules styling.",
+    "dependencies": [
+      "@mantine/core",
+      "@mantine/hooks"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "button-demo-sections",
+    "type": "registry:block",
+    "title": "Button.demo.sections",
+    "description": "Button.demo.sections component harvested from mantine with css-modules styling.",
+    "dependencies": [
+      "@mantine/core",
+      "@mantine/hooks"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "button-demo-sectionsjustify",
+    "type": "registry:block",
+    "title": "Button.demo.sectionsJustify",
+    "description": "Button.demo.sectionsJustify component harvested from mantine with css-modules styling.",
+    "dependencies": [
+      "@mantine/core",
+      "@mantine/hooks"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "button-group",
+    "type": "registry:ui",
+    "title": "Button Group",
+    "description": "Button Group component harvested from shadcn-ui with tailwind styling.",
+    "dependencies": [
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "button-spec",
+    "type": "registry:ui",
+    "title": "Button.spec",
+    "description": "Button.spec component harvested from base-ui with unstyled styling.",
+    "dependencies": [
+      "@base-ui-components/react"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "button-spec--mui",
+    "type": "registry:ui",
+    "title": "Button.spec",
+    "description": "Button.spec component harvested from mui with css-in-js styling.",
+    "dependencies": [
+      "@mui/material",
+      "@emotion/react",
+      "@emotion/styled"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "button-stories--react-aria",
+    "type": "registry:ui",
+    "title": "Button.stories",
+    "description": "Button.stories component harvested from react-aria with unstyled styling.",
+    "dependencies": [
+      "react-aria-components"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "button-stories--react-aria-2",
+    "type": "registry:ui",
+    "title": "Button.stories",
+    "description": "Button.stories component harvested from react-aria with unstyled styling.",
+    "dependencies": [
+      "react-aria-components"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "button-stories--react-aria-3",
+    "type": "registry:ui",
+    "title": "Button.stories",
+    "description": "Button.stories component harvested from react-aria with unstyled styling.",
+    "dependencies": [
+      "react-aria-components"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "button-story",
+    "type": "registry:ui",
+    "title": "Button.story",
+    "description": "Button.story component harvested from mantine with css-modules styling.",
+    "dependencies": [
+      "@mantine/core",
+      "@mantine/hooks"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "button-test--base-ui",
+    "type": "registry:ui",
+    "title": "Button.test",
+    "description": "Button.test component harvested from base-ui with unstyled styling.",
+    "dependencies": [
+      "@base-ui-components/react"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "buttonappbar",
+    "type": "registry:ui",
+    "title": "ButtonAppBar",
+    "description": "ButtonAppBar component harvested from mui with css-in-js styling.",
+    "dependencies": [
+      "@mui/material",
+      "@emotion/react",
+      "@emotion/styled"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "buttongroupsection",
+    "type": "registry:block",
+    "title": "ButtonGroupSection",
+    "description": "ButtonGroupSection component harvested from mantine with css-modules styling.",
+    "dependencies": [
+      "@mantine/core",
+      "@mantine/hooks"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "buttonlink",
+    "type": "registry:ui",
+    "title": "ButtonLink",
+    "description": "ButtonLink component harvested from mui with css-in-js styling.",
+    "dependencies": [
+      "@mui/material",
+      "@emotion/react",
+      "@emotion/styled"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "clearbutton",
+    "type": "registry:ui",
+    "title": "ClearButton",
+    "description": "ClearButton component harvested from react-aria with unstyled styling.",
+    "dependencies": [
+      "react-aria-components"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "close-button",
+    "type": "registry:ui",
+    "title": "Close Button",
+    "description": "Close Button component harvested from chakra-ui with css-in-js styling.",
+    "dependencies": [
+      "@chakra-ui/react"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "close-button--chakra-ui",
+    "type": "registry:ui",
+    "title": "Close Button",
+    "description": "Close Button component harvested from chakra-ui with css-in-js styling.",
+    "dependencies": [
+      "@chakra-ui/react"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "close-button--chakra-ui-2",
+    "type": "registry:ui",
+    "title": "Close Button",
+    "description": "Close Button component harvested from chakra-ui with css-in-js styling.",
+    "dependencies": [
+      "@chakra-ui/react"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "color-mode-button",
+    "type": "registry:ui",
+    "title": "Color Mode Button",
+    "description": "Color Mode Button component harvested from ark-ui with unstyled styling.",
+    "dependencies": [
+      "@ark-ui/react"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "colortogglebutton",
+    "type": "registry:ui",
+    "title": "ColorToggleButton",
+    "description": "ColorToggleButton component harvested from mui with css-in-js styling.",
+    "dependencies": [
+      "@mui/material",
+      "@emotion/react",
+      "@emotion/styled"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "combobox-demo-button",
+    "type": "registry:ui",
+    "title": "Combobox.demo.button",
+    "description": "Combobox.demo.button component harvested from mantine with css-modules styling.",
+    "dependencies": [
+      "@mantine/core",
+      "@mantine/hooks"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "components-buttons-ripple",
+    "type": "registry:ui",
+    "title": "Components Buttons Ripple",
+    "description": "Components Buttons Ripple component harvested from animate-ui with tailwind styling.",
+    "dependencies": [
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "components-community-share-button",
+    "type": "registry:ui",
+    "title": "Components Community Share Button",
+    "description": "Components Community Share Button component harvested from animate-ui with tailwind styling.",
+    "dependencies": [
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "copy-button",
+    "type": "registry:ui",
+    "title": "Copy Button",
+    "description": "Copy Button component harvested from animata with tailwind styling.",
+    "dependencies": [
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "copy-button--chakra-ui",
+    "type": "registry:ui",
+    "title": "Copy Button",
+    "description": "Copy Button component harvested from chakra-ui with css-in-js styling.",
+    "dependencies": [
+      "@chakra-ui/react"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "copy-button--magic-ui",
+    "type": "registry:ui",
+    "title": "Copy Button",
+    "description": "Copy Button component harvested from magic-ui with tailwind styling.",
+    "dependencies": [
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "copy-to-clipboard-button",
+    "type": "registry:ui",
+    "title": "Copy To Clipboard Button",
+    "description": "Copy To Clipboard Button component harvested from ark-ui with unstyled styling.",
+    "dependencies": [
+      "@ark-ui/react"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "css-modules--base-ui-16",
+    "type": "registry:ui",
+    "title": "Css Modules",
+    "description": "Css Modules component harvested from base-ui with unstyled styling.",
+    "dependencies": [
+      "@base-ui-components/react"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "css-modules--base-ui-4",
+    "type": "registry:ui",
+    "title": "Css Modules",
+    "description": "Css Modules component harvested from base-ui with unstyled styling.",
+    "dependencies": [
+      "@base-ui-components/react"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "customizeddividers",
+    "type": "registry:ui",
+    "title": "CustomizedDividers",
+    "description": "CustomizedDividers component harvested from mui with css-in-js styling.",
+    "dependencies": [
+      "@mui/material",
+      "@emotion/react",
+      "@emotion/styled"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "disableelevation",
+    "type": "registry:ui",
+    "title": "DisableElevation",
+    "description": "DisableElevation component harvested from mui with css-in-js styling.",
+    "dependencies": [
+      "@mui/material",
+      "@emotion/react",
+      "@emotion/styled"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "edit-page-button",
+    "type": "registry:ui",
+    "title": "Edit Page Button",
+    "description": "Edit Page Button component harvested from chakra-ui with css-in-js styling.",
+    "dependencies": [
+      "@chakra-ui/react"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "floatingactionbuttonextendedsize",
+    "type": "registry:ui",
+    "title": "FloatingActionButtonExtendedSize",
+    "description": "FloatingActionButtonExtendedSize component harvested from mui with css-in-js styling.",
+    "dependencies": [
+      "@mui/material",
+      "@emotion/react",
+      "@emotion/styled"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "floatingactionbuttons",
+    "type": "registry:ui",
+    "title": "FloatingActionButtons",
+    "description": "FloatingActionButtons component harvested from mui with css-in-js styling.",
+    "dependencies": [
+      "@mui/material",
+      "@emotion/react",
+      "@emotion/styled"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "floatingactionbuttonsize",
+    "type": "registry:ui",
+    "title": "FloatingActionButtonSize",
+    "description": "FloatingActionButtonSize component harvested from mui with css-in-js styling.",
+    "dependencies": [
+      "@mui/material",
+      "@emotion/react",
+      "@emotion/styled"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "floatingactionbuttonzoom",
+    "type": "registry:ui",
+    "title": "FloatingActionButtonZoom",
+    "description": "FloatingActionButtonZoom component harvested from mui with css-in-js styling.",
+    "dependencies": [
+      "@mui/material",
+      "@emotion/react",
+      "@emotion/styled"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "grouporientation",
+    "type": "registry:ui",
+    "title": "GroupOrientation",
+    "description": "GroupOrientation component harvested from mui with css-in-js styling.",
+    "dependencies": [
+      "@mui/material",
+      "@emotion/react",
+      "@emotion/styled"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "horizontalspacingtogglebutton",
+    "type": "registry:ui",
+    "title": "HorizontalSpacingToggleButton",
+    "description": "HorizontalSpacingToggleButton component harvested from mui with css-in-js styling.",
+    "dependencies": [
+      "@mui/material",
+      "@emotion/react",
+      "@emotion/styled"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "icon-button--chakra-ui",
+    "type": "registry:ui",
+    "title": "Icon Button",
+    "description": "Icon Button component harvested from chakra-ui with css-in-js styling.",
+    "dependencies": [
+      "@chakra-ui/react"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "interactive-hover-button",
+    "type": "registry:ui",
+    "title": "Interactive Hover Button",
+    "description": "Interactive Hover Button component harvested from magic-ui with tailwind styling.",
+    "dependencies": [
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "link-button",
+    "type": "registry:ui",
+    "title": "Link Button",
+    "description": "Link Button component harvested from chakra-ui with css-in-js styling.",
+    "dependencies": [
+      "@chakra-ui/react"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "loadingbuttongroup",
+    "type": "registry:ui",
+    "title": "LoadingButtonGroup",
+    "description": "LoadingButtonGroup component harvested from mui with css-in-js styling.",
+    "dependencies": [
+      "@mui/material",
+      "@emotion/react",
+      "@emotion/styled"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "logicbutton",
+    "type": "registry:ui",
+    "title": "LogicButton",
+    "description": "LogicButton component harvested from react-aria with unstyled styling.",
+    "dependencies": [
+      "react-aria-components"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "logicbutton-stories",
+    "type": "registry:ui",
+    "title": "LogicButton.stories",
+    "description": "LogicButton.stories component harvested from react-aria with unstyled styling.",
+    "dependencies": [
+      "react-aria-components"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "logicbutton-stories--react-aria",
+    "type": "registry:ui",
+    "title": "LogicButton.stories",
+    "description": "LogicButton.stories component harvested from react-aria with unstyled styling.",
+    "dependencies": [
+      "react-aria-components"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "logo-button",
+    "type": "registry:ui",
+    "title": "Logo Button",
+    "description": "Logo Button component harvested from magic-ui with tailwind styling.",
+    "dependencies": [
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "open-in-v0-button",
+    "type": "registry:ui",
+    "title": "Open In V0 Button",
+    "description": "Open In V0 Button component harvested from magic-ui with tailwind styling.",
+    "dependencies": [
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "pulsating-button",
+    "type": "registry:ui",
+    "title": "Pulsating Button",
+    "description": "Pulsating Button component harvested from magic-ui with tailwind styling.",
+    "dependencies": [
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "pulsating-button-demo",
+    "type": "registry:ui",
+    "title": "Pulsating Button Demo",
+    "description": "Pulsating Button Demo component harvested from magic-ui with tailwind styling.",
+    "dependencies": [
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "pulsating-button-demo-2",
+    "type": "registry:ui",
+    "title": "Pulsating Button Demo 2",
+    "description": "Pulsating Button Demo 2 component harvested from magic-ui with tailwind styling.",
+    "dependencies": [
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "radio-button-group",
+    "type": "registry:ui",
+    "title": "Radio Button Group",
+    "description": "Radio Button Group component harvested from ark-ui with unstyled styling.",
+    "dependencies": [
+      "@ark-ui/react"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "rainbow-button",
+    "type": "registry:ui",
+    "title": "Rainbow Button",
+    "description": "Rainbow Button component harvested from magic-ui with tailwind styling.",
+    "dependencies": [
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "rainbow-button-demo-2",
+    "type": "registry:ui",
+    "title": "Rainbow Button Demo 2",
+    "description": "Rainbow Button Demo 2 component harvested from magic-ui with tailwind styling.",
+    "dependencies": [
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "reload-button",
+    "type": "registry:ui",
+    "title": "Reload Button",
+    "description": "Reload Button component harvested from animata with tailwind styling.",
+    "dependencies": [
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "ripple",
+    "type": "registry:ui",
+    "title": "Ripple",
+    "description": "Ripple component harvested from magic-ui with tailwind styling.",
+    "dependencies": [
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "ripple-button",
+    "type": "registry:ui",
+    "title": "Ripple Button",
+    "description": "Ripple Button component harvested from magic-ui with tailwind styling.",
+    "dependencies": [
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "ripple-button-demo",
+    "type": "registry:ui",
+    "title": "Ripple Button Demo",
+    "description": "Ripple Button Demo component harvested from magic-ui with tailwind styling.",
+    "dependencies": [
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "ripple-demo",
+    "type": "registry:ui",
+    "title": "Ripple Demo",
+    "description": "Ripple Demo component harvested from magic-ui with tailwind styling.",
+    "dependencies": [
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "scrollabletabsbuttonforce",
+    "type": "registry:ui",
+    "title": "ScrollableTabsButtonForce",
+    "description": "ScrollableTabsButtonForce component harvested from mui with css-in-js styling.",
+    "dependencies": [
+      "@mui/material",
+      "@emotion/react",
+      "@emotion/styled"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "scrollabletabsbuttonvisible",
+    "type": "registry:ui",
+    "title": "ScrollableTabsButtonVisible",
+    "description": "ScrollableTabsButtonVisible component harvested from mui with css-in-js styling.",
+    "dependencies": [
+      "@mui/material",
+      "@emotion/react",
+      "@emotion/styled"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "search-button",
+    "type": "registry:ui",
+    "title": "Search Button",
+    "description": "Search Button component harvested from chakra-ui with css-in-js styling.",
+    "dependencies": [
+      "@chakra-ui/react"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "shimmer-button",
+    "type": "registry:ui",
+    "title": "Shimmer Button",
+    "description": "Shimmer Button component harvested from magic-ui with tailwind styling.",
+    "dependencies": [
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "shiny-button",
+    "type": "registry:ui",
+    "title": "Shiny Button",
+    "description": "Shiny Button component harvested from magic-ui with tailwind styling.",
+    "dependencies": [
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "sign-in-button",
+    "type": "registry:ui",
+    "title": "Sign In Button",
+    "description": "Sign In Button component harvested from ark-ui with unstyled styling.",
+    "dependencies": [
+      "@ark-ui/react"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "sign-out-button",
+    "type": "registry:ui",
+    "title": "Sign Out Button",
+    "description": "Sign Out Button component harvested from ark-ui with unstyled styling.",
+    "dependencies": [
+      "@ark-ui/react"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "splitbutton",
+    "type": "registry:ui",
+    "title": "SplitButton",
+    "description": "SplitButton component harvested from mui with css-in-js styling.",
+    "dependencies": [
+      "@mui/material",
+      "@emotion/react",
+      "@emotion/styled"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "sponsor-button",
+    "type": "registry:ui",
+    "title": "Sponsor Button",
+    "description": "Sponsor Button component harvested from chakra-ui with css-in-js styling.",
+    "dependencies": [
+      "@chakra-ui/react"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "stackblitz-button",
+    "type": "registry:ui",
+    "title": "Stackblitz Button",
+    "description": "Stackblitz Button component harvested from chakra-ui with css-in-js styling.",
+    "dependencies": [
+      "@chakra-ui/react"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "standalonetogglebutton",
+    "type": "registry:ui",
+    "title": "StandaloneToggleButton",
+    "description": "StandaloneToggleButton component harvested from mui with css-in-js styling.",
+    "dependencies": [
+      "@mui/material",
+      "@emotion/react",
+      "@emotion/styled"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "submit-button",
+    "type": "registry:ui",
+    "title": "Submit Button",
+    "description": "Submit Button component harvested from ark-ui with unstyled styling.",
+    "dependencies": [
+      "@ark-ui/react"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "tailwind--base-ui-12",
+    "type": "registry:ui",
+    "title": "Tailwind",
+    "description": "Tailwind component harvested from base-ui with unstyled styling.",
+    "dependencies": [
+      "@base-ui-components/react"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "tailwind--base-ui-6",
+    "type": "registry:ui",
+    "title": "Tailwind",
+    "description": "Tailwind component harvested from base-ui with unstyled styling.",
+    "dependencies": [
+      "@base-ui-components/react"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "togglebutton",
+    "type": "registry:ui",
+    "title": "ToggleButton",
+    "description": "ToggleButton component harvested from react-aria with unstyled styling.",
+    "dependencies": [
+      "react-aria-components"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "togglebutton-stories",
+    "type": "registry:ui",
+    "title": "ToggleButton.stories",
+    "description": "ToggleButton.stories component harvested from react-aria with unstyled styling.",
+    "dependencies": [
+      "react-aria-components"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "togglebutton-stories--react-aria",
+    "type": "registry:ui",
+    "title": "ToggleButton.stories",
+    "description": "ToggleButton.stories component harvested from react-aria with unstyled styling.",
+    "dependencies": [
+      "react-aria-components"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "togglebuttonnotempty",
+    "type": "registry:ui",
+    "title": "ToggleButtonNotEmpty",
+    "description": "ToggleButtonNotEmpty component harvested from mui with css-in-js styling.",
+    "dependencies": [
+      "@mui/material",
+      "@emotion/react",
+      "@emotion/styled"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "togglebuttons",
+    "type": "registry:ui",
+    "title": "ToggleButtons",
+    "description": "ToggleButtons component harvested from mui with css-in-js styling.",
+    "dependencies": [
+      "@mui/material",
+      "@emotion/react",
+      "@emotion/styled"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "togglebuttonsizes",
+    "type": "registry:ui",
+    "title": "ToggleButtonSizes",
+    "description": "ToggleButtonSizes component harvested from mui with css-in-js styling.",
+    "dependencies": [
+      "@mui/material",
+      "@emotion/react",
+      "@emotion/styled"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "toolbarbutton",
+    "type": "registry:ui",
+    "title": "ToolbarButton",
+    "description": "ToolbarButton component harvested from base-ui with unstyled styling.",
+    "dependencies": [
+      "@base-ui-components/react"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "toolbarbutton-test",
+    "type": "registry:ui",
+    "title": "ToolbarButton.test",
+    "description": "ToolbarButton.test component harvested from base-ui with unstyled styling.",
+    "dependencies": [
+      "@base-ui-components/react"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "usebutton-test",
+    "type": "registry:hook",
+    "title": "UseButton.test",
+    "description": "UseButton.test component harvested from base-ui with unstyled styling.",
+    "dependencies": [
+      "@base-ui-components/react"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "user-button",
+    "type": "registry:hook",
+    "title": "User Button",
+    "description": "User Button component harvested from ark-ui with unstyled styling.",
+    "dependencies": [
+      "@ark-ui/react"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "variantbuttongroup",
+    "type": "registry:ui",
+    "title": "VariantButtonGroup",
+    "description": "VariantButtonGroup component harvested from mui with css-in-js styling.",
+    "dependencies": [
+      "@mui/material",
+      "@emotion/react",
+      "@emotion/styled"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "verticaltogglebuttons",
+    "type": "registry:ui",
+    "title": "VerticalToggleButtons",
+    "description": "VerticalToggleButtons component harvested from mui with css-in-js styling.",
+    "dependencies": [
+      "@mui/material",
+      "@emotion/react",
+      "@emotion/styled"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "chart",
+    "type": "registry:ui",
+    "title": "Chart",
+    "description": "Chart component harvested from shadcn-ui with tailwind styling.",
+    "dependencies": [
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "chart--chakra-ui",
+    "type": "registry:ui",
+    "title": "Chart",
+    "description": "Chart component harvested from chakra-ui with css-in-js styling.",
+    "dependencies": [
+      "@chakra-ui/react"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "radar",
+    "type": "registry:ui",
+    "title": "Radar",
+    "description": "Radar component harvested from react-bits with tailwind styling.",
+    "dependencies": [
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "components-animate-cursor",
+    "type": "registry:ui",
+    "title": "Components Animate Cursor",
+    "description": "Components Animate Cursor component harvested from animate-ui with tailwind styling.",
+    "dependencies": [
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "crosshair",
+    "type": "registry:ui",
+    "title": "Crosshair",
+    "description": "Crosshair component harvested from react-bits with tailwind styling.",
+    "dependencies": [
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "followcursortooltips",
+    "type": "registry:ui",
+    "title": "FollowCursorTooltips",
+    "description": "FollowCursorTooltips component harvested from mui with css-in-js styling.",
+    "dependencies": [
+      "@mui/material",
+      "@emotion/react",
+      "@emotion/styled"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "use-follow-value-test",
+    "type": "registry:hook",
+    "title": "Use Follow Value.test",
+    "description": "Use Follow Value.test component harvested from motion with tailwind styling.",
+    "dependencies": [
+      "motion",
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "accessibletable",
+    "type": "registry:ui",
+    "title": "AccessibleTable",
+    "description": "AccessibleTable component harvested from mui with css-in-js styling.",
+    "dependencies": [
+      "@mui/material",
+      "@emotion/react",
+      "@emotion/styled"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "accordion--base-ui",
+    "type": "registry:ui",
+    "title": "Accordion",
+    "description": "Accordion component harvested from base-ui with unstyled styling.",
+    "dependencies": [
+      "@base-ui-components/react"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "accordion--base-ui-2",
+    "type": "registry:ui",
+    "title": "Accordion",
+    "description": "Accordion component harvested from base-ui with unstyled styling.",
+    "dependencies": [
+      "@base-ui-components/react"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "accordion--chakra-ui",
+    "type": "registry:ui",
+    "title": "Accordion",
+    "description": "Accordion component harvested from chakra-ui with css-in-js styling.",
+    "dependencies": [
+      "@chakra-ui/react"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "accordion--chakra-ui-2",
+    "type": "registry:ui",
+    "title": "Accordion",
+    "description": "Accordion component harvested from chakra-ui with css-in-js styling.",
+    "dependencies": [
+      "@chakra-ui/react"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "accordion--mantine",
+    "type": "registry:ui",
+    "title": "Accordion",
+    "description": "Accordion component harvested from mantine with css-modules styling.",
+    "dependencies": [
+      "@mantine/core",
+      "@mantine/hooks"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "accordion--radix-ui",
+    "type": "registry:ui",
+    "title": "Accordion",
+    "description": "Accordion component harvested from radix-ui with unstyled styling.",
+    "dependencies": [
+      "@radix-ui/react-primitive"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "accordion--react-aria",
+    "type": "registry:ui",
+    "title": "Accordion",
+    "description": "Accordion component harvested from react-aria with unstyled styling.",
+    "dependencies": [
+      "react-aria-components"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "accordion--react-aria-2",
+    "type": "registry:ui",
+    "title": "Accordion",
+    "description": "Accordion component harvested from react-aria with unstyled styling.",
+    "dependencies": [
+      "react-aria-components"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "accordion-context",
+    "type": "registry:ui",
+    "title": "Accordion Context",
+    "description": "Accordion Context component harvested from ark-ui with unstyled styling.",
+    "dependencies": [
+      "@ark-ui/react"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "accordion-context--ark-ui",
+    "type": "registry:ui",
+    "title": "Accordion Context",
+    "description": "Accordion Context component harvested from ark-ui with unstyled styling.",
+    "dependencies": [
+      "@ark-ui/react"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "accordion-demo-chevron",
+    "type": "registry:ui",
+    "title": "Accordion.demo.chevron",
+    "description": "Accordion.demo.chevron component harvested from mantine with css-modules styling.",
+    "dependencies": [
+      "@mantine/core",
+      "@mantine/hooks"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "accordion-demo-icons",
+    "type": "registry:ui",
+    "title": "Accordion.demo.icons",
+    "description": "Accordion.demo.icons component harvested from mantine with css-modules styling.",
+    "dependencies": [
+      "@mantine/core",
+      "@mantine/hooks"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "accordion-demo-sidecontrols",
+    "type": "registry:ui",
+    "title": "Accordion.demo.sideControls",
+    "description": "Accordion.demo.sideControls component harvested from mantine with css-modules styling.",
+    "dependencies": [
+      "@mantine/core",
+      "@mantine/hooks"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "accordion-demo-stylesapi",
+    "type": "registry:ui",
+    "title": "Accordion.demo.stylesApi",
+    "description": "Accordion.demo.stylesApi component harvested from mantine with css-modules styling.",
+    "dependencies": [
+      "@mantine/core",
+      "@mantine/hooks"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "accordion-demo-transitions",
+    "type": "registry:ui",
+    "title": "Accordion.demo.transitions",
+    "description": "Accordion.demo.transitions component harvested from mantine with css-modules styling.",
+    "dependencies": [
+      "@mantine/core",
+      "@mantine/hooks"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "accordion-disabled-test",
+    "type": "registry:ui",
+    "title": "Accordion Disabled.test",
+    "description": "Accordion Disabled.test component harvested from ark-ui with unstyled styling.",
+    "dependencies": [
+      "@ark-ui/react"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "accordion-item",
+    "type": "registry:ui",
+    "title": "Accordion Item",
+    "description": "Accordion Item component harvested from ark-ui with unstyled styling.",
+    "dependencies": [
+      "@ark-ui/react"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "accordion-item-content",
+    "type": "registry:ui",
+    "title": "Accordion Item Content",
+    "description": "Accordion Item Content component harvested from ark-ui with unstyled styling.",
+    "dependencies": [
+      "@ark-ui/react"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "accordion-item-context",
+    "type": "registry:ui",
+    "title": "Accordion Item Context",
+    "description": "Accordion Item Context component harvested from ark-ui with unstyled styling.",
+    "dependencies": [
+      "@ark-ui/react"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "accordion-item-indicator",
+    "type": "registry:ui",
+    "title": "Accordion Item Indicator",
+    "description": "Accordion Item Indicator component harvested from ark-ui with unstyled styling.",
+    "dependencies": [
+      "@ark-ui/react"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "accordion-item-indicator--ark-ui",
+    "type": "registry:ui",
+    "title": "Accordion Item Indicator",
+    "description": "Accordion Item Indicator component harvested from ark-ui with unstyled styling.",
+    "dependencies": [
+      "@ark-ui/react"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "accordion-root",
+    "type": "registry:ui",
+    "title": "Accordion Root",
+    "description": "Accordion Root component harvested from ark-ui with unstyled styling.",
+    "dependencies": [
+      "@ark-ui/react"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "accordion-spec",
+    "type": "registry:ui",
+    "title": "Accordion.spec",
+    "description": "Accordion.spec component harvested from mui with css-in-js styling.",
+    "dependencies": [
+      "@mui/material",
+      "@emotion/react",
+      "@emotion/styled"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "accordion-stories--react-aria",
+    "type": "registry:ui",
+    "title": "Accordion.stories",
+    "description": "Accordion.stories component harvested from react-aria with unstyled styling.",
+    "dependencies": [
+      "react-aria-components"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "accordion-stories--react-aria-2",
+    "type": "registry:ui",
+    "title": "Accordion.stories",
+    "description": "Accordion.stories component harvested from react-aria with unstyled styling.",
+    "dependencies": [
+      "react-aria-components"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "accordion-stories--react-aria-3",
+    "type": "registry:ui",
+    "title": "Accordion.stories",
+    "description": "Accordion.stories component harvested from react-aria with unstyled styling.",
+    "dependencies": [
+      "react-aria-components"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "accordion-story",
+    "type": "registry:ui",
+    "title": "Accordion.story",
+    "description": "Accordion.story component harvested from mantine with css-modules styling.",
+    "dependencies": [
+      "@mantine/core",
+      "@mantine/hooks"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "accordion-test",
+    "type": "registry:ui",
+    "title": "Accordion.test",
+    "description": "Accordion.test component harvested from ark-ui with unstyled styling.",
+    "dependencies": [
+      "@ark-ui/react"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "accordion-test--ark-ui",
+    "type": "registry:ui",
+    "title": "Accordion.test",
+    "description": "Accordion.test component harvested from ark-ui with unstyled styling.",
+    "dependencies": [
+      "@ark-ui/react"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "accordion-test--ark-ui-2",
+    "type": "registry:ui",
+    "title": "Accordion.test",
+    "description": "Accordion.test component harvested from ark-ui with unstyled styling.",
+    "dependencies": [
+      "@ark-ui/react"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "accordion-test--mantine",
+    "type": "registry:ui",
+    "title": "Accordion.test",
+    "description": "Accordion.test component harvested from mantine with css-modules styling.",
+    "dependencies": [
+      "@mantine/core",
+      "@mantine/hooks"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "accordion-test--radix-ui",
+    "type": "registry:ui",
+    "title": "Accordion.test",
+    "description": "Accordion.test component harvested from radix-ui with unstyled styling.",
+    "dependencies": [
+      "@radix-ui/react-primitive"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "accordionchevron",
+    "type": "registry:ui",
+    "title": "AccordionChevron",
+    "description": "AccordionChevron component harvested from mantine with css-modules styling.",
+    "dependencies": [
+      "@mantine/core",
+      "@mantine/hooks"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "accordioncontrol",
+    "type": "registry:ui",
+    "title": "AccordionControl",
+    "description": "AccordionControl component harvested from mantine with css-modules styling.",
+    "dependencies": [
+      "@mantine/core",
+      "@mantine/hooks"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "accordioncontrol-test",
+    "type": "registry:ui",
+    "title": "AccordionControl.test",
+    "description": "AccordionControl.test component harvested from mantine with css-modules styling.",
+    "dependencies": [
+      "@mantine/core",
+      "@mantine/hooks"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "accordionexpandicon",
+    "type": "registry:ui",
+    "title": "AccordionExpandIcon",
+    "description": "AccordionExpandIcon component harvested from mui with css-in-js styling.",
+    "dependencies": [
+      "@mui/material",
+      "@emotion/react",
+      "@emotion/styled"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "accordionheader",
+    "type": "registry:ui",
+    "title": "AccordionHeader",
+    "description": "AccordionHeader component harvested from base-ui with unstyled styling.",
+    "dependencies": [
+      "@base-ui-components/react"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "accordionheader-test",
+    "type": "registry:ui",
+    "title": "AccordionHeader.test",
+    "description": "AccordionHeader.test component harvested from base-ui with unstyled styling.",
+    "dependencies": [
+      "@base-ui-components/react"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "accordionitem",
+    "type": "registry:ui",
+    "title": "AccordionItem",
+    "description": "AccordionItem component harvested from base-ui with unstyled styling.",
+    "dependencies": [
+      "@base-ui-components/react"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "accordionitem-test",
+    "type": "registry:ui",
+    "title": "AccordionItem.test",
+    "description": "AccordionItem.test component harvested from base-ui with unstyled styling.",
+    "dependencies": [
+      "@base-ui-components/react"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "accordionpanel",
+    "type": "registry:ui",
+    "title": "AccordionPanel",
+    "description": "AccordionPanel component harvested from base-ui with unstyled styling.",
+    "dependencies": [
+      "@base-ui-components/react"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "accordionpanel--mantine",
+    "type": "registry:ui",
+    "title": "AccordionPanel",
+    "description": "AccordionPanel component harvested from mantine with css-modules styling.",
+    "dependencies": [
+      "@mantine/core",
+      "@mantine/hooks"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "accordionpanel-test",
+    "type": "registry:ui",
+    "title": "AccordionPanel.test",
+    "description": "AccordionPanel.test component harvested from base-ui with unstyled styling.",
+    "dependencies": [
+      "@base-ui-components/react"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "accordionpanel-test--mantine",
+    "type": "registry:ui",
+    "title": "AccordionPanel.test",
+    "description": "AccordionPanel.test component harvested from mantine with css-modules styling.",
+    "dependencies": [
+      "@mantine/core",
+      "@mantine/hooks"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "accordionroot",
+    "type": "registry:ui",
+    "title": "AccordionRoot",
+    "description": "AccordionRoot component harvested from base-ui with unstyled styling.",
+    "dependencies": [
+      "@base-ui-components/react"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "accordionroot-spec",
+    "type": "registry:ui",
+    "title": "AccordionRoot.spec",
+    "description": "AccordionRoot.spec component harvested from base-ui with unstyled styling.",
+    "dependencies": [
+      "@base-ui-components/react"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "accordionroot-test",
+    "type": "registry:ui",
+    "title": "AccordionRoot.test",
+    "description": "AccordionRoot.test component harvested from base-ui with unstyled styling.",
+    "dependencies": [
+      "@base-ui-components/react"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "accordiontransition",
+    "type": "registry:ui",
+    "title": "AccordionTransition",
+    "description": "AccordionTransition component harvested from mui with css-in-js styling.",
+    "dependencies": [
+      "@mui/material",
+      "@emotion/react",
+      "@emotion/styled"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "accordiontrigger",
+    "type": "registry:ui",
+    "title": "AccordionTrigger",
+    "description": "AccordionTrigger component harvested from base-ui with unstyled styling.",
+    "dependencies": [
+      "@base-ui-components/react"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "accordiontrigger-test",
+    "type": "registry:ui",
+    "title": "AccordionTrigger.test",
+    "description": "AccordionTrigger.test component harvested from base-ui with unstyled styling.",
+    "dependencies": [
+      "@base-ui-components/react"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "alternatereversetimeline",
+    "type": "registry:ui",
+    "title": "AlternateReverseTimeline",
+    "description": "AlternateReverseTimeline component harvested from mui with css-in-js styling.",
+    "dependencies": [
+      "@mui/material",
+      "@emotion/react",
+      "@emotion/styled"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "api-table",
+    "type": "registry:ui",
+    "title": "Api Table",
+    "description": "Api Table component harvested from ark-ui with unstyled styling.",
+    "dependencies": [
+      "@ark-ui/react"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "avatar--ark-ui",
+    "type": "registry:ui",
+    "title": "Avatar",
+    "description": "Avatar component harvested from ark-ui with unstyled styling.",
+    "dependencies": [
+      "@ark-ui/react"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "avatar--ark-ui-2",
+    "type": "registry:ui",
+    "title": "Avatar",
+    "description": "Avatar component harvested from ark-ui with unstyled styling.",
+    "dependencies": [
+      "@ark-ui/react"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "avatar--ark-ui-3",
+    "type": "registry:ui",
+    "title": "Avatar",
+    "description": "Avatar component harvested from ark-ui with unstyled styling.",
+    "dependencies": [
+      "@ark-ui/react"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "avatar--ark-ui-4",
+    "type": "registry:ui",
+    "title": "Avatar",
+    "description": "Avatar component harvested from ark-ui with unstyled styling.",
+    "dependencies": [
+      "@ark-ui/react"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "avatar--ark-ui-5",
+    "type": "registry:ui",
+    "title": "Avatar",
+    "description": "Avatar component harvested from ark-ui with unstyled styling.",
+    "dependencies": [
+      "@ark-ui/react"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "avatar--chakra-ui",
+    "type": "registry:ui",
+    "title": "Avatar",
+    "description": "Avatar component harvested from chakra-ui with css-in-js styling.",
+    "dependencies": [
+      "@chakra-ui/react"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "avatar--chakra-ui-2",
+    "type": "registry:ui",
+    "title": "Avatar",
+    "description": "Avatar component harvested from chakra-ui with css-in-js styling.",
+    "dependencies": [
+      "@chakra-ui/react"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "avatar--chakra-ui-3",
+    "type": "registry:ui",
+    "title": "Avatar",
+    "description": "Avatar component harvested from chakra-ui with css-in-js styling.",
+    "dependencies": [
+      "@chakra-ui/react"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "avatar--radix-ui",
+    "type": "registry:ui",
+    "title": "Avatar",
+    "description": "Avatar component harvested from radix-ui with unstyled styling.",
+    "dependencies": [
+      "@radix-ui/react-primitive"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "avatar--react-aria",
+    "type": "registry:ui",
+    "title": "Avatar",
+    "description": "Avatar component harvested from react-aria with unstyled styling.",
+    "dependencies": [
+      "react-aria-components"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "avatar--react-aria-2",
+    "type": "registry:ui",
+    "title": "Avatar",
+    "description": "Avatar component harvested from react-aria with unstyled styling.",
+    "dependencies": [
+      "react-aria-components"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "avatar-as-child-test",
+    "type": "registry:ui",
+    "title": "Avatar As Child.test",
+    "description": "Avatar As Child.test component harvested from ark-ui with unstyled styling.",
+    "dependencies": [
+      "@ark-ui/react"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "avatar-demo-allowedcolors",
+    "type": "registry:ui",
+    "title": "Avatar.demo.allowedColors",
+    "description": "Avatar.demo.allowedColors component harvested from mantine with css-modules styling.",
+    "dependencies": [
+      "@mantine/core",
+      "@mantine/hooks"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "avatar-demo-group",
+    "type": "registry:ui",
+    "title": "Avatar.demo.group",
+    "description": "Avatar.demo.group component harvested from mantine with css-modules styling.",
+    "dependencies": [
+      "@mantine/core",
+      "@mantine/hooks"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "avatar-demo-grouptooltip",
+    "type": "registry:ui",
+    "title": "Avatar.demo.groupTooltip",
+    "description": "Avatar.demo.groupTooltip component harvested from mantine with css-modules styling.",
+    "dependencies": [
+      "@mantine/core",
+      "@mantine/hooks"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "avatar-demo-link",
+    "type": "registry:ui",
+    "title": "Avatar.demo.link",
+    "description": "Avatar.demo.link component harvested from mantine with css-modules styling.",
+    "dependencies": [
+      "@mantine/core",
+      "@mantine/hooks"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "avatar-demo-placeholders",
+    "type": "registry:ui",
+    "title": "Avatar.demo.placeholders",
+    "description": "Avatar.demo.placeholders component harvested from mantine with css-modules styling.",
+    "dependencies": [
+      "@mantine/core",
+      "@mantine/hooks"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "avatar-demo-usage",
+    "type": "registry:ui",
+    "title": "Avatar.demo.usage",
+    "description": "Avatar.demo.usage component harvested from mantine with css-modules styling.",
+    "dependencies": [
+      "@mantine/core",
+      "@mantine/hooks"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "avatar-fallback",
+    "type": "registry:ui",
+    "title": "Avatar Fallback",
+    "description": "Avatar Fallback component harvested from ark-ui with unstyled styling.",
+    "dependencies": [
+      "@ark-ui/react"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "avatar-group",
+    "type": "registry:ui",
+    "title": "Avatar Group",
+    "description": "Avatar Group component harvested from ark-ui with unstyled styling.",
+    "dependencies": [
+      "@ark-ui/react"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "avatar-root",
+    "type": "registry:ui",
+    "title": "Avatar Root",
+    "description": "Avatar Root component harvested from ark-ui with unstyled styling.",
+    "dependencies": [
+      "@ark-ui/react"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "avatar-spec",
+    "type": "registry:ui",
+    "title": "Avatar.spec",
+    "description": "Avatar.spec component harvested from base-ui with unstyled styling.",
+    "dependencies": [
+      "@base-ui-components/react"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "avatar-spec--mui",
+    "type": "registry:ui",
+    "title": "Avatar.spec",
+    "description": "Avatar.spec component harvested from mui with css-in-js styling.",
+    "dependencies": [
+      "@mui/material",
+      "@emotion/react",
+      "@emotion/styled"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "avatar-stories--react-aria",
+    "type": "registry:ui",
+    "title": "Avatar.stories",
+    "description": "Avatar.stories component harvested from react-aria with unstyled styling.",
+    "dependencies": [
+      "react-aria-components"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "avatar-stories--react-aria-2",
+    "type": "registry:ui",
+    "title": "Avatar.stories",
+    "description": "Avatar.stories component harvested from react-aria with unstyled styling.",
+    "dependencies": [
+      "react-aria-components"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "avatar-stories--react-aria-3",
+    "type": "registry:ui",
+    "title": "Avatar.stories",
+    "description": "Avatar.stories component harvested from react-aria with unstyled styling.",
+    "dependencies": [
+      "react-aria-components"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "avatar-story",
+    "type": "registry:ui",
+    "title": "Avatar.story",
+    "description": "Avatar.story component harvested from mantine with css-modules styling.",
+    "dependencies": [
+      "@mantine/core",
+      "@mantine/hooks"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "avatar-test--mantine",
+    "type": "registry:ui",
+    "title": "Avatar.test",
+    "description": "Avatar.test component harvested from mantine with css-modules styling.",
+    "dependencies": [
+      "@mantine/core",
+      "@mantine/hooks"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "avatarplaceholdericon",
+    "type": "registry:ui",
+    "title": "AvatarPlaceholderIcon",
+    "description": "AvatarPlaceholderIcon component harvested from mantine with css-modules styling.",
+    "dependencies": [
+      "@mantine/core",
+      "@mantine/hooks"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "bar-list",
+    "type": "registry:ui",
+    "title": "Bar List",
+    "description": "Bar List component harvested from chakra-ui with css-in-js styling.",
+    "dependencies": [
+      "@chakra-ui/react"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "base",
+    "type": "registry:ui",
+    "title": " Base",
+    "description": " Base component harvested from mantine with css-modules styling.",
+    "dependencies": [
+      "@mantine/core",
+      "@mantine/hooks"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "base--mantine",
+    "type": "registry:ui",
+    "title": " Base",
+    "description": " Base component harvested from mantine with css-modules styling.",
+    "dependencies": [
+      "@mantine/core",
+      "@mantine/hooks"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "blog-card--chakra-ui",
+    "type": "registry:ui",
+    "title": "Blog Card",
+    "description": "Blog Card component harvested from chakra-ui with css-in-js styling.",
+    "dependencies": [
+      "@chakra-ui/react"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "calendar--mantine",
+    "type": "registry:ui",
+    "title": "Calendar",
+    "description": "Calendar component harvested from mantine with css-modules styling.",
+    "dependencies": [
+      "@mantine/core",
+      "@mantine/hooks"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "calendar-demo-picker",
+    "type": "registry:ui",
+    "title": "Calendar.demo.picker",
+    "description": "Calendar.demo.picker component harvested from mantine with css-modules styling.",
+    "dependencies": [
+      "@mantine/core",
+      "@mantine/hooks"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "calendar-demo-weekpicker",
+    "type": "registry:ui",
+    "title": "Calendar.demo.weekPicker",
+    "description": "Calendar.demo.weekPicker component harvested from mantine with css-modules styling.",
+    "dependencies": [
+      "@mantine/core",
+      "@mantine/hooks"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "calendar-story",
+    "type": "registry:ui",
+    "title": "Calendar.story",
+    "description": "Calendar.story component harvested from mantine with css-modules styling.",
+    "dependencies": [
+      "@mantine/core",
+      "@mantine/hooks"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "calendar-test--mantine",
+    "type": "registry:ui",
+    "title": "Calendar.test",
+    "description": "Calendar.test component harvested from mantine with css-modules styling.",
+    "dependencies": [
+      "@mantine/core",
+      "@mantine/hooks"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "card--chakra-ui",
+    "type": "registry:ui",
+    "title": "Card",
+    "description": "Card component harvested from chakra-ui with css-in-js styling.",
+    "dependencies": [
+      "@chakra-ui/react"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "card--chakra-ui-2",
+    "type": "registry:ui",
+    "title": "Card",
+    "description": "Card component harvested from chakra-ui with css-in-js styling.",
+    "dependencies": [
+      "@chakra-ui/react"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "card-demo-horizontal",
+    "type": "registry:ui",
+    "title": "Card.demo.horizontal",
+    "description": "Card.demo.horizontal component harvested from mantine with css-modules styling.",
+    "dependencies": [
+      "@mantine/core",
+      "@mantine/hooks"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "card-demo-link",
+    "type": "registry:ui",
+    "title": "Card.demo.link",
+    "description": "Card.demo.link component harvested from mantine with css-modules styling.",
+    "dependencies": [
+      "@mantine/core",
+      "@mantine/hooks"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "card-demo-section",
+    "type": "registry:block",
+    "title": "Card.demo.section",
+    "description": "Card.demo.section component harvested from mantine with css-modules styling.",
+    "dependencies": [
+      "@mantine/core",
+      "@mantine/hooks"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "card-spec",
+    "type": "registry:ui",
+    "title": "Card.spec",
+    "description": "Card.spec component harvested from mui with css-in-js styling.",
+    "dependencies": [
+      "@mui/material",
+      "@emotion/react",
+      "@emotion/styled"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "card-story",
+    "type": "registry:ui",
+    "title": "Card.story",
+    "description": "Card.story component harvested from mantine with css-modules styling.",
+    "dependencies": [
+      "@mantine/core",
+      "@mantine/hooks"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "card-test--mantine",
+    "type": "registry:ui",
+    "title": "Card.test",
+    "description": "Card.test component harvested from mantine with css-modules styling.",
+    "dependencies": [
+      "@mantine/core",
+      "@mantine/hooks"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "card-test--mui",
+    "type": "registry:ui",
+    "title": "Card.test",
+    "description": "Card.test component harvested from mui with css-in-js styling.",
+    "dependencies": [
+      "@mui/material",
+      "@emotion/react",
+      "@emotion/styled"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "cardsection-test",
+    "type": "registry:ui",
+    "title": "CardSection.test",
+    "description": "CardSection.test component harvested from mantine with css-modules styling.",
+    "dependencies": [
+      "@mantine/core",
+      "@mantine/hooks"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "collapsible--chakra-ui",
+    "type": "registry:ui",
+    "title": "Collapsible",
+    "description": "Collapsible component harvested from chakra-ui with css-in-js styling.",
+    "dependencies": [
+      "@chakra-ui/react"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "colorstimeline",
+    "type": "registry:ui",
+    "title": "ColorsTimeline",
+    "description": "ColorsTimeline component harvested from mui with css-in-js styling.",
+    "dependencies": [
+      "@mui/material",
+      "@emotion/react",
+      "@emotion/styled"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "columngroupingtable",
+    "type": "registry:ui",
+    "title": "ColumnGroupingTable",
+    "description": "ColumnGroupingTable component harvested from mui with css-in-js styling.",
+    "dependencies": [
+      "@mui/material",
+      "@emotion/react",
+      "@emotion/styled"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "controlledaccordions",
+    "type": "registry:ui",
+    "title": "ControlledAccordions",
+    "description": "ControlledAccordions component harvested from mui with css-in-js styling.",
+    "dependencies": [
+      "@mui/material",
+      "@emotion/react",
+      "@emotion/styled"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "customizedaccordions",
+    "type": "registry:ui",
+    "title": "CustomizedAccordions",
+    "description": "CustomizedAccordions component harvested from mui with css-in-js styling.",
+    "dependencies": [
+      "@mui/material",
+      "@emotion/react",
+      "@emotion/styled"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "customizedtimeline",
+    "type": "registry:ui",
+    "title": "CustomizedTimeline",
+    "description": "CustomizedTimeline component harvested from mui with css-in-js styling.",
+    "dependencies": [
+      "@mui/material",
+      "@emotion/react",
+      "@emotion/styled"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "data-list",
+    "type": "registry:ui",
+    "title": "Data List",
+    "description": "Data List component harvested from chakra-ui with css-in-js styling.",
+    "dependencies": [
+      "@chakra-ui/react"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "data-list--chakra-ui",
+    "type": "registry:ui",
+    "title": "Data List",
+    "description": "Data List component harvested from chakra-ui with css-in-js styling.",
+    "dependencies": [
+      "@chakra-ui/react"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "usefilter",
+    "type": "registry:hook",
+    "title": "UseFilter",
+    "description": "UseFilter component harvested from ant-design with css-in-js styling.",
+    "dependencies": [
+      "antd"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "useitems",
+    "type": "registry:hook",
+    "title": "UseItems",
+    "description": "UseItems component harvested from ant-design with css-in-js styling.",
+    "dependencies": [
+      "antd"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "useselection",
+    "type": "registry:hook",
+    "title": "UseSelection",
+    "description": "UseSelection component harvested from ant-design with css-in-js styling.",
+    "dependencies": [
+      "antd"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "usesorter",
+    "type": "registry:hook",
+    "title": "UseSorter",
+    "description": "UseSorter component harvested from ant-design with css-in-js styling.",
+    "dependencies": [
+      "antd"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "it-supports-on-control-mouse-enter",
+    "type": "registry:hook",
+    "title": "It Supports On Control Mouse Enter",
+    "description": "It Supports On Control Mouse Enter component harvested from mantine with css-modules styling.",
+    "dependencies": [
+      "@mantine/core",
+      "@mantine/hooks"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "remount-on-mouse-in",
+    "type": "registry:hook",
+    "title": "Remount On Mouse In",
+    "description": "Remount On Mouse In component harvested from animata with tailwind styling.",
+    "dependencies": [
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "use-active-press",
+    "type": "registry:hook",
+    "title": "Use Active Press",
+    "description": "Use Active Press component harvested from headless-ui with tailwind styling.",
+    "dependencies": [
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "use-animate-test",
+    "type": "registry:hook",
+    "title": "Use Animate.test",
+    "description": "Use Animate.test component harvested from motion with tailwind styling.",
+    "dependencies": [
+      "motion",
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "use-animated-state-test",
+    "type": "registry:hook",
+    "title": "Use Animated State.test",
+    "description": "Use Animated State.test component harvested from motion with tailwind styling.",
+    "dependencies": [
+      "motion",
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "use-animation-frame-test",
+    "type": "registry:hook",
+    "title": "Use Animation Frame.test",
+    "description": "Use Animation Frame.test component harvested from motion with tailwind styling.",
+    "dependencies": [
+      "motion",
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "use-attachment-src-test",
+    "type": "registry:hook",
+    "title": "Use Attachment Src.test",
+    "description": "Use Attachment Src.test component harvested from assistant-ui with mixed styling.",
+    "dependencies": [
+      "@assistant-ui/react"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "use-breakpoint-stories",
+    "type": "registry:hook",
+    "title": "Use Breakpoint.stories",
+    "description": "Use Breakpoint.stories component harvested from chakra-ui with css-in-js styling.",
+    "dependencies": [
+      "@chakra-ui/react"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "use-breakpoint-test",
+    "type": "registry:hook",
+    "title": "Use Breakpoint.test",
+    "description": "Use Breakpoint.test component harvested from chakra-ui with css-in-js styling.",
+    "dependencies": [
+      "@chakra-ui/react"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "use-breakpoint-value-test",
+    "type": "registry:hook",
+    "title": "Use Breakpoint Value.test",
+    "description": "Use Breakpoint Value.test component harvested from chakra-ui with css-in-js styling.",
+    "dependencies": [
+      "@chakra-ui/react"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "use-callback-ref",
+    "type": "registry:hook",
+    "title": "Use Callback Ref",
+    "description": "Use Callback Ref component harvested from radix-ui with unstyled styling.",
+    "dependencies": [
+      "@radix-ui/react-primitive"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "use-click-outside-demo-events",
+    "type": "registry:hook",
+    "title": "Use Click Outside.demo.events",
+    "description": "Use Click Outside.demo.events component harvested from mantine with css-modules styling.",
+    "dependencies": [
+      "@mantine/core",
+      "@mantine/hooks"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "use-click-outside-story",
+    "type": "registry:hook",
+    "title": "Use Click Outside.story",
+    "description": "Use Click Outside.story component harvested from mantine with css-modules styling.",
+    "dependencies": [
+      "@mantine/core",
+      "@mantine/hooks"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "use-click-outside-test",
+    "type": "registry:hook",
+    "title": "Use Click Outside.test",
+    "description": "Use Click Outside.test component harvested from mantine with css-modules styling.",
+    "dependencies": [
+      "@mantine/core",
+      "@mantine/hooks"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "use-clipboard-usage-demo",
+    "type": "registry:hook",
+    "title": "Use Clipboard.usage.demo",
+    "description": "Use Clipboard.usage.demo component harvested from mantine with css-modules styling.",
+    "dependencies": [
+      "@mantine/core",
+      "@mantine/hooks"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "use-collapse-story",
+    "type": "registry:hook",
+    "title": "Use Collapse.story",
+    "description": "Use Collapse.story component harvested from mantine with css-modules styling.",
+    "dependencies": [
+      "@mantine/core",
+      "@mantine/hooks"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "use-collapse-test",
+    "type": "registry:hook",
+    "title": "Use Collapse.test",
+    "description": "Use Collapse.test component harvested from mantine with css-modules styling.",
+    "dependencies": [
+      "@mantine/core",
+      "@mantine/hooks"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "use-color-scheme-story",
+    "type": "registry:hook",
+    "title": "Use Color Scheme.story",
+    "description": "Use Color Scheme.story component harvested from mantine with css-modules styling.",
+    "dependencies": [
+      "@mantine/core",
+      "@mantine/hooks"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "use-color-scheme-test",
+    "type": "registry:hook",
+    "title": "Use Color Scheme.test",
+    "description": "Use Color Scheme.test component harvested from mantine with css-modules styling.",
+    "dependencies": [
+      "@mantine/core",
+      "@mantine/hooks"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "use-controllable-state",
+    "type": "registry:hook",
+    "title": "Use Controllable State",
+    "description": "Use Controllable State component harvested from radix-ui with unstyled styling.",
+    "dependencies": [
+      "@radix-ui/react-primitive"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "use-controllable-state-reducer",
+    "type": "registry:hook",
+    "title": "Use Controllable State Reducer",
+    "description": "Use Controllable State Reducer component harvested from radix-ui with unstyled styling.",
+    "dependencies": [
+      "@radix-ui/react-primitive"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "use-controllable-state-test",
+    "type": "registry:hook",
+    "title": "Use Controllable State.test",
+    "description": "Use Controllable State.test component harvested from radix-ui with unstyled styling.",
+    "dependencies": [
+      "@radix-ui/react-primitive"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "use-copy-to-clipboard-test",
+    "type": "registry:hook",
+    "title": "Use Copy To Clipboard.test",
+    "description": "Use Copy To Clipboard.test component harvested from assistant-ui with mixed styling.",
+    "dependencies": [
+      "@assistant-ui/react"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "use-cycle-test",
+    "type": "registry:hook",
+    "title": "Use Cycle.test",
+    "description": "Use Cycle.test component harvested from motion with tailwind styling.",
+    "dependencies": [
+      "motion",
+      "clsx",
+      "tailwind-merge"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "use-dates-context-test",
+    "type": "registry:hook",
+    "title": "Use Dates Context.test",
+    "description": "Use Dates Context.test component harvested from mantine with css-modules styling.",
+    "dependencies": [
+      "@mantine/core",
+      "@mantine/hooks"
+    ],
+    "registryDependencies": []
+  },
+  {
+    "name": "use-debounced-callback-demo-unmount",
+    "type": "registry:hook",
+    "title": "Use Debounced Callback.demo.unmount",
+    "description": "Use Debounced Callback.demo.unmount component harvested from mantine with css-modules styling.",
+    "dependencies": [
+      "@mantine/core",
+      "@mantine/hooks"
+    ],
+    "registryDependencies": []
+  }
+]

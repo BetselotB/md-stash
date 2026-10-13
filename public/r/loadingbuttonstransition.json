@@ -1,0 +1,36 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "loadingbuttonstransition",
+  "type": "registry:ui",
+  "title": "LoadingButtonsTransition",
+  "description": "LoadingButtonsTransition component harvested from mui with css-in-js styling.",
+  "dependencies": [
+    "@mui/material",
+    "@emotion/react",
+    "@emotion/styled"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/loadingbuttonstransition.tsx",
+      "content": "import * as React from 'react';\nimport Button from '@mui/material/Button';\nimport Box from '@mui/material/Box';\nimport FormControlLabel from '@mui/material/FormControlLabel';\nimport Switch from '@mui/material/Switch';\nimport SaveIcon from '@mui/icons-material/Save';\nimport SendIcon from '@mui/icons-material/Send';\n\nexport default function LoadingButtonsTransition() {\n  // @focus-start @padding 1\n  const [loading, setLoading] = React.useState(true);\n  function handleClick() {\n    setLoading(true);\n  }\n\n  return (\n    <div>\n      <FormControlLabel\n        sx={{ display: 'block' }}\n        control={\n          <Switch\n            checked={loading}\n            onChange={() => setLoading(!loading)}\n            name=\"loading\"\n            color=\"primary\"\n          />\n        }\n        label=\"Loading\"\n      />\n      <Box sx={{ '& > button': { m: 1 } }}>\n        <Button\n          size=\"small\"\n          onClick={handleClick}\n          loading={loading}\n          variant=\"outlined\"\n          disabled\n        >\n          Disabled\n        </Button>\n        <Button\n          size=\"small\"\n          onClick={handleClick}\n          loading={loading}\n          loadingIndicator=\"Loading…\"\n          variant=\"outlined\"\n        >\n          Fetch data\n        </Button>\n        <Button\n          size=\"small\"\n          onClick={handleClick}\n          endIcon={<SendIcon />}\n          loading={loading}\n          loadingPosition=\"end\"\n          variant=\"contained\"\n        >\n          Send\n        </Button>\n        <Button\n          size=\"small\"\n          color=\"secondary\"\n          onClick={handleClick}\n          loading={loading}\n          loadingPosition=\"start\"\n          startIcon={<SaveIcon />}\n          variant=\"contained\"\n        >\n          Save\n        </Button>\n      </Box>\n      <Box sx={{ '& > button': { m: 1 } }}>\n        <Button onClick={handleClick} loading={loading} variant=\"outlined\" disabled>\n          Disabled\n        </Button>\n        <Button\n          onClick={handleClick}\n          loading={loading}\n          loadingIndicator=\"Loading…\"\n          variant=\"outlined\"\n        >\n          Fetch data\n        </Button>\n        <Button\n          onClick={handleClick}\n          endIcon={<SendIcon />}\n          loading={loading}\n          loadingPosition=\"end\"\n          variant=\"contained\"\n        >\n          Send\n        </Button>\n        <Button\n          color=\"secondary\"\n          onClick={handleClick}\n          loading={loading}\n          loadingPosition=\"start\"\n          startIcon={<SaveIcon />}\n          variant=\"contained\"\n        >\n          Save\n        </Button>\n      </Box>\n    </div>\n  );\n  // @focus-end\n}",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Material UI — MIT © 2014-present Call-Em-All / Material-UI (https://mui.com)",
+    "source": "mui",
+    "styling": "css-in-js",
+    "category": "animation-primitives",
+    "previewStatus": "unsupported"
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "splitbutton",
+  "type": "registry:ui",
+  "title": "SplitButton",
+  "description": "SplitButton component harvested from mui with css-in-js styling.",
+  "dependencies": [
+    "@mui/material",
+    "@emotion/react",
+    "@emotion/styled"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/splitbutton.tsx",
+      "content": "import * as React from 'react';\nimport Button from '@mui/material/Button';\nimport ButtonGroup from '@mui/material/ButtonGroup';\nimport ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';\nimport ClickAwayListener from '@mui/material/ClickAwayListener';\nimport Grow from '@mui/material/Grow';\nimport Paper from '@mui/material/Paper';\nimport Popper from '@mui/material/Popper';\nimport MenuItem from '@mui/material/MenuItem';\nimport MenuList from '@mui/material/MenuList';\n\nconst options = ['Create a merge commit', 'Squash and merge', 'Rebase and merge'];\n\nexport default function SplitButton() {\n  // @focus-start @padding 1\n  const [open, setOpen] = React.useState(false);\n  const anchorRef = React.useRef<HTMLDivElement>(null);\n  const [selectedIndex, setSelectedIndex] = React.useState(1);\n\n  const handleClick = () => {\n    console.info(`You clicked ${options[selectedIndex]}`);\n  };\n\n  const handleMenuItemClick = (\n    event: React.MouseEvent<HTMLLIElement, MouseEvent>,\n    index: number,\n  ) => {\n    setSelectedIndex(index);\n    setOpen(false);\n  };\n\n  const handleToggle = () => {\n    setOpen((prevOpen) => !prevOpen);\n  };\n\n  const handleClose = (event: Event) => {\n    if (\n      anchorRef.current &&\n      anchorRef.current.contains(event.target as HTMLElement)\n    ) {\n      return;\n    }\n\n    setOpen(false);\n  };\n\n  return (\n    <React.Fragment>\n      <ButtonGroup\n        variant=\"contained\"\n        ref={anchorRef}\n        aria-label=\"Button group with a nested menu\"\n      >\n        <Button onClick={handleClick}>{options[selectedIndex]}</Button>\n        <Button\n          size=\"small\"\n          aria-controls={open ? 'split-button-menu' : undefined}\n          aria-expanded={open ? 'true' : undefined}\n          aria-label=\"select merge strategy\"\n          aria-haspopup=\"menu\"\n          onClick={handleToggle}\n        >\n          <ArrowDropDownIcon />\n        </Button>\n      </ButtonGroup>\n      <Popper\n        sx={{ zIndex: 1 }}\n        open={open}\n        anchorEl={anchorRef.current}\n        role={undefined}\n        transition\n        disablePortal\n      >\n        {({ TransitionProps, placement }) => (\n          <Grow\n            {...TransitionProps}\n            style={{\n              transformOrigin:\n                placement === 'bottom' ? 'center top' : 'center bottom',\n            }}\n          >\n            <Paper>\n              <ClickAwayListener onClickAway={handleClose}>\n                <MenuList id=\"split-button-menu\" autoFocusItem>\n                  {options.map((option, index) => (\n                    <MenuItem\n                      key={option}\n                      disabled={index === 2}\n                      selected={index === selectedIndex}\n                      onClick={(event) => handleMenuItemClick(event, index)}\n                    >\n                      {option}\n                    </MenuItem>\n                  ))}\n                </MenuList>\n              </ClickAwayListener>\n            </Paper>\n          </Grow>\n        )}\n      </Popper>\n    </React.Fragment>\n  );\n  // @focus-end\n}",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Material UI — MIT © 2014-present Call-Em-All / Material-UI (https://mui.com)",
+    "source": "mui",
+    "styling": "css-in-js",
+    "category": "buttons",
+    "previewStatus": "unsupported"
+  }
+}

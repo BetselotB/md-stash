@@ -1,0 +1,34 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "accordion--chakra-ui",
+  "type": "registry:ui",
+  "title": "Accordion",
+  "description": "Accordion component harvested from chakra-ui with css-in-js styling.",
+  "dependencies": [
+    "@chakra-ui/react"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/accordion--chakra-ui.tsx",
+      "content": "\"use client\"\n\nimport type { Assign } from \"@ark-ui/react\"\nimport { Accordion as ArkAccordion } from \"@ark-ui/react/accordion\"\nimport {\n  type HTMLChakraProps,\n  type SlotRecipeProps,\n  type UnstyledProp,\n  createSlotRecipeContext,\n} from \"../../styled-system\"\nimport { ChevronDownIcon } from \"../icons\"\n\n////////////////////////////////////////////////////////////////////////////////////\n\nconst {\n  withProvider,\n  withContext,\n  useStyles: useAccordionStyles,\n  PropsProvider,\n} = createSlotRecipeContext({ key: \"accordion\" })\n\nexport { useAccordionStyles }\n\n////////////////////////////////////////////////////////////////////////////////////\n\nexport interface AccordionRootProviderBaseProps\n  extends\n    Assign<ArkAccordion.RootProviderBaseProps, SlotRecipeProps<\"accordion\">>,\n    UnstyledProp {}\n\nexport interface AccordionRootProviderProps extends HTMLChakraProps<\n  \"div\",\n  AccordionRootProviderBaseProps\n> {}\n\nexport const AccordionRootProvider = withProvider<\n  HTMLDivElement,\n  AccordionRootProviderProps\n>(ArkAccordion.RootProvider, \"root\", { forwardAsChild: true })\n\n////////////////////////////////////////////////////////////////////////////////////\n\nexport interface AccordionRootBaseProps\n  extends\n    Assign<ArkAccordion.RootBaseProps, SlotRecipeProps<\"accordion\">>,\n    UnstyledProp {}\n\nexport interface AccordionRootProps extends HTMLChakraProps<\n  \"div\",\n  AccordionRootBaseProps\n> {}\n\nexport const AccordionRoot = withProvider<HTMLDivElement, AccordionRootProps>(\n  ArkAccordion.Root,\n  \"root\",\n  { forwardAsChild: true },\n)\n\n////////////////////////////////////////////////////////////////////////////////////\n\nexport const AccordionPropsProvider =\n  PropsProvider as React.Provider<ArkAccordion.RootBaseProps>\n\n////////////////////////////////////////////////////////////////////////////////////\n\nexport interface AccordionItemProps\n  extends HTMLChakraProps<\"div\", ArkAccordion.ItemBaseProps>, UnstyledProp {}\n\nexport const AccordionItem = withContext<HTMLDivElement, AccordionItemProps>(\n  ArkAccordion.Item,\n  \"item\",\n  { forwardAsChild: true },\n)\n\n////////////////////////////////////////////////////////////////////////////////////\n\nexport interface AccordionItemContentProps\n  extends\n    HTMLChakraProps<\"div\", ArkAccordion.ItemContentBaseProps>,\n    UnstyledProp {}\n\nexport const AccordionItemContent = withContext<\n  HTMLDivElement,\n  AccordionItemContentProps\n>(ArkAccordion.ItemContent, \"itemContent\", { forwardAsChild: true })\n\n////////////////////////////////////////////////////////////////////////////////////\n\nexport interface AccordionItemBodyProps\n  extends HTMLChakraProps<\"div\">, UnstyledProp {}\n\nexport const AccordionItemBody = withContext<\n  HTMLDivElement,\n  AccordionItemBodyProps\n>(\"div\", \"itemBody\")\n\n////////////////////////////////////////////////////////////////////////////////////\n\nexport interface AccordionItemTriggerProps\n  extends\n    HTMLChakraProps<\"button\", ArkAccordion.ItemTriggerBaseProps>,\n    UnstyledProp {}\n\nexport const AccordionItemTrigger = withContext<\n  HTMLButtonElement,\n  AccordionItemTriggerProps\n>(ArkAccordion.ItemTrigger, \"itemTrigger\", { forwardAsChild: true })\n\n////////////////////////////////////////////////////////////////////////////////////\n\nexport interface AccordionItemIndicatorProps\n  extends\n    HTMLChakraProps<\"button\", ArkAccordion.ItemIndicatorBaseProps>,\n    UnstyledProp {}\n\nexport const AccordionItemIndicator = withContext<\n  HTMLDivElement,\n  AccordionItemIndicatorProps\n>(ArkAccordion.ItemIndicator, \"itemIndicator\", {\n  forwardAsChild: true,\n  defaultProps: {\n    children: <ChevronDownIcon />,\n  },\n})\n\n////////////////////////////////////////////////////////////////////////////////////\n\nexport const AccordionContext = ArkAccordion.Context\nexport const AccordionItemContext = ArkAccordion.ItemContext\n\nexport interface AccordionFocusChangeDetails\n  extends ArkAccordion.FocusChangeDetails {}\n\nexport interface AccordionValueChangeDetails\n  extends ArkAccordion.ValueChangeDetails {}",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Chakra UI — MIT © 2019-present Segun Adebayo (https://chakra-ui.com)",
+    "source": "chakra-ui",
+    "styling": "css-in-js",
+    "category": "data-display",
+    "previewStatus": "unsupported"
+  }
+}

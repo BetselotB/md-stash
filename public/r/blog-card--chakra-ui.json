@@ -1,0 +1,34 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "blog-card--chakra-ui",
+  "type": "registry:ui",
+  "title": "Blog Card",
+  "description": "Blog Card component harvested from chakra-ui with css-in-js styling.",
+  "dependencies": [
+    "@chakra-ui/react"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/blog-card--chakra-ui.tsx",
+      "content": "import { Blog } from \"@/.velite\"\nimport { formatBlogDate, getBlogAuthor } from \"lib/blog\"\nimport {\n  Avatar,\n  AvatarGroup,\n  Badge,\n  Card,\n  Flex,\n  HStack,\n  LinkOverlay,\n  Text,\n} from \"@chakra-ui/react\"\nimport Link from \"next/link\"\n\ninterface Props {\n  data: Blog\n}\n\nexport const BlogCard = (props: Props) => {\n  const { data } = props\n  const { title, description, authors, publishedAt } = data\n  return (\n    <Card.Root size=\"sm\">\n      <Card.Body gap=\"2\">\n        <Flex gap=\"2\" justify=\"space-between\">\n          <Text textStyle=\"sm\" color=\"fg.muted\">\n            {formatBlogDate(publishedAt)}\n          </Text>\n          <AvatarGroup size=\"2xs\" spaceX=\"-2\">\n            {authors.map((author) => {\n              const { name, image } = getBlogAuthor(author)\n              return (\n                <Avatar.Root key={author} boxSizing=\"content-box\">\n                  <Avatar.Image src={image} />\n                  <Avatar.Fallback name={name} />\n                </Avatar.Root>\n              )\n            })}\n          </AvatarGroup>\n        </Flex>\n        <Card.Title textStyle=\"lg\">\n          <LinkOverlay asChild>\n            <Link href={`/${data.slug}`}>{title}</Link>\n          </LinkOverlay>\n        </Card.Title>\n        <Card.Description minH=\"2lh\" mb=\"2\">\n          {description}\n        </Card.Description>\n        <HStack colorPalette=\"teal\" gap=\"1\">\n          <Badge size=\"sm\">{data.type}</Badge>\n          {data.version && <Badge size=\"sm\">v{data.version}</Badge>}\n        </HStack>\n      </Card.Body>\n    </Card.Root>\n  )\n}",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Chakra UI — MIT © 2019-present Segun Adebayo (https://chakra-ui.com)",
+    "source": "chakra-ui",
+    "styling": "css-in-js",
+    "category": "data-display",
+    "previewStatus": "unsupported"
+  }
+}

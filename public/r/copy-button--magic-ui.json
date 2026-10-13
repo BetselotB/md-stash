@@ -1,0 +1,35 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "copy-button--magic-ui",
+  "type": "registry:ui",
+  "title": "Copy Button",
+  "description": "Copy Button component harvested from magic-ui with tailwind styling.",
+  "dependencies": [
+    "clsx",
+    "tailwind-merge"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/copy-button--magic-ui.tsx",
+      "content": "\"use client\"\n\nimport * as React from \"react\"\nimport { CheckIcon, ClipboardIcon } from \"lucide-react\"\n\nimport { trackEvent, type Event } from \"lib/events\"\nimport { cn } from \"utils/cn\"\nimport { Button } from \"ui/button\"\nimport {\n  Tooltip,\n  TooltipContent,\n  TooltipTrigger,\n} from \"ui/tooltip\"\n\nexport async function copyToClipboardWithMeta(value: string, event?: Event) {\n  navigator.clipboard.writeText(value)\n  if (event) {\n    trackEvent(event)\n  }\n}\n\nexport function CopyButton({\n  value,\n  className,\n  variant = \"ghost\",\n  event,\n  ...props\n}: React.ComponentProps<typeof Button> & {\n  value: string\n  src?: string\n  event?: Event[\"name\"]\n}) {\n  const [hasCopied, setHasCopied] = React.useState(false)\n\n  React.useEffect(() => {\n    setTimeout(() => {\n      setHasCopied(false)\n    }, 2000)\n  }, [])\n\n  return (\n    <Tooltip>\n      <TooltipTrigger asChild>\n        <Button\n          data-slot=\"copy-button\"\n          size=\"icon\"\n          variant={variant}\n          className={cn(\n            \"bg-code absolute top-3 right-2 z-10 size-7 hover:opacity-100 focus-visible:opacity-100\",\n            className\n          )}\n          onClick={() => {\n            copyToClipboardWithMeta(\n              value,\n              event\n                ? {\n                    name: event,\n                    properties: {\n                      code: value,\n                    },\n                  }\n                : undefined\n            )\n            setHasCopied(true)\n          }}\n          {...props}\n        >\n          <span className=\"sr-only\">Copy</span>\n          {hasCopied ? <CheckIcon /> : <ClipboardIcon />}\n        </Button>\n      </TooltipTrigger>\n      <TooltipContent>\n        {hasCopied ? \"Copied\" : \"Copy to Clipboard\"}\n      </TooltipContent>\n    </Tooltip>\n  )\n}",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Magic UI — MIT © 2023-present Dillion Verma (https://magicui.design)",
+    "source": "magic-ui",
+    "styling": "tailwind",
+    "category": "buttons",
+    "previewStatus": "ready"
+  }
+}

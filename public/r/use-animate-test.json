@@ -1,0 +1,36 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "use-animate-test",
+  "type": "registry:hook",
+  "title": "Use Animate.test",
+  "description": "Use Animate.test component harvested from motion with tailwind styling.",
+  "dependencies": [
+    "motion",
+    "clsx",
+    "tailwind-merge"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "hooks/use-animate-test.ts",
+      "content": "import \"@testing-library/jest-dom\"\nimport { render } from \"@testing-library/react\"\nimport { useEffect } from \"react\"\nimport { MotionConfig } from \"../../../components/MotionConfig\"\nimport { useAnimate } from \"../use-animate\"\n\ndescribe(\"useAnimate\", () => {\n    test(\"Types work as expected\", () => {\n        const Component = () => {\n            const [scope, animate] = useAnimate()\n\n            useEffect(() => {\n                expect(() => {\n                    animate(\"div\", { opacity: 1 })\n                }).toThrow()\n\n                animate(scope.current, { opacity: 1 })\n            })\n\n            return <div ref={scope} />\n        }\n\n        render(<Component />)\n    })\n\n    test(\"Animations removed from scope when finished\", () => {\n        return new Promise<void>((resolve) => {\n            const Component = () => {\n                const [scope, animate] = useAnimate()\n\n                useEffect(() => {\n                    const animation = animate(\n                        scope.current,\n                        { opacity: 1 },\n                        { duration: 0.1 }\n                    )\n\n                    requestAnimationFrame(() => {\n                        expect(scope.animations.length).toBe(1)\n                    })\n\n                    animation.finished.then(() => {\n                        requestAnimationFrame(() => {\n                            expect(scope.animations.length).toBe(0)\n                            resolve()\n                        })\n                    })\n\n                    return () => {\n                        animation.stop()\n                    }\n                })\n\n                return <div ref={scope} />\n            }\n\n            render(<Component />)\n        })\n    })\n\n    test(\"Animates provided animation\", async () => {\n        return new Promise<void>((resolve) => {\n            const Component = () => {\n                const [scope, animate] = useAnimate()\n\n                useEffect(() => {\n                    animate(\n                        scope.current,\n                        { opacity: 0.5 },\n                        { duration: 0.1 }\n                    ).then(() => {\n                        expect(scope.current).toHaveStyle(\"opacity: 0.5;\")\n                        resolve()\n                    })\n                })\n\n                return <div ref={scope} />\n            }\n\n            render(<Component />)\n        })\n    })\n\n    test(\"Stops animations when unmounted\", async () => {\n        let frameCount = 0\n        let unmount = () => {}\n\n        await new Promise<void>((resolve) => {\n            const Component = () => {\n                const [scope, animate] = useAnimate()\n\n                useEffect(() => {\n                    animate(\n                        scope.current,\n                        { opacity: 0.5 },\n                        {\n                            duration: 20,\n                            onUpdate: () => {\n                                frameCount++\n                                if (frameCount === 3) {\n                                    unmount()\n                                    setTimeout(() => {\n                                        resolve()\n                                    }, 50)\n                                }\n                            },\n                        }\n                    )\n                })\n\n                return <div ref={scope} />\n            }\n\n            unmount = render(<Component />).unmount\n        })\n\n        expect(frameCount).toEqual(3)\n    })\n\n    test(\"Applies final value instantly when MotionConfig skipAnimations is true\", () => {\n        return new Promise<void>((resolve) => {\n            const Component = () => {\n                const [scope, animate] = useAnimate()\n\n                useEffect(() => {\n                    animate(\n                        scope.current,\n                        { opacity: 0.5 },\n                        { duration: 10 }\n                    )\n\n                    setTimeout(() => {\n                        expect(scope.current).toHaveStyle(\"opacity: 0.5;\")\n                        expect(scope.animations.length).toBe(0)\n                        resolve()\n                    }, 50)\n                })\n\n                return <div ref={scope} />\n            }\n\n            render(\n                <MotionConfig skipAnimations>\n                    <Component />\n                </MotionConfig>\n            )\n        })\n    })\n})",
+      "type": "registry:hook"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Motion — MIT © 2018-present Framer B.V. (https://motion.dev)",
+    "source": "motion",
+    "styling": "tailwind",
+    "category": "hooks",
+    "previewStatus": "primitive"
+  }
+}

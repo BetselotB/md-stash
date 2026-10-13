@@ -1,0 +1,35 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "card-test--mantine",
+  "type": "registry:ui",
+  "title": "Card.test",
+  "description": "Card.test component harvested from mantine with css-modules styling.",
+  "dependencies": [
+    "@mantine/core",
+    "@mantine/hooks"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/card-test--mantine.tsx",
+      "content": "import { render, tests } from '@mantine-tests/core';\nimport { Card, CardProps, CardStylesNames } from './Card';\nimport { CardSection } from './CardSection/CardSection';\n\nconst defaultProps: CardProps = {\n  children: <Card.Section />,\n};\n\ndescribe('@mantine/core/Card', () => {\n  tests.itSupportsSystemProps<CardProps, CardStylesNames>({\n    component: Card,\n    props: defaultProps,\n    varsResolver: true,\n    polymorphic: true,\n    children: true,\n    displayName: '@mantine/core/Card',\n    stylesApiSelectors: ['root', 'section'],\n  });\n\n  it('sets data-fist-section and data-last-section props to first and last Card.Section components', () => {\n    const { container } = render(\n      <Card>\n        <Card.Section />\n        <div>Content</div>\n        <Card.Section />\n        <div>Content</div>\n        <Card.Section />\n      </Card>\n    );\n\n    const sections = container.querySelectorAll('.mantine-Card-section');\n\n    expect(sections[0]).toHaveAttribute('data-first-section');\n    expect(sections[0]).not.toHaveAttribute('data-last-section');\n\n    expect(sections[1]).not.toHaveAttribute('data-first-section');\n    expect(sections[1]).not.toHaveAttribute('data-last-section');\n\n    expect(sections[2]).not.toHaveAttribute('data-first-section');\n    expect(sections[2]).toHaveAttribute('data-last-section');\n  });\n\n  it('assigns data-orientation attribute based on orientation prop on root and sections', () => {\n    const { container } = render(\n      <Card orientation=\"horizontal\">\n        <Card.Section />\n        <div>Content</div>\n        <Card.Section />\n      </Card>\n    );\n\n    const root = container.querySelector('.mantine-Card-root');\n    const sections = container.querySelectorAll('.mantine-Card-section');\n\n    expect(root).toHaveAttribute('data-orientation', 'horizontal');\n    sections.forEach((section) => {\n      expect(section).toHaveAttribute('data-orientation', 'horizontal');\n    });\n  });\n\n  it('exports Card.Section component', () => {\n    expect(Card.Section).toBe(CardSection);\n  });\n});",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Mantine — MIT © 2020-present Vitaly Rtishchev (https://mantine.dev)",
+    "source": "mantine",
+    "styling": "css-modules",
+    "category": "data-display",
+    "previewStatus": "primitive"
+  }
+}

@@ -18,7 +18,7 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { Logo } from '../ui/Logo';
-import { useCollections, useFiles, usePinnedFiles, useAllTags } from '../../hooks/useDb';
+import { useCollections, useFiles, usePinnedFiles, useAllTags, useComponents } from '../../hooks/useDb';
 import { filesRepo } from '../../db/files.repo';
 import { collectionsRepo } from '../../db/collections.repo';
 import { persistenceService } from '../../services/persistence';
@@ -41,6 +41,8 @@ import {
   LogIn,
   LogOut,
   RefreshCw,
+  Layers,
+  Cpu,
 } from 'lucide-react';
 import { useSync } from '../../hooks/useSync';
 import { AuthModal } from '../auth/AuthModal';
@@ -188,6 +190,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
   const collections = useCollections();
   const allFiles = useFiles();
+  const allComponents = useComponents();
   const pinnedFiles = usePinnedFiles();
   const tags = useAllTags();
   const { activeTag, setActiveTag, showToast, isDraggingCard, setIsDraggingCard } = useUIStore();
@@ -357,7 +360,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <div className="flex-1 overflow-y-auto p-4 space-y-6">
             {/* Main Navigation */}
             <div className="space-y-1">
-              {/* All files */}
+              {/* Components Library */}
               <NavLink
                 to="/app"
                 end
@@ -379,8 +382,29 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 onDrop={(e) => handleCollectionDrop(e, null)}
               >
                 <div className="flex items-center gap-2.5">
+                  <Layers className="w-5 h-5 stroke-[1.75] shrink-0" />
+                  <span className="tracking-tight text-[13px]">Components</span>
+                </div>
+                <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-[rgba(38,51,42,0.1)] text-inherit font-semibold">
+                  {allComponents.length}
+                </span>
+              </NavLink>
+
+              {/* Docs & Rules (Notes) */}
+              <NavLink
+                to="/app/docs"
+                onClick={handleNavClick}
+                className={({ isActive }) => {
+                  return `flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold transition-colors cursor-pointer ${
+                    isActive
+                      ? 'bg-cream text-ink shadow-sm'
+                      : 'text-cream hover:bg-[rgba(248,247,230,0.12)]'
+                  }`;
+                }}
+              >
+                <div className="flex items-center gap-2.5">
                   <Files className="w-5 h-5 stroke-[1.75] shrink-0" />
-                  <span className="tracking-tight text-[13px]">All files</span>
+                  <span className="tracking-tight text-[13px]">Docs & Rules</span>
                 </div>
                 <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-[rgba(38,51,42,0.1)] text-inherit font-semibold">
                   {allFiles.length}
@@ -408,9 +432,63 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 </span>
               </NavLink>
 
+              {/* Agent Inbox */}
+              <NavLink
+                to="/app/inbox"
+                onClick={handleNavClick}
+                className={({ isActive }) =>
+                  `flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold transition-colors cursor-pointer ${
+                    isActive
+                      ? 'bg-cream text-ink shadow-sm'
+                      : 'text-cream hover:bg-[rgba(248,247,230,0.12)]'
+                  }`
+                }
+              >
+                <div className="flex items-center gap-2.5">
+                  <Inbox className="w-5 h-5 stroke-[1.75] shrink-0 text-orange" />
+                  <span className="tracking-tight text-[13px]">Agent Inbox</span>
+                </div>
+              </NavLink>
+
+              {/* Agent Access & Connect */}
+              <NavLink
+                to="/app/connect"
+                onClick={handleNavClick}
+                className={({ isActive }) =>
+                  `flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold transition-colors cursor-pointer ${
+                    isActive
+                      ? 'bg-cream text-ink shadow-sm'
+                      : 'text-cream hover:bg-[rgba(248,247,230,0.12)]'
+                  }`
+                }
+              >
+                <div className="flex items-center gap-2.5">
+                  <Cpu className="w-5 h-5 stroke-[1.75] shrink-0 text-orange" />
+                  <span className="tracking-tight text-[13px]">Agent Access</span>
+                </div>
+              </NavLink>
+
+              {/* Add Component */}
+              <NavLink
+                to="/app/add"
+                onClick={handleNavClick}
+                className={({ isActive }) =>
+                  `flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold transition-colors cursor-pointer ${
+                    isActive
+                      ? 'bg-cream text-ink shadow-sm'
+                      : 'text-cream hover:bg-[rgba(248,247,230,0.12)]'
+                  }`
+                }
+              >
+                <div className="flex items-center gap-2.5">
+                  <Plus className="w-5 h-5 stroke-[2] shrink-0 text-orange" />
+                  <span className="tracking-tight text-[13px]">Add Component</span>
+                </div>
+              </NavLink>
+
               {/* Unsorted */}
               <NavLink
-                to="/app/c/unsorted"
+                to="/app/col/unsorted"
                 onClick={handleNavClick}
                 className={({ isActive }) => {
                   const isHovered = hoveredDropId === '__unsorted';
@@ -490,7 +568,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                             isDraggingCard={isDraggingCard}
                             onEdit={onEditCollection}
                             onSelect={(id) => {
-                              navigate(`/app/c/${id}`);
+                              navigate(`/app/col/${id}`);
                               handleNavClick();
                             }}
                             onDragOverCol={handleDragOver}

@@ -1,0 +1,36 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "transition-spec",
+  "type": "registry:ui",
+  "title": "Transition.spec",
+  "description": "Transition.spec component harvested from mui with css-in-js styling.",
+  "dependencies": [
+    "@mui/material",
+    "@emotion/react",
+    "@emotion/styled"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/transition-spec.tsx",
+      "content": "import Collapse from '@mui/material/Collapse';\n\nconst transition = (\n  <Collapse in id=\"my-id\" style={{ margin: 2 }}>\n    <div />\n  </Collapse>\n);",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Material UI — MIT © 2014-present Call-Em-All / Material-UI (https://mui.com)",
+    "source": "mui",
+    "styling": "css-in-js",
+    "category": "animation-primitives",
+    "previewStatus": "unsupported"
+  }
+}

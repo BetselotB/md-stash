@@ -15,11 +15,18 @@ interface UIStore {
   viewMode: 'grid' | 'list';
   setViewMode: (mode: 'grid' | 'list') => void;
 
-  // Bundle selection
+  // Bundle selection (Notes)
   selectedFileIds: string[];
   toggleSelectFile: (id: string) => void;
   selectFiles: (ids: string[]) => void;
   clearSelection: () => void;
+
+  // Kit selection (Components)
+  selectedComponentIds: string[];
+  toggleSelectComponent: (id: string) => void;
+  selectComponents: (ids: string[]) => void;
+  clearComponentSelection: () => void;
+  reorderSelectedComponents: (fromIndex: number, toIndex: number) => void;
 
   // Search & Filter
   searchQuery: string;
@@ -70,6 +77,23 @@ export const useUIStore = create<UIStore>((set) => ({
     })),
   selectFiles: (ids) => set({ selectedFileIds: ids }),
   clearSelection: () => set({ selectedFileIds: [] }),
+
+  selectedComponentIds: [],
+  toggleSelectComponent: (id) =>
+    set((state) => ({
+      selectedComponentIds: state.selectedComponentIds.includes(id)
+        ? state.selectedComponentIds.filter((x) => x !== id)
+        : [...state.selectedComponentIds, id],
+    })),
+  selectComponents: (ids) => set({ selectedComponentIds: ids }),
+  clearComponentSelection: () => set({ selectedComponentIds: [] }),
+  reorderSelectedComponents: (fromIndex, toIndex) =>
+    set((state) => {
+      const next = [...state.selectedComponentIds];
+      const [item] = next.splice(fromIndex, 1);
+      next.splice(toIndex, 0, item);
+      return { selectedComponentIds: next };
+    }),
 
   searchQuery: '',
   setSearchQuery: (searchQuery) => set({ searchQuery }),

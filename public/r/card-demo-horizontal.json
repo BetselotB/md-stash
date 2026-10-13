@@ -1,0 +1,35 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "card-demo-horizontal",
+  "type": "registry:ui",
+  "title": "Card.demo.horizontal",
+  "description": "Card.demo.horizontal component harvested from mantine with css-modules styling.",
+  "dependencies": [
+    "@mantine/core",
+    "@mantine/hooks"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/card-demo-horizontal.tsx",
+      "content": "import { Box, Card, Group, RingProgress, Text } from '@mantine/core';\nimport { MantineDemo } from '@mantinex/demo';\n\nconst code = `\nimport { Box, Card, Group, RingProgress, Text } from '@mantine/core';\n\nconst completed = 1887;\nconst total = 2334;\nconst stats = [\n  { value: 447, label: 'Remaining' },\n  { value: 76, label: 'In progress' },\n];\n\nfunction Demo() {\n  const items = stats.map((stat) => (\n    <div key={stat.label}>\n      <Text>{stat.value}</Text>\n      <Text size=\"xs\" c=\"dimmed\">\n        {stat.label}\n      </Text>\n    </div>\n  ));\n\n  return (\n    <Card padding=\"sm\" withBorder orientation=\"horizontal\">\n      <Card.Section inheritPadding px=\"xs\" withBorder>\n        <RingProgress\n          roundCaps\n          thickness={6}\n          size={150}\n          sections={[{ value: (completed / total) * 100, color: 'blue' }]}\n          label={\n            <div>\n              <Text ta=\"center\" fz=\"lg\">\n                {((completed / total) * 100).toFixed(0)}%\n              </Text>\n              <Text ta=\"center\" fz=\"xs\" c=\"dimmed\">\n                Completed\n              </Text>\n            </div>\n          }\n        />\n      </Card.Section>\n\n      <Card.Section inheritPadding px=\"md\">\n        <Text fz=\"xl\">Project tasks</Text>\n        <Box mt=\"xs\">\n          <Text>1887</Text>\n          <Text fz=\"xs\" c=\"dimmed\">\n            Completed\n          </Text>\n        </Box>\n\n        <Group mt=\"sm\">{items}</Group>\n      </Card.Section>\n    </Card>\n  );\n}\n`;\n\nconst completed = 1887;\nconst total = 2334;\nconst stats = [\n  { value: 447, label: 'Remaining' },\n  { value: 76, label: 'In progress' },\n];\n\nfunction Demo() {\n  const items = stats.map((stat) => (\n    <div key={stat.label}>\n      <Text>{stat.value}</Text>\n      <Text size=\"xs\" c=\"dimmed\">\n        {stat.label}\n      </Text>\n    </div>\n  ));\n\n  return (\n    <Card padding=\"sm\" withBorder orientation=\"horizontal\">\n      <Card.Section inheritPadding px=\"xs\" withBorder>\n        <RingProgress\n          roundCaps\n          thickness={6}\n          size={150}\n          sections={[{ value: (completed / total) * 100, color: 'blue' }]}\n          label={\n            <div>\n              <Text ta=\"center\" fz=\"lg\">\n                {((completed / total) * 100).toFixed(0)}%\n              </Text>\n              <Text ta=\"center\" fz=\"xs\" c=\"dimmed\">\n                Completed\n              </Text>\n            </div>\n          }\n        />\n      </Card.Section>\n\n      <Card.Section inheritPadding px=\"md\">\n        <Text fz=\"xl\">Project tasks</Text>\n        <Box mt=\"xs\">\n          <Text>1887</Text>\n          <Text fz=\"xs\" c=\"dimmed\">\n            Completed\n          </Text>\n        </Box>\n\n        <Group mt=\"sm\">{items}</Group>\n      </Card.Section>\n    </Card>\n  );\n}\n\nexport const horizontal: MantineDemo = {\n  type: 'code',\n  code,\n  component: Demo,\n  maxWidth: 400,\n  centered: true,\n  dimmed: true,\n};",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Mantine — MIT © 2020-present Vitaly Rtishchev (https://mantine.dev)",
+    "source": "mantine",
+    "styling": "css-modules",
+    "category": "data-display",
+    "previewStatus": "unsupported"
+  }
+}

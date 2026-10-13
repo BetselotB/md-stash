@@ -1,0 +1,34 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "accordionroot-spec",
+  "type": "registry:ui",
+  "title": "AccordionRoot.spec",
+  "description": "AccordionRoot.spec component harvested from base-ui with unstyled styling.",
+  "dependencies": [
+    "@base-ui-components/react"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/accordionroot-spec.tsx",
+      "content": "import { expectType } from '#test-utils';\nimport { Accordion } from '@base-ui/react/accordion';\n\nconst stringValues = ['a'];\nconst nullableValues: (string | null)[] = ['a', null];\n\n<Accordion.Root\n  value={stringValues}\n  onValueChange={(value) => {\n    expectType<string[], typeof value>(value);\n  }}\n/>;\n\n<Accordion.Root\n  defaultValue={[1]}\n  onValueChange={(value) => {\n    expectType<number[], typeof value>(value);\n  }}\n/>;\n\n<Accordion.Root<'a' | 'b'> value={['a']} />;\n\n<Accordion.Root<'a' | 'b'>\n  onValueChange={(value) => {\n    expectType<('a' | 'b')[], typeof value>(value);\n  }}\n/>;\n\n<Accordion.Root<string | null>\n  value={nullableValues}\n  onValueChange={(value) => {\n    expectType<(string | null)[], typeof value>(value);\n  }}\n/>;\n\n<Accordion.Root\n  onValueChange={(value) => {\n    // Backward-compatible default: no explicit generic keeps permissive `any[]`.\n    expectType<any[], typeof value>(value);\n  }}\n/>;\n\n// @ts-expect-error value must match explicit generic type\n<Accordion.Root<'a' | 'b'> value={['c']} />;\n\ntype AccordionChangeHandler = NonNullable<Accordion.Root.Props<'a'>['onValueChange']>;\ntype AccordionDefaultChangeHandler = NonNullable<Accordion.Root.Props['onValueChange']>;\n\nconst handleValueChange: AccordionChangeHandler = (value) => {\n  expectType<'a'[], typeof value>(value);\n};\n\n<Accordion.Root<'a'> onValueChange={handleValueChange} />;\n\nconst handleDefaultValueChange: AccordionDefaultChangeHandler = (value) => {\n  expectType<any[], typeof value>(value);\n};\n\n<Accordion.Root onValueChange={handleDefaultValueChange} />;\n\nexport function Wrapper<Value>(props: Accordion.Root.Props<Value>) {\n  return <Accordion.Root {...props} />;\n}",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Base UI — MIT © 2020-present MUI (https://base-ui.com)",
+    "source": "base-ui",
+    "styling": "unstyled",
+    "category": "data-display",
+    "previewStatus": "primitive"
+  }
+}

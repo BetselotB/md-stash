@@ -1,0 +1,35 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "use-collapse-test",
+  "type": "registry:hook",
+  "title": "Use Collapse.test",
+  "description": "Use Collapse.test component harvested from mantine with css-modules styling.",
+  "dependencies": [
+    "@mantine/core",
+    "@mantine/hooks"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "hooks/use-collapse-test.ts",
+      "content": "import { act, render, renderHook, screen, waitFor } from '@testing-library/react';\nimport { useCollapse, UseCollapseInput } from './use-collapse';\n\nfunction TestCollapse(props: UseCollapseInput) {\n  const collapse = useCollapse({ transitionDuration: 200, ...props });\n  return (\n    <div data-testid=\"target\" {...collapse.getCollapseProps()}>\n      {collapse.state}\n    </div>\n  );\n}\n\ndescribe('@mantine/hooks/use-collapse', () => {\n  it('starts in entered state when expanded=true', () => {\n    const { result } = renderHook(() => useCollapse({ expanded: true }));\n    expect(result.current.state).toBe('entered');\n  });\n\n  it('starts in exited state when expanded=false', () => {\n    const { result } = renderHook(() => useCollapse({ expanded: false }));\n    expect(result.current.state).toBe('exited');\n  });\n\n  it('calls onTransitionStart when expanded changes', () => {\n    const onTransitionStart = jest.fn();\n    const { rerender } = renderHook(\n      ({ expanded }) => useCollapse({ expanded, onTransitionStart }),\n      { initialProps: { expanded: false } }\n    );\n\n    expect(onTransitionStart).not.toHaveBeenCalled();\n\n    act(() => {\n      rerender({ expanded: true });\n    });\n\n    expect(onTransitionStart).toHaveBeenCalledTimes(1);\n  });\n\n  it('does not call onTransitionStart when only its identity changes (no stale re-run)', () => {\n    const first = jest.fn();\n    const second = jest.fn();\n\n    const { rerender } = renderHook(\n      ({ expanded, onTransitionStart }) => useCollapse({ expanded, onTransitionStart }),\n      { initialProps: { expanded: false, onTransitionStart: first } }\n    );\n\n    act(() => {\n      rerender({ expanded: false, onTransitionStart: second });\n    });\n\n    expect(first).not.toHaveBeenCalled();\n    expect(second).not.toHaveBeenCalled();\n  });\n\n  it('calls the latest onTransitionStart after callback identity changes', () => {\n    const first = jest.fn();\n    const second = jest.fn();\n\n    const { rerender } = renderHook(\n      ({ expanded, onTransitionStart }) => useCollapse({ expanded, onTransitionStart }),\n      { initialProps: { expanded: false, onTransitionStart: first } }\n    );\n\n    act(() => {\n      rerender({ expanded: false, onTransitionStart: second });\n    });\n\n    act(() => {\n      rerender({ expanded: true, onTransitionStart: second });\n    });\n\n    expect(first).not.toHaveBeenCalled();\n    expect(second).toHaveBeenCalledTimes(1);\n  });\n\n  it('settles in `entered` state when expanding an element that cannot be measured', async () => {\n    const onTransitionEnd = jest.fn();\n    const { rerender } = render(\n      <TestCollapse expanded={false} onTransitionEnd={onTransitionEnd} />\n    );\n\n    rerender(<TestCollapse expanded onTransitionEnd={onTransitionEnd} />);\n\n    await waitFor(() => expect(screen.getByTestId('target')).toHaveTextContent('entered'));\n    expect(screen.getByTestId('target')).not.toHaveStyle({ height: '0px', overflow: 'hidden' });\n    expect(onTransitionEnd).toHaveBeenCalledTimes(1);\n  });\n\n  it('settles in `exited` state when collapsing an element that cannot be measured', async () => {\n    const onTransitionEnd = jest.fn();\n    const { rerender } = render(<TestCollapse expanded onTransitionEnd={onTransitionEnd} />);\n\n    rerender(<TestCollapse expanded={false} onTransitionEnd={onTransitionEnd} />);\n\n    await waitFor(() => expect(screen.getByTestId('target')).toHaveTextContent('exited'));\n    expect(screen.getByTestId('target')).toHaveStyle({ height: '0px', overflow: 'hidden' });\n    expect(onTransitionEnd).toHaveBeenCalledTimes(1);\n  });\n\n  it('ignores frames from a transition that was superseded before it settled', async () => {\n    const onTransitionEnd = jest.fn();\n    const { rerender } = render(\n      <TestCollapse expanded={false} onTransitionEnd={onTransitionEnd} />\n    );\n\n    rerender(<TestCollapse expanded onTransitionEnd={onTransitionEnd} />);\n    rerender(<TestCollapse expanded={false} onTransitionEnd={onTransitionEnd} />);\n\n    await waitFor(() => expect(screen.getByTestId('target')).toHaveTextContent('exited'));\n    await act(() => new Promise((resolve) => setTimeout(resolve, 50)));\n\n    expect(screen.getByTestId('target')).toHaveTextContent('exited');\n    expect(screen.getByTestId('target')).toHaveStyle({ height: '0px', overflow: 'hidden' });\n    expect(onTransitionEnd).toHaveBeenCalledTimes(1);\n  });\n\n  it('does not call onTransitionEnd for a transition aborted by unmount', async () => {\n    const onTransitionEnd = jest.fn();\n    const { rerender, unmount } = render(\n      <TestCollapse expanded={false} onTransitionEnd={onTransitionEnd} />\n    );\n\n    rerender(<TestCollapse expanded onTransitionEnd={onTransitionEnd} />);\n    unmount();\n\n    await act(() => new Promise((resolve) => setTimeout(resolve, 50)));\n\n    expect(onTransitionEnd).not.toHaveBeenCalled();\n  });\n});",
+      "type": "registry:hook"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Mantine — MIT © 2020-present Vitaly Rtishchev (https://mantine.dev)",
+    "source": "mantine",
+    "styling": "css-modules",
+    "category": "hooks",
+    "previewStatus": "primitive"
+  }
+}

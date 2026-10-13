@@ -1,0 +1,36 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "use-cycle-test",
+  "type": "registry:hook",
+  "title": "Use Cycle.test",
+  "description": "Use Cycle.test component harvested from motion with tailwind styling.",
+  "dependencies": [
+    "motion",
+    "clsx",
+    "tailwind-merge"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "hooks/use-cycle-test.ts",
+      "content": "import { fireEvent } from \"@testing-library/react\"\nimport { useEffect } from \"react\"\nimport { click, render } from \"../../jest.setup\"\nimport { useCycle } from \"../use-cycle\"\n\ndescribe(\"useCycle\", () => {\n    test(\"cycles through given states\", () => {\n        const results: number[] = []\n\n        const Component = () => {\n            const [latest, cycle] = useCycle(1, 2, 3, 4)\n            useEffect(() => {\n                if (results[results.length - 1] !== latest) results.push(latest)\n            }, [latest])\n\n            return <div onClick={() => cycle()} />\n        }\n\n        const { container } = render(<Component />)\n\n        click(container.firstChild as Element)\n        click(container.firstChild as Element)\n        click(container.firstChild as Element)\n        click(container.firstChild as Element)\n\n        expect(results).toEqual([1, 2, 3, 4, 1])\n    })\n\n    test(\"jumps to a given index\", () => {\n        let result: number = 0\n\n        const Component = () => {\n            const [latest, cycle] = useCycle(1, 2, 3, 4)\n            result = latest\n            return <div onClick={() => cycle(2)} />\n        }\n\n        const { container } = render(<Component />)\n        fireEvent.click(container.firstChild as Element)\n\n        expect(result).toBe(3)\n    })\n\n    test(\"is not functionally bound by the render cycle\", () => {\n        let result: number = 0\n\n        const Component = () => {\n            const [latest, cycle] = useCycle(1, 2, 3, 4)\n            result = latest\n            return <div onClick={() => (cycle(), cycle())} />\n        }\n\n        const { container } = render(<Component />)\n        fireEvent.click(container.firstChild as Element)\n\n        expect(result).toBe(3)\n    })\n})\n\n// initial index\n// cycle(index)",
+      "type": "registry:hook"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Motion — MIT © 2018-present Framer B.V. (https://motion.dev)",
+    "source": "motion",
+    "styling": "tailwind",
+    "category": "hooks",
+    "previewStatus": "primitive"
+  }
+}

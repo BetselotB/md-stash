@@ -1,0 +1,36 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "floatingactionbuttonzoom",
+  "type": "registry:ui",
+  "title": "FloatingActionButtonZoom",
+  "description": "FloatingActionButtonZoom component harvested from mui with css-in-js styling.",
+  "dependencies": [
+    "@mui/material",
+    "@emotion/react",
+    "@emotion/styled"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/floatingactionbuttonzoom.tsx",
+      "content": "import * as React from 'react';\nimport { useTheme } from '@mui/material/styles';\nimport AppBar from '@mui/material/AppBar';\nimport Tabs from '@mui/material/Tabs';\nimport Tab from '@mui/material/Tab';\nimport Typography from '@mui/material/Typography';\nimport Zoom from '@mui/material/Zoom';\nimport Fab from '@mui/material/Fab';\nimport AddIcon from '@mui/icons-material/Add';\nimport EditIcon from '@mui/icons-material/Edit';\nimport UpIcon from '@mui/icons-material/KeyboardArrowUp';\nimport { green } from '@mui/material/colors';\nimport Box from '@mui/material/Box';\nimport type { SxProps } from '@mui/system';\n\ninterface TabPanelProps {\n  children?: React.ReactNode;\n  dir?: string;\n  index: number;\n  value: number;\n}\n\nfunction TabPanel(props: TabPanelProps) {\n  const { children, value, index, ...other } = props;\n\n  return (\n    <Typography\n      component=\"div\"\n      role=\"tabpanel\"\n      hidden={value !== index}\n      id={`action-tabpanel-${index}`}\n      aria-labelledby={`action-tab-${index}`}\n      {...other}\n    >\n      {value === index && <Box sx={{ p: 3 }}>{children}</Box>}\n    </Typography>\n  );\n}\n\nfunction a11yProps(index: any) {\n  return {\n    id: `action-tab-${index}`,\n    'aria-controls': `action-tabpanel-${index}`,\n  };\n}\n\nconst fabStyle = {\n  position: 'absolute',\n  bottom: 16,\n  right: 16,\n};\n\nconst fabGreenStyle = {\n  color: 'common.white',\n  bgcolor: green[500],\n  '&:hover': {\n    bgcolor: green[600],\n  },\n};\n\nexport default function FloatingActionButtonZoom() {\n  // @focus-start @padding 1\n  const theme = useTheme();\n  const [value, setValue] = React.useState(0);\n\n  const handleChange = (event: unknown, newValue: number) => {\n    setValue(newValue);\n  };\n\n  const transitionDuration = {\n    enter: theme.transitions.duration.enteringScreen,\n    exit: theme.transitions.duration.leavingScreen,\n  };\n\n  const fabs = [\n    {\n      color: 'primary' as const,\n      sx: fabStyle as SxProps,\n      icon: <AddIcon />,\n      label: 'Add',\n    },\n    {\n      color: 'secondary' as const,\n      sx: fabStyle as SxProps,\n      icon: <EditIcon />,\n      label: 'Edit',\n    },\n    {\n      color: 'inherit' as const,\n      sx: { ...fabStyle, ...fabGreenStyle } as SxProps,\n      icon: <UpIcon />,\n      label: 'Expand',\n    },\n  ];\n\n  return (\n    <Box\n      sx={{\n        bgcolor: 'background.paper',\n        width: 500,\n        position: 'relative',\n        minHeight: 200,\n      }}\n    >\n      <AppBar position=\"static\" color=\"default\">\n        <Tabs\n          value={value}\n          onChange={handleChange}\n          indicatorColor=\"primary\"\n          textColor=\"primary\"\n          variant=\"fullWidth\"\n          aria-label=\"action tabs example\"\n        >\n          <Tab label=\"Item One\" {...a11yProps(0)} />\n          <Tab label=\"Item Two\" {...a11yProps(1)} />\n          <Tab label=\"Item Three\" {...a11yProps(2)} />\n        </Tabs>\n      </AppBar>\n      <TabPanel value={value} index={0} dir={theme.direction}>\n        Item One\n      </TabPanel>\n      <TabPanel value={value} index={1} dir={theme.direction}>\n        Item Two\n      </TabPanel>\n      <TabPanel value={value} index={2} dir={theme.direction}>\n        Item Three\n      </TabPanel>\n      {fabs.map((fab, index) => (\n        <Zoom\n          key={fab.color}\n          in={value === index}\n          timeout={transitionDuration}\n          style={{\n            transitionDelay: `${value === index ? transitionDuration.exit : 0}ms`,\n          }}\n          unmountOnExit\n        >\n          <Fab sx={fab.sx} aria-label={fab.label} color={fab.color}>\n            {fab.icon}\n          </Fab>\n        </Zoom>\n      ))}\n    </Box>\n  );\n  // @focus-end\n}",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Material UI — MIT © 2014-present Call-Em-All / Material-UI (https://mui.com)",
+    "source": "mui",
+    "styling": "css-in-js",
+    "category": "buttons",
+    "previewStatus": "unsupported"
+  }
+}

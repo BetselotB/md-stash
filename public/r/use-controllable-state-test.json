@@ -1,0 +1,34 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "use-controllable-state-test",
+  "type": "registry:hook",
+  "title": "Use Controllable State.test",
+  "description": "Use Controllable State.test component harvested from radix-ui with unstyled styling.",
+  "dependencies": [
+    "@radix-ui/react-primitive"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "hooks/use-controllable-state-test.ts",
+      "content": "import * as React from 'react';\nimport { screen, cleanup, render, waitFor } from '@testing-library/react';\nimport { useControllableState } from './use-controllable-state';\nimport { afterEach, describe, it, expect, afterAll, vi } from 'vitest';\nimport userEvent from '@testing-library/user-event';\n\ndescribe('useControllableState', () => {\n  afterEach(cleanup);\n\n  describe('given a controlled value', () => {\n    it('should initially use the controlled value', () => {\n      render(<ControlledComponent />);\n      const checkbox = screen.getByRole('checkbox');\n      expect(checkbox).toHaveAttribute('aria-checked', 'false');\n    });\n\n    it('should update the value when set internally', async () => {\n      render(<ControlledComponent />);\n      const checkbox = screen.getByRole('checkbox');\n      userEvent.click(checkbox);\n      await waitFor(() => {\n        expect(checkbox).toHaveAttribute('aria-checked', 'true');\n      });\n    });\n\n    it('should update the value when set externally', async () => {\n      render(<ControlledComponent defaultChecked />);\n      const checkbox = screen.getByRole('checkbox');\n      const clearButton = screen.getByText('Clear value');\n      userEvent.click(clearButton);\n      await waitFor(() => {\n        expect(checkbox).toHaveAttribute('aria-checked', 'false');\n      });\n    });\n  });\n\n  describe('given a default value', () => {\n    it('should initially use the default value', () => {\n      render(<UncontrolledComponent defaultChecked />);\n      const checkbox = screen.getByRole('checkbox');\n      expect(checkbox).toHaveAttribute('aria-checked', 'true');\n    });\n\n    it('should update the value', async () => {\n      render(<UncontrolledComponent defaultChecked />);\n      const checkbox = screen.getByRole('checkbox');\n      userEvent.click(checkbox);\n      await waitFor(() => {\n        expect(checkbox).toHaveAttribute('aria-checked', 'false');\n      });\n    });\n  });\n\n  describe('switching between controlled and uncontrolled', () => {\n    const consoleMock = vi.spyOn(console, 'warn').mockImplementation(() => void 0);\n    afterAll(() => {\n      consoleMock.mockReset();\n    });\n\n    describe('controlled to uncontrolled', () => {\n      it('should warn', async () => {\n        render(<UnstableComponent defaultChecked />);\n        const clearButton = screen.getByText('Clear value');\n        userEvent.click(clearButton);\n        await waitFor(() => {\n          expect(consoleMock).toHaveBeenLastCalledWith(\n            'Checkbox is changing from controlled to uncontrolled. Components should not switch from controlled to uncontrolled (or vice versa). Decide between using a controlled or uncontrolled value for the lifetime of the component.',\n          );\n        });\n      });\n    });\n\n    describe('uncontrolled to controlled', () => {\n      it('should warn', async () => {\n        render(<UnstableComponent />);\n        const checkbox = screen.getByRole('checkbox');\n        userEvent.click(checkbox);\n        await waitFor(() => {\n          expect(consoleMock).toHaveBeenLastCalledWith(\n            'Checkbox is changing from uncontrolled to controlled. Components should not switch from controlled to uncontrolled (or vice versa). Decide between using a controlled or uncontrolled value for the lifetime of the component.',\n          );\n        });\n      });\n    });\n  });\n});\n\nfunction ControlledComponent({ defaultChecked }: { defaultChecked?: boolean | undefined }) {\n  const [checked, setChecked] = React.useState(defaultChecked ?? false);\n  return (\n    <div>\n      <Checkbox checked={checked} onChange={setChecked} />\n      <button type=\"button\" onClick={() => setChecked(false)}>\n        Clear value\n      </button>\n    </div>\n  );\n}\n\nfunction UncontrolledComponent({ defaultChecked }: { defaultChecked?: boolean | undefined }) {\n  return <Checkbox defaultChecked={defaultChecked} />;\n}\n\nfunction UnstableComponent({ defaultChecked }: { defaultChecked?: boolean | undefined }) {\n  const [checked, setChecked] = React.useState(defaultChecked);\n  return (\n    <div>\n      <Checkbox checked={checked} onChange={setChecked} />\n      <button type=\"button\" onClick={() => setChecked(undefined)}>\n        Clear value\n      </button>\n    </div>\n  );\n}\n\nfunction Checkbox(props: {\n  checked?: boolean | undefined;\n  defaultChecked?: boolean | undefined;\n  onChange?: ((value: boolean) => void) | undefined;\n}) {\n  const [checked, setChecked] = useControllableState({\n    defaultProp: props.defaultChecked ?? false,\n    prop: props.checked,\n    onChange: props.onChange,\n    caller: 'Checkbox',\n  });\n\n  return (\n    <button\n      type=\"button\"\n      role=\"checkbox\"\n      aria-checked={checked}\n      onKeyDown={(e) => void (e.key === 'Enter' && e.preventDefault())}\n      onClick={() => setChecked((c) => !c)}\n    />\n  );\n}",
+      "type": "registry:hook"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Radix Primitives — MIT © 2022 WorkOS (https://radix-ui.com)",
+    "source": "radix-ui",
+    "styling": "unstyled",
+    "category": "hooks",
+    "previewStatus": "primitive"
+  }
+}

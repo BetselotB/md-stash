@@ -1,0 +1,36 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "togglebuttonsizes",
+  "type": "registry:ui",
+  "title": "ToggleButtonSizes",
+  "description": "ToggleButtonSizes component harvested from mui with css-in-js styling.",
+  "dependencies": [
+    "@mui/material",
+    "@emotion/react",
+    "@emotion/styled"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/togglebuttonsizes.tsx",
+      "content": "import * as React from 'react';\nimport FormatAlignLeftIcon from '@mui/icons-material/FormatAlignLeft';\nimport FormatAlignCenterIcon from '@mui/icons-material/FormatAlignCenter';\nimport FormatAlignRightIcon from '@mui/icons-material/FormatAlignRight';\nimport FormatAlignJustifyIcon from '@mui/icons-material/FormatAlignJustify';\nimport Stack from '@mui/material/Stack';\nimport ToggleButton from '@mui/material/ToggleButton';\nimport ToggleButtonGroup from '@mui/material/ToggleButtonGroup';\n\nexport default function ToggleButtonSizes() {\n  const [alignment, setAlignment] = React.useState('left');\n\n  const handleChange = (\n    event: React.MouseEvent<HTMLElement>,\n    newAlignment: string,\n  ) => {\n    setAlignment(newAlignment);\n  };\n\n  const children = [\n    <ToggleButton value=\"left\" key=\"left\">\n      <FormatAlignLeftIcon />\n    </ToggleButton>,\n    <ToggleButton value=\"center\" key=\"center\">\n      <FormatAlignCenterIcon />\n    </ToggleButton>,\n    <ToggleButton value=\"right\" key=\"right\">\n      <FormatAlignRightIcon />\n    </ToggleButton>,\n    <ToggleButton value=\"justify\" key=\"justify\">\n      <FormatAlignJustifyIcon />\n    </ToggleButton>,\n  ];\n\n  const control = {\n    value: alignment,\n    onChange: handleChange,\n    exclusive: true,\n  };\n\n  return (\n    <Stack spacing={2} sx={{ alignItems: 'center' }}>\n      {/* @focus-start */}\n      <ToggleButtonGroup size=\"small\" {...control} aria-label=\"Small sizes\">\n        {children}\n      </ToggleButtonGroup>\n      <ToggleButtonGroup {...control} aria-label=\"Medium sizes\">\n        {children}\n      </ToggleButtonGroup>\n      <ToggleButtonGroup size=\"large\" {...control} aria-label=\"Large sizes\">\n        {children}\n      </ToggleButtonGroup>\n      {/* @focus-end */}\n    </Stack>\n  );\n}",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Material UI — MIT © 2014-present Call-Em-All / Material-UI (https://mui.com)",
+    "source": "mui",
+    "styling": "css-in-js",
+    "category": "buttons",
+    "previewStatus": "unsupported"
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "fademenu",
+  "type": "registry:ui",
+  "title": "FadeMenu",
+  "description": "FadeMenu component harvested from mui with css-in-js styling.",
+  "dependencies": [
+    "@mui/material",
+    "@emotion/react",
+    "@emotion/styled"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/fademenu.tsx",
+      "content": "import * as React from 'react';\nimport Button from '@mui/material/Button';\nimport Menu from '@mui/material/Menu';\nimport MenuItem from '@mui/material/MenuItem';\nimport Fade from '@mui/material/Fade';\n\nexport default function FadeMenu() {\n  // @focus-start @padding 1\n  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);\n  const open = Boolean(anchorEl);\n  const handleClick = (event: React.MouseEvent<HTMLElement>) => {\n    setAnchorEl(event.currentTarget);\n  };\n  const handleClose = () => {\n    setAnchorEl(null);\n  };\n\n  return (\n    <div>\n      <Button\n        id=\"fade-button\"\n        aria-controls={open ? 'fade-menu' : undefined}\n        aria-haspopup=\"true\"\n        aria-expanded={open}\n        onClick={handleClick}\n      >\n        Dashboard\n      </Button>\n      <Menu\n        id=\"fade-menu\"\n        slotProps={{\n          list: {\n            'aria-labelledby': 'fade-button',\n          },\n        }}\n        slots={{ transition: Fade }}\n        anchorEl={anchorEl}\n        open={open}\n        onClose={handleClose}\n      >\n        <MenuItem onClick={handleClose}>Profile</MenuItem>\n        <MenuItem onClick={handleClose}>My account</MenuItem>\n        <MenuItem onClick={handleClose}>Logout</MenuItem>\n      </Menu>\n    </div>\n  );\n  // @focus-end\n}",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Material UI — MIT © 2014-present Call-Em-All / Material-UI (https://mui.com)",
+    "source": "mui",
+    "styling": "css-in-js",
+    "category": "animation-primitives",
+    "previewStatus": "unsupported"
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "button-demo-disabledstyles",
+  "type": "registry:ui",
+  "title": "Button.demo.disabledStyles",
+  "description": "Button.demo.disabledStyles component harvested from mantine with css-modules styling.",
+  "dependencies": [
+    "@mantine/core",
+    "@mantine/hooks"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/button-demo-disabledstyles.tsx",
+      "content": "import { Button } from '@mantine/core';\nimport { MantineDemo } from '@mantinex/demo';\nimport classes from './Button.demo.disabledStyles.module.css';\n\nconst code = `\nimport { Button } from '@mantine/core';\nimport classes from './Demo.module.css';\n\nfunction Demo() {\n  return (\n    <Button className={classes.button} disabled>\n      Disabled with styles\n    </Button>\n  );\n}\n`;\n\nconst cssCode = `\n.button {\n  &:disabled,\n  &[data-disabled] {\n    border-color: light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-4));\n    background-color: transparent;\n  }\n}\n`;\n\nfunction Demo() {\n  return (\n    <Button className={classes.button} disabled>\n      Disabled with styles\n    </Button>\n  );\n}\n\nexport const disabledStyles: MantineDemo = {\n  type: 'code',\n  component: Demo,\n  centered: true,\n  code: [\n    { fileName: 'Demo.module.css', code: cssCode, language: 'scss' },\n    { fileName: 'Demo.tsx', code, language: 'tsx' },\n  ],\n};",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Mantine — MIT © 2020-present Vitaly Rtishchev (https://mantine.dev)",
+    "source": "mantine",
+    "styling": "css-modules",
+    "category": "buttons",
+    "previewStatus": "unsupported"
+  }
+}

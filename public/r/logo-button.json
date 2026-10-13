@@ -1,0 +1,35 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "logo-button",
+  "type": "registry:ui",
+  "title": "Logo Button",
+  "description": "Logo Button component harvested from magic-ui with tailwind styling.",
+  "dependencies": [
+    "clsx",
+    "tailwind-merge"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/logo-button.tsx",
+      "content": "\"use client\"\n\nimport Link from \"next/link\"\nimport { toast } from \"sonner\"\n\nimport { siteConfig } from \"@/config/site\"\nimport {\n  ContextMenu,\n  ContextMenuContent,\n  ContextMenuItem,\n  ContextMenuTrigger,\n} from \"ui/context-menu\"\nimport { Icons } from \"@/components/icons\"\n\nexport function LogoButton() {\n  function copyLogoAsSVG(path: string) {\n    fetch(path)\n      .then((response) => response.blob())\n      .then((blob) => {\n        const reader = new FileReader()\n        reader.onload = function (event) {\n          const svgContent = event.target?.result\n          navigator.clipboard.writeText(svgContent as string)\n        }\n        reader.readAsText(blob)\n        toast.success(\"Logo copied to clipboard\")\n      })\n  }\n\n  function copyLogoAsPNG(path: string) {\n    fetch(path)\n      .then((response) => response.blob())\n      .then((blob) => {\n        const item = new ClipboardItem({ \"image/png\": blob })\n        navigator.clipboard.write([item])\n        toast.success(\"Logo copied to clipboard\")\n      })\n  }\n  return (\n    <ContextMenu>\n      <ContextMenuTrigger asChild>\n        <Link\n          href=\"/\"\n          className=\"relative mr-6 flex items-center space-x-2\"\n          aria-label=\"Home\"\n        >\n          <Icons.logo className=\"size-6\" />\n          <span className=\"hidden font-bold md:inline-block\">\n            {siteConfig.name}\n          </span>\n        </Link>\n      </ContextMenuTrigger>\n      <ContextMenuContent>\n        <ContextMenuItem\n          className=\"flex items-center gap-2\"\n          onClick={() => copyLogoAsSVG(\"/icon.svg\")}\n        >\n          <Icons.logo className=\"size-4\" />\n          <span>Copy Logo as SVG</span>\n        </ContextMenuItem>\n        <ContextMenuItem\n          className=\"flex items-center gap-2\"\n          onClick={() => copyLogoAsPNG(\"/icon.png\")}\n        >\n          <Icons.logo className=\"size-4\" />\n          <span>Copy Logo as PNG</span>\n        </ContextMenuItem>\n      </ContextMenuContent>\n    </ContextMenu>\n  )\n}",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Magic UI — MIT © 2023-present Dillion Verma (https://magicui.design)",
+    "source": "magic-ui",
+    "styling": "tailwind",
+    "category": "buttons",
+    "previewStatus": "ready"
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "avatar-demo-placeholders",
+  "type": "registry:ui",
+  "title": "Avatar.demo.placeholders",
+  "description": "Avatar.demo.placeholders component harvested from mantine with css-modules styling.",
+  "dependencies": [
+    "@mantine/core",
+    "@mantine/hooks"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/avatar-demo-placeholders.tsx",
+      "content": "import { StarIcon } from '@phosphor-icons/react';\nimport { Avatar, Group } from '@mantine/core';\nimport { MantineDemo } from '@mantinex/demo';\n\nconst code = `\nimport { Avatar } from '@mantine/core';\nimport { StarIcon } from '@phosphor-icons/react';\n\nfunction Demo() {\n  return (\n    <>\n      {/* Default placeholder */}\n      <Avatar src={null} alt=\"no image here\" />\n\n      {/* Default placeholder with custom color */}\n      <Avatar src={null} alt=\"no image here\" color=\"indigo\" />\n\n      {/* Placeholder with initials */}\n      <Avatar src={null} alt=\"Vitaly Rtishchev\" color=\"red\">VR</Avatar>\n\n      {/* Placeholder with custom icon */}\n      <Avatar color=\"blue\" radius=\"xl\">\n        <StarIcon size={20} />\n      </Avatar>\n    </>\n  );\n}\n\n`;\n\nfunction Demo() {\n  return (\n    <Group justify=\"center\">\n      <Avatar src={null} alt=\"no image here\" />\n      <Avatar src={null} alt=\"no image here\" color=\"indigo\" />\n      <Avatar src={null} alt=\"no image here\" color=\"red\">\n        VR\n      </Avatar>\n      <Avatar color=\"blue\" radius=\"xl\">\n        <StarIcon size={20} />\n      </Avatar>\n    </Group>\n  );\n}\n\nexport const placeholders: MantineDemo = {\n  type: 'code',\n  code,\n  component: Demo,\n};",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Mantine — MIT © 2020-present Vitaly Rtishchev (https://mantine.dev)",
+    "source": "mantine",
+    "styling": "css-modules",
+    "category": "data-display",
+    "previewStatus": "unsupported"
+  }
+}

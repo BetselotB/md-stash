@@ -1,0 +1,34 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "color-mode-button",
+  "type": "registry:ui",
+  "title": "Color Mode Button",
+  "description": "Color Mode Button component harvested from ark-ui with unstyled styling.",
+  "dependencies": [
+    "@ark-ui/react"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/color-mode-button.tsx",
+      "content": "'use client'\nimport { useIsClient } from '@uidotdev/usehooks'\nimport { MoonIcon, SunIcon } from 'lucide-react'\nimport { useTheme } from 'next-themes'\nimport { Box } from 'styled-system/jsx'\nimport { IconButton } from '~/components/ui/icon-button'\n\nexport const ColorModeButton = () => {\n  const isClient = useIsClient()\n  const { theme, setTheme } = useTheme()\n\n  if (!isClient) return <Box width=\"9\" height=\"9\" />\n\n  const handleClick = () => {\n    theme === 'light' ? setTheme('dark') : setTheme('light')\n  }\n\n  return (\n    <IconButton\n      onClick={handleClick}\n      variant=\"ghost\"\n      size={{ base: 'md', md: 'sm' }}\n      css={{\n        color: 'fg.muted',\n        _hover: { color: 'fg.default' },\n        '& svg': {\n          width: '5',\n          height: '5',\n        },\n      }}\n    >\n      {theme === 'light' ? <SunIcon /> : <MoonIcon />}\n    </IconButton>\n  )\n}",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Ark UI — MIT © 2022-present Chakra Systems GmbH (https://ark-ui.com)",
+    "source": "ark-ui",
+    "styling": "unstyled",
+    "category": "buttons",
+    "previewStatus": "needs-demo"
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "horizontalspacingtogglebutton",
+  "type": "registry:ui",
+  "title": "HorizontalSpacingToggleButton",
+  "description": "HorizontalSpacingToggleButton component harvested from mui with css-in-js styling.",
+  "dependencies": [
+    "@mui/material",
+    "@emotion/react",
+    "@emotion/styled"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/horizontalspacingtogglebutton.tsx",
+      "content": "import * as React from 'react';\nimport FormatAlignLeftIcon from '@mui/icons-material/FormatAlignLeft';\nimport FormatAlignCenterIcon from '@mui/icons-material/FormatAlignCenter';\nimport FormatAlignRightIcon from '@mui/icons-material/FormatAlignRight';\nimport FormatAlignJustifyIcon from '@mui/icons-material/FormatAlignJustify';\nimport ToggleButton, { toggleButtonClasses } from '@mui/material/ToggleButton';\nimport ToggleButtonGroup, {\n  toggleButtonGroupClasses,\n} from '@mui/material/ToggleButtonGroup';\nimport { styled } from '@mui/material/styles';\n\nconst StyledToggleButtonGroup = styled(ToggleButtonGroup)(({ theme }) => ({\n  gap: '2rem',\n  [`& .${toggleButtonGroupClasses.firstButton}, & .${toggleButtonGroupClasses.middleButton}`]:\n    {\n      borderTopRightRadius: (theme.vars || theme).shape.borderRadius,\n      borderBottomRightRadius: (theme.vars || theme).shape.borderRadius,\n    },\n  [`& .${toggleButtonGroupClasses.lastButton}, & .${toggleButtonGroupClasses.middleButton}`]:\n    {\n      borderTopLeftRadius: (theme.vars || theme).shape.borderRadius,\n      borderBottomLeftRadius: (theme.vars || theme).shape.borderRadius,\n      borderLeft: `1px solid ${(theme.vars || theme).palette.divider}`,\n    },\n  [`& .${toggleButtonGroupClasses.lastButton}.${toggleButtonClasses.disabled}, & .${toggleButtonGroupClasses.middleButton}.${toggleButtonClasses.disabled}`]:\n    {\n      borderLeft: `1px solid ${(theme.vars || theme).palette.action.disabledBackground}`,\n    },\n}));\n\nexport default function HorizontalSpacingToggleButton() {\n  // @focus-start @padding 1\n  const [alignment, setAlignment] = React.useState<string | null>('left');\n\n  const handleAlignment = (\n    event: React.MouseEvent<HTMLElement>,\n    newAlignment: string | null,\n  ) => {\n    setAlignment(newAlignment);\n  };\n\n  return (\n    <StyledToggleButtonGroup\n      value={alignment}\n      exclusive\n      onChange={handleAlignment}\n      aria-label=\"text alignment\"\n    >\n      <ToggleButton value=\"left\" aria-label=\"left aligned\">\n        <FormatAlignLeftIcon />\n      </ToggleButton>\n      <ToggleButton value=\"center\" aria-label=\"centered\">\n        <FormatAlignCenterIcon />\n      </ToggleButton>\n      <ToggleButton value=\"right\" aria-label=\"right aligned\">\n        <FormatAlignRightIcon />\n      </ToggleButton>\n      <ToggleButton value=\"justify\" aria-label=\"justified\" disabled>\n        <FormatAlignJustifyIcon />\n      </ToggleButton>\n    </StyledToggleButtonGroup>\n  );\n  // @focus-end\n}",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Material UI — MIT © 2014-present Call-Em-All / Material-UI (https://mui.com)",
+    "source": "mui",
+    "styling": "css-in-js",
+    "category": "buttons",
+    "previewStatus": "unsupported"
+  }
+}

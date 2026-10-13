@@ -1,0 +1,34 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "accordion-root",
+  "type": "registry:ui",
+  "title": "Accordion Root",
+  "description": "Accordion Root component harvested from ark-ui with unstyled styling.",
+  "dependencies": [
+    "@ark-ui/react"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/accordion-root.tsx",
+      "content": "import { mergeProps } from '@zag-js/solid'\nimport { createSplitProps } from '../../utils/create-split-props.ts'\nimport {\n  type RenderStrategyProps,\n  RenderStrategyProvider,\n  splitRenderStrategyProps,\n} from '../../utils/render-strategy.ts'\nimport { type HTMLProps, type PolymorphicProps, ark } from '../factory.tsx'\nimport { type UseAccordionProps, useAccordion } from './use-accordion.ts'\nimport { AccordionProvider } from './use-accordion-context.ts'\n\nexport interface AccordionRootBaseProps extends UseAccordionProps, RenderStrategyProps, PolymorphicProps<'div'> {}\nexport interface AccordionRootProps extends HTMLProps<'div'>, AccordionRootBaseProps {}\n\nexport const AccordionRoot = (props: AccordionRootProps) => {\n  const [renderStrategyProps, accordionProps] = splitRenderStrategyProps(props)\n  const [useAccordionProps, localProps] = createSplitProps<UseAccordionProps>()(accordionProps, [\n    'collapsible',\n    'defaultValue',\n    'disabled',\n    'id',\n    'ids',\n    'multiple',\n    'onFocusChange',\n    'onValueChange',\n    'orientation',\n    'value',\n  ])\n  const api = useAccordion(useAccordionProps)\n  const mergedProps = mergeProps(() => api().getRootProps(), localProps)\n\n  return (\n    <AccordionProvider value={api}>\n      <RenderStrategyProvider value={renderStrategyProps}>\n        <ark.div {...mergedProps} />\n      </RenderStrategyProvider>\n    </AccordionProvider>\n  )\n}",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Ark UI — MIT © 2022-present Chakra Systems GmbH (https://ark-ui.com)",
+    "source": "ark-ui",
+    "styling": "unstyled",
+    "category": "data-display",
+    "previewStatus": "primitive"
+  }
+}

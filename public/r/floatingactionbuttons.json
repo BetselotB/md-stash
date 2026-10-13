@@ -1,0 +1,36 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "floatingactionbuttons",
+  "type": "registry:ui",
+  "title": "FloatingActionButtons",
+  "description": "FloatingActionButtons component harvested from mui with css-in-js styling.",
+  "dependencies": [
+    "@mui/material",
+    "@emotion/react",
+    "@emotion/styled"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/floatingactionbuttons.tsx",
+      "content": "import Box from '@mui/material/Box';\nimport Fab from '@mui/material/Fab';\nimport AddIcon from '@mui/icons-material/Add';\nimport EditIcon from '@mui/icons-material/Edit';\nimport FavoriteIcon from '@mui/icons-material/Favorite';\nimport NavigationIcon from '@mui/icons-material/Navigation';\n\nexport default function FloatingActionButtons() {\n  return (\n    <Box sx={{ '& > :not(style)': { m: 1 } }}>\n      {/* @focus-start */}\n      <Fab color=\"primary\" aria-label=\"add\">\n        <AddIcon />\n      </Fab>\n      <Fab color=\"secondary\" aria-label=\"edit\">\n        <EditIcon />\n      </Fab>\n      <Fab variant=\"extended\">\n        <NavigationIcon sx={{ mr: 1 }} />\n        Navigate\n      </Fab>\n      <Fab disabled aria-label=\"like\">\n        <FavoriteIcon />\n      </Fab>\n      {/* @focus-end */}\n    </Box>\n  );\n}",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Material UI — MIT © 2014-present Call-Em-All / Material-UI (https://mui.com)",
+    "source": "mui",
+    "styling": "css-in-js",
+    "category": "buttons",
+    "previewStatus": "unsupported"
+  }
+}

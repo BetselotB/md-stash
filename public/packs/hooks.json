@@ -1,0 +1,543 @@
+[
+  {
+    "id": "it-supports-on-control-mouse-enter",
+    "code": "import userEvent from '@testing-library/user-event';\nimport { render } from '@mantine-tests/core';\n\ninterface Options {\n  component: React.ComponentType<any>;\n  props: Record<string, any>;\n}\n\nexport function itSupportsOnControlMouseEnter(\n  options: Options,\n  name = 'supports __onControlMouseEnter'\n) {\n  it(name, async () => {\n    const spy = jest.fn();\n    const { container } = render(\n      <options.component\n        {...options.props}\n        __onControlMouseEnter={(_event: any, date: any) => {\n          spy(date);\n        }}\n      />\n    );\n\n    await userEvent.hover(container.querySelector('table button')!);\n    expect(spy).toHaveBeenCalledWith(expect.any(String));\n  });\n}",
+    "usage": "<ItSupportsOnControlMouseEnter />",
+    "props": [
+      {
+        "name": "className",
+        "type": "string",
+        "default": "undefined",
+        "description": "Optional CSS class name override"
+      }
+    ],
+    "deps": [
+      "@mantine/core",
+      "@mantine/hooks"
+    ],
+    "dependsOn": [],
+    "shared": [
+      "utils/cn"
+    ]
+  },
+  {
+    "id": "remount-on-mouse-in",
+    "code": "import { Fragment, type KeyboardEvent, type ReactNode, useRef, useState } from \"react\";\n\nexport default function RemountOnMouseIn({\n  children,\n  className,\n  duration,\n}: {\n  children: ReactNode;\n  className?: string;\n  /**\n   * Duration in milliseconds to wait before allowing a remount\n   */\n  duration?: number;\n}) {\n  const [key, setKey] = useState(0);\n  const lastUpdate = useRef(0);\n\n  const update = () => {\n    const now = Date.now();\n    if (lastUpdate.current === 0) {\n      lastUpdate.current = now;\n    }\n    if (now - lastUpdate.current > (duration ?? 1000)) {\n      setKey((prev) => prev + 1);\n      lastUpdate.current = now;\n    }\n  };\n\n  const handleKeyDown = (event: KeyboardEvent<HTMLButtonElement>) => {\n    if (event.key === \"Enter\" || event.key === \" \") {\n      event.preventDefault();\n      update();\n    }\n  };\n\n  return (\n    <button\n      type=\"button\"\n      className={className}\n      onClick={update}\n      onMouseEnter={update}\n      onKeyDown={handleKeyDown}\n    >\n      <Fragment key={`force-${key}`}>{children}</Fragment>\n    </button>\n  );\n}",
+    "usage": "<RemountOnMouseIn />",
+    "props": [
+      {
+        "name": "className",
+        "type": "string",
+        "default": "undefined",
+        "description": "Optional CSS class name override"
+      }
+    ],
+    "deps": [
+      "clsx",
+      "tailwind-merge"
+    ],
+    "dependsOn": [],
+    "shared": [
+      "utils/cn"
+    ]
+  },
+  {
+    "id": "use-active-press",
+    "code": "import { useRef, useState } from 'react'\nimport { getOwnerDocument } from '../utils/owner'\nimport { useDisposables } from './use-disposables'\nimport { useEvent } from './use-event'\n\n// Only the necessary props from a DOMRect\ntype Rect = { left: number; right: number; top: number; bottom: number }\n\nfunction pointerRectFromPointerEvent(event: PointerEvent): Rect {\n  // Center of the pointer geometry\n  let offsetX = event.width / 2\n  let offsetY = event.height / 2\n\n  return {\n    top: event.clientY - offsetY,\n    right: event.clientX + offsetX,\n    bottom: event.clientY + offsetY,\n    left: event.clientX - offsetX,\n  }\n}\n\nfunction areRectsOverlapping(a: Rect | null, b: Rect | null) {\n  if (!a || !b) {\n    return false\n  }\n\n  if (a.right < b.left || a.left > b.right) {\n    return false\n  }\n\n  if (a.bottom < b.top || a.top > b.bottom) {\n    return false\n  }\n\n  return true\n}\n\nexport function useActivePress({ disabled = false }: Partial<{ disabled: boolean }> = {}) {\n  let target = useRef<HTMLElement | null>(null)\n  let [pressed, setPressed] = useState(false)\n\n  let d = useDisposables()\n\n  let reset = useEvent(() => {\n    target.current = null\n    setPressed(false)\n    d.dispose()\n  })\n\n  let handlePointerDown = useEvent((event: PointerEvent) => {\n    d.dispose() // Cancel any scheduled tasks\n\n    if (target.current !== null) return\n\n    // Keep track of the current element\n    target.current = event.currentTarget as HTMLElement\n\n    // We are definitely pressing the element now\n    setPressed(true)\n\n    // Setup global handlers to catch events on elements that are not the current element\n    {\n      let owner = getOwnerDocument(event.currentTarget as Element)!\n\n      // `pointerup` on any element means that we are no longer pressing the current element\n      d.addEventListener(owner, 'pointerup', reset, false)\n\n      // `pointerleave` isn't called consistently (if at all) on iOS Safari, so we use `pointermove` instead\n      // to determine if we are still \"pressing\". We also compare the pointer position to the target element\n      // so that we can tell if the pointer is still over the element or not.\n      d.addEventListener(\n        owner,\n        'pointermove',\n        (event: PointerEvent) => {\n          if (target.current) {\n            let pointerRect = pointerRectFromPointerEvent(event)\n            setPressed(areRectsOverlapping(pointerRect, target.current.getBoundingClientRect()))\n          }\n        },\n        false\n      )\n\n      // Whenever the browser decides to fire a `pointercancel` event, we should abort\n      d.addEventListener(owner, 'pointercancel', reset, false)\n    }\n  })\n\n  return {\n    pressed,\n    pressProps: disabled\n      ? {}\n      : {\n          onPointerDown: handlePointerDown,\n          onPointerUp: reset,\n          onClick: reset,\n        },\n  }\n}",
+    "usage": "<UseActivePress />",
+    "props": [
+      {
+        "name": "className",
+        "type": "string",
+        "default": "undefined",
+        "description": "Optional CSS class name override"
+      }
+    ],
+    "deps": [
+      "clsx",
+      "tailwind-merge"
+    ],
+    "dependsOn": [],
+    "shared": [
+      "utils/cn"
+    ]
+  },
+  {
+    "id": "use-animate-test",
+    "code": "import \"@testing-library/jest-dom\"\nimport { render } from \"@testing-library/react\"\nimport { useEffect } from \"react\"\nimport { MotionConfig } from \"../../../components/MotionConfig\"\nimport { useAnimate } from \"../use-animate\"\n\ndescribe(\"useAnimate\", () => {\n    test(\"Types work as expected\", () => {\n        const Component = () => {\n            const [scope, animate] = useAnimate()\n\n            useEffect(() => {\n                expect(() => {\n                    animate(\"div\", { opacity: 1 })\n                }).toThrow()\n\n                animate(scope.current, { opacity: 1 })\n            })\n\n            return <div ref={scope} />\n        }\n\n        render(<Component />)\n    })\n\n    test(\"Animations removed from scope when finished\", () => {\n        return new Promise<void>((resolve) => {\n            const Component = () => {\n                const [scope, animate] = useAnimate()\n\n                useEffect(() => {\n                    const animation = animate(\n                        scope.current,\n                        { opacity: 1 },\n                        { duration: 0.1 }\n                    )\n\n                    requestAnimationFrame(() => {\n                        expect(scope.animations.length).toBe(1)\n                    })\n\n                    animation.finished.then(() => {\n                        requestAnimationFrame(() => {\n                            expect(scope.animations.length).toBe(0)\n                            resolve()\n                        })\n                    })\n\n                    return () => {\n                        animation.stop()\n                    }\n                })\n\n                return <div ref={scope} />\n            }\n\n            render(<Component />)\n        })\n    })\n\n    test(\"Animates provided animation\", async () => {\n        return new Promise<void>((resolve) => {\n            const Component = () => {\n                const [scope, animate] = useAnimate()\n\n                useEffect(() => {\n                    animate(\n                        scope.current,\n                        { opacity: 0.5 },\n                        { duration: 0.1 }\n                    ).then(() => {\n                        expect(scope.current).toHaveStyle(\"opacity: 0.5;\")\n                        resolve()\n                    })\n                })\n\n                return <div ref={scope} />\n            }\n\n            render(<Component />)\n        })\n    })\n\n    test(\"Stops animations when unmounted\", async () => {\n        let frameCount = 0\n        let unmount = () => {}\n\n        await new Promise<void>((resolve) => {\n            const Component = () => {\n                const [scope, animate] = useAnimate()\n\n                useEffect(() => {\n                    animate(\n                        scope.current,\n                        { opacity: 0.5 },\n                        {\n                            duration: 20,\n                            onUpdate: () => {\n                                frameCount++\n                                if (frameCount === 3) {\n                                    unmount()\n                                    setTimeout(() => {\n                                        resolve()\n                                    }, 50)\n                                }\n                            },\n                        }\n                    )\n                })\n\n                return <div ref={scope} />\n            }\n\n            unmount = render(<Component />).unmount\n        })\n\n        expect(frameCount).toEqual(3)\n    })\n\n    test(\"Applies final value instantly when MotionConfig skipAnimations is true\", () => {\n        return new Promise<void>((resolve) => {\n            const Component = () => {\n                const [scope, animate] = useAnimate()\n\n                useEffect(() => {\n                    animate(\n                        scope.current,\n                        { opacity: 0.5 },\n                        { duration: 10 }\n                    )\n\n                    setTimeout(() => {\n                        expect(scope.current).toHaveStyle(\"opacity: 0.5;\")\n                        expect(scope.animations.length).toBe(0)\n                        resolve()\n                    }, 50)\n                })\n\n                return <div ref={scope} />\n            }\n\n            render(\n                <MotionConfig skipAnimations>\n                    <Component />\n                </MotionConfig>\n            )\n        })\n    })\n})",
+    "usage": "<UseAnimateTest />",
+    "props": [
+      {
+        "name": "className",
+        "type": "string",
+        "default": "undefined",
+        "description": "Optional CSS class name override"
+      }
+    ],
+    "deps": [
+      "motion",
+      "clsx",
+      "tailwind-merge"
+    ],
+    "dependsOn": [],
+    "shared": [
+      "utils/cn"
+    ]
+  },
+  {
+    "id": "use-animated-state-test",
+    "code": "import { useEffect } from \"react\"\nimport { render } from \"../../../jest.setup\"\nimport { useAnimatedState } from \"../use-animated-state\"\n\ndescribe(\"useAnimatedState\", () => {\n    test(\"animates values\", async () => {\n        const promise = new Promise((resolve) => {\n            const Component = () => {\n                const [state, setState] = useAnimatedState({ foo: 0 })\n\n                useEffect(() => {\n                    setState({\n                        foo: 100,\n                        transition: { duration: 0.05 },\n                    })\n                }, [])\n\n                useEffect(() => {\n                    if (state.foo === 100) resolve(state.foo)\n                }, [state.foo])\n\n                return <div />\n            }\n\n            render(<Component />)\n        })\n\n        await expect(promise).resolves.toEqual(100)\n    })\n})",
+    "usage": "<UseAnimatedStateTest />",
+    "props": [
+      {
+        "name": "className",
+        "type": "string",
+        "default": "undefined",
+        "description": "Optional CSS class name override"
+      }
+    ],
+    "deps": [
+      "motion",
+      "clsx",
+      "tailwind-merge"
+    ],
+    "dependsOn": [],
+    "shared": [
+      "utils/cn"
+    ]
+  },
+  {
+    "id": "use-animation-frame-test",
+    "code": "import { render } from \"../../jest.setup\"\nimport { useAnimationFrame } from \"../use-animation-frame\"\n\ndescribe(\"useAnimationFrame\", () => {\n    test(\"Fires every animation frame\", async () => {\n        const totalFrameCount = await new Promise((resolve) => {\n            let frameCount = 0\n            const Component = () => {\n                useAnimationFrame((timeSinceStart) => {\n                    frameCount++\n                    if (frameCount > 2) resolve(timeSinceStart)\n                })\n\n                return null\n            }\n            const { rerender } = render(<Component />)\n            rerender(<Component />)\n        })\n        expect(totalFrameCount).toBeGreaterThan(25)\n        expect(totalFrameCount).toBeLessThan(50)\n    })\n\n    test(\"Updates callback\", async () => {\n        const totalOutput = await new Promise<number[]>((resolve) => {\n            const output: number[] = [0]\n            const Component = ({ increment }: any) => {\n                useAnimationFrame(() => {\n                    output.push(output[output.length - 1] + increment)\n                    if (output[output.length - 1] > 4) resolve(output)\n                })\n\n                return null\n            }\n            const { rerender } = render(<Component increment={1} />)\n            rerender(<Component increment={2} />)\n        })\n\n        expect(totalOutput).toEqual([0, 2, 4, 6])\n    })\n})",
+    "usage": "<UseAnimationFrameTest />",
+    "props": [
+      {
+        "name": "className",
+        "type": "string",
+        "default": "undefined",
+        "description": "Optional CSS class name override"
+      }
+    ],
+    "deps": [
+      "motion",
+      "clsx",
+      "tailwind-merge"
+    ],
+    "dependsOn": [],
+    "shared": [
+      "utils/cn"
+    ]
+  },
+  {
+    "id": "use-attachment-src-test",
+    "code": "import { act, renderHook } from \"@testing-library/react\";\nimport { StrictMode } from \"react\";\nimport { afterEach, beforeEach, describe, expect, it, vi } from \"vitest\";\nimport { useAttachmentSrc } from \"./use-attachment-src\";\n\nconst mockState = vi.hoisted(() => ({\n  current: { attachment: { type: \"document\" } } as any,\n}));\n\nvi.mock(\"@assistant-ui/react\", async (importOriginal) => ({\n  ...(await importOriginal<object>()),\n  useAuiState: (selector: (s: any) => unknown) => selector(mockState.current),\n}));\n\nconst makeFile = (name: string) =>\n  new File([\"content\"], name, { type: \"image/png\" });\n\ndescribe(\"useAttachmentSrc\", () => {\n  let created: string[];\n  let revoked: string[];\n\n  beforeEach(() => {\n    created = [];\n    revoked = [];\n    let counter = 0;\n    vi.stubGlobal(\"URL\", {\n      ...URL,\n      createObjectURL: vi.fn(() => {\n        const url = `blob:mock-${counter++}`;\n        created.push(url);\n        return url;\n      }),\n      revokeObjectURL: vi.fn((url: string) => {\n        revoked.push(url);\n      }),\n    });\n  });\n\n  afterEach(() => {\n    vi.unstubAllGlobals();\n  });\n\n  it(\"returns undefined for a non-image attachment\", () => {\n    mockState.current = { attachment: { type: \"document\" } };\n    const { result } = renderHook(() => useAttachmentSrc());\n    expect(result.current).toBeUndefined();\n    expect(created).toHaveLength(0);\n  });\n\n  it(\"returns the remote image content src when no file is present\", () => {\n    mockState.current = {\n      attachment: {\n        type: \"image\",\n        content: [{ type: \"image\", image: \"https://example.com/a.png\" }],\n      },\n    };\n    const { result } = renderHook(() => useAttachmentSrc());\n    expect(result.current).toBe(\"https://example.com/a.png\");\n    expect(created).toHaveLength(0);\n  });\n\n  it(\"creates an object URL for a file preview\", () => {\n    mockState.current = {\n      attachment: { type: \"image\", file: makeFile(\"a.png\") },\n    };\n    const { result } = renderHook(() => useAttachmentSrc());\n    expect(result.current).toBe(created[0]);\n    expect(revoked).toHaveLength(0);\n  });\n\n  it(\"never renders the previous object URL after the file is replaced\", () => {\n    mockState.current = {\n      attachment: { type: \"image\", file: makeFile(\"a.png\") },\n    };\n    const rendered: (string | undefined)[] = [];\n    const { result, rerender } = renderHook(() => {\n      const value = useAttachmentSrc();\n      rendered.push(value);\n      return value;\n    });\n    const firstUrl = created[0]!;\n    expect(result.current).toBe(firstUrl);\n\n    const sliceStart = rendered.length;\n    mockState.current = {\n      attachment: { type: \"image\", file: makeFile(\"b.png\") },\n    };\n    act(() => {\n      rerender();\n    });\n\n    expect(result.current).toBe(created[1]);\n    expect(rendered.slice(sliceStart)).not.toContain(firstUrl);\n    expect(revoked).toEqual([firstUrl]);\n  });\n\n  it(\"renders only the live URL under StrictMode double effect mounting\", () => {\n    mockState.current = {\n      attachment: { type: \"image\", file: makeFile(\"a.png\") },\n    };\n    const rendered: (string | undefined)[] = [];\n    const { result } = renderHook(\n      () => {\n        const value = useAttachmentSrc();\n        rendered.push(value);\n        return value;\n      },\n      { wrapper: StrictMode },\n    );\n\n    expect(created.length).toBeGreaterThanOrEqual(2);\n    const liveUrl = created[created.length - 1]!;\n    expect(result.current).toBe(liveUrl);\n    for (const url of revoked) {\n      expect(rendered).not.toContain(url);\n    }\n  });\n\n  it(\"revokes the object URL on unmount\", () => {\n    mockState.current = {\n      attachment: { type: \"image\", file: makeFile(\"a.png\") },\n    };\n    const { unmount } = renderHook(() => useAttachmentSrc());\n    const url = created[0]!;\n    unmount();\n    expect(revoked).toEqual([url]);\n  });\n});",
+    "usage": "<UseAttachmentSrcTest />",
+    "props": [
+      {
+        "name": "className",
+        "type": "string",
+        "default": "undefined",
+        "description": "Optional CSS class name override"
+      }
+    ],
+    "deps": [
+      "@assistant-ui/react"
+    ],
+    "dependsOn": [],
+    "shared": [
+      "utils/cn"
+    ]
+  },
+  {
+    "id": "use-breakpoint-stories",
+    "code": "import type { Meta } from \"@storybook/react-vite\"\nimport { Box, Flex, useBreakpointValue } from \"../src\"\n\nexport default {\n  title: \"Hooks / useBreakpointValue\",\n  decorators: [\n    (Story) => (\n      <Box p=\"10\">\n        <Story />\n      </Box>\n    ),\n  ],\n} satisfies Meta\n\nexport const Basic = () => {\n  const value = useBreakpointValue({ base: false, lg: true }, { ssr: false })\n  return <Flex>{value ? \"true\" : \"false\"}</Flex>\n}",
+    "usage": "<UseBreakpointStories />",
+    "props": [
+      {
+        "name": "className",
+        "type": "string",
+        "default": "undefined",
+        "description": "Optional CSS class name override"
+      }
+    ],
+    "deps": [
+      "@chakra-ui/react"
+    ],
+    "dependsOn": [],
+    "shared": [
+      "utils/cn"
+    ]
+  },
+  {
+    "id": "use-breakpoint-test",
+    "code": "import { renderHook } from \"@testing-library/react\"\nimport { ChakraProvider, defaultSystem, useBreakpoint } from \"../src\"\n\nconst wrapper = ({ children }: { children: React.ReactNode }) => (\n  <ChakraProvider value={defaultSystem}>{children}</ChakraProvider>\n)\n\n// the viewport is wide enough for `base`, `sm` and `md`, but not `lg` and up\nconst matching = [\n  \"(min-width: 0px)\",\n  \"(min-width: 30rem)\",\n  \"(min-width: 48rem)\",\n]\n\nconst mockMatchMedia = () =>\n  vi.fn().mockImplementation((query: string) => ({\n    matches: matching.includes(query),\n    media: query,\n    addEventListener: () => {},\n    removeEventListener: () => {},\n  }))\n\ndescribe(\"useBreakpoint\", () => {\n  let originalMatchMedia: typeof window.matchMedia\n\n  beforeEach(() => {\n    originalMatchMedia = window.matchMedia\n    window.matchMedia = mockMatchMedia() as any\n  })\n\n  afterEach(() => {\n    window.matchMedia = originalMatchMedia\n  })\n\n  test(\"should return the highest matching breakpoint when no breakpoints are listed\", () => {\n    const { result } = renderHook(() => useBreakpoint({ ssr: false }), {\n      wrapper,\n    })\n\n    expect(result.current).toBe(\"md\")\n  })\n\n  test(\"should return the highest matching breakpoint from the listed breakpoints\", () => {\n    const { result } = renderHook(\n      () => useBreakpoint({ ssr: false, breakpoints: [\"base\", \"sm\", \"md\"] }),\n      { wrapper },\n    )\n\n    expect(result.current).toBe(\"md\")\n  })\n\n  test(\"should not return a listed breakpoint that does not match\", () => {\n    const { result } = renderHook(\n      () => useBreakpoint({ ssr: false, breakpoints: [\"base\", \"lg\"] }),\n      { wrapper },\n    )\n\n    expect(result.current).toBe(\"base\")\n  })\n\n  test(\"should return the fallback when no breakpoint matches\", () => {\n    window.matchMedia = vi.fn().mockImplementation((query: string) => ({\n      matches: false,\n      media: query,\n      addEventListener: () => {},\n      removeEventListener: () => {},\n    })) as any\n\n    const { result } = renderHook(\n      () => useBreakpoint({ ssr: false, fallback: \"sm\" }),\n      { wrapper },\n    )\n\n    expect(result.current).toBe(\"sm\")\n  })\n})",
+    "usage": "<UseBreakpointTest />",
+    "props": [
+      {
+        "name": "className",
+        "type": "string",
+        "default": "undefined",
+        "description": "Optional CSS class name override"
+      }
+    ],
+    "deps": [
+      "@chakra-ui/react"
+    ],
+    "dependsOn": [],
+    "shared": [
+      "utils/cn"
+    ]
+  },
+  {
+    "id": "use-breakpoint-value-test",
+    "code": "import { renderHook } from \"@testing-library/react\"\nimport { ChakraProvider, defaultSystem, useBreakpointValue } from \"../src\"\n\nconst wrapper = ({ children }: { children: React.ReactNode }) => (\n  <ChakraProvider value={defaultSystem}>{children}</ChakraProvider>\n)\n\ndescribe(\"useBreakpointValue\", () => {\n  test(\"should return base value during SSR\", () => {\n    const { result } = renderHook(\n      () => useBreakpointValue({ base: 1, sm: 2 }),\n      { wrapper },\n    )\n    // In SSR mode (jsdom), the base value should be returned\n    expect(result.current).toBe(1)\n  })\n\n  test(\"should return fallback breakpoint value when specified\", () => {\n    const { result } = renderHook(\n      () => useBreakpointValue({ base: 1, sm: 2 }, { fallback: \"sm\" }),\n      { wrapper },\n    )\n    // When fallback is \"sm\", it should return the sm value during SSR\n    expect(result.current).toBe(2)\n  })\n\n  test(\"should return matched breakpoint value in CSR based on window size\", () => {\n    // Mock matchMedia to simulate a screen width >= 480px (sm breakpoint)\n    const listeners: Array<(e: MediaQueryListEvent) => void> = []\n    const mockMatchMedia = vi.fn().mockImplementation((query: string) => ({\n      matches: query === \"(min-width: 0px)\" || query === \"(min-width: 30rem)\",\n      media: query,\n      addEventListener: (_: string, cb: (e: MediaQueryListEvent) => void) => {\n        listeners.push(cb)\n      },\n      removeEventListener: () => {},\n    }))\n\n    const originalMatchMedia = window.matchMedia\n    window.matchMedia = mockMatchMedia\n\n    try {\n      const { result } = renderHook(\n        () => useBreakpointValue({ base: 1, sm: 2, md: 3 }, { ssr: false }),\n        { wrapper },\n      )\n      // With ssr: false, it should use matchMedia and return sm value (2)\n      // since we mocked sm (30rem = 480px) to match\n      expect(result.current).toBe(2)\n    } finally {\n      window.matchMedia = originalMatchMedia\n    }\n  })\n\n  test(\"should evaluate media queries against the window from getWindow\", () => {\n    const createMatchMedia = (matching: string[]) => (query: string) => ({\n      matches: matching.includes(query),\n      media: query,\n      addEventListener: () => {},\n      removeEventListener: () => {},\n    })\n\n    // the ambient window reports `md`, the injected one only reports `sm`\n    const originalMatchMedia = window.matchMedia\n    window.matchMedia = vi\n      .fn()\n      .mockImplementation(\n        createMatchMedia([\n          \"(min-width: 0px)\",\n          \"(min-width: 30rem)\",\n          \"(min-width: 48rem)\",\n        ]),\n      ) as any\n\n    const iframeWindow = {\n      matchMedia: createMatchMedia([\"(min-width: 0px)\", \"(min-width: 30rem)\"]),\n    } as unknown as typeof window\n\n    try {\n      const { result } = renderHook(\n        () =>\n          useBreakpointValue(\n            { base: 1, sm: 2, md: 3 },\n            { ssr: false, getWindow: () => iframeWindow },\n          ),\n        { wrapper },\n      )\n      expect(result.current).toBe(2)\n    } finally {\n      window.matchMedia = originalMatchMedia\n    }\n  })\n})",
+    "usage": "<UseBreakpointValueTest />",
+    "props": [
+      {
+        "name": "className",
+        "type": "string",
+        "default": "undefined",
+        "description": "Optional CSS class name override"
+      }
+    ],
+    "deps": [
+      "@chakra-ui/react"
+    ],
+    "dependsOn": [],
+    "shared": [
+      "utils/cn"
+    ]
+  },
+  {
+    "id": "use-callback-ref",
+    "code": "/* eslint-disable react-hooks/rules-of-hooks */\nimport { useLayoutEffect } from '@radix-ui/react-use-layout-effect';\nimport * as React from 'react';\n\ntype AnyFunction = (...args: any[]) => any;\n\n// See https://github.com/webpack/webpack/issues/14814\nconst useReactInsertionEffect = (React as any)[' useInsertionEffect '.trim().toString()];\n\n/**\n * A custom hook that converts a callback to a ref to avoid triggering\n * re-renders when passed as a prop or avoid re-executing effects when passed as\n * a dependency.\n */\nexport function useCallbackRef<T extends AnyFunction>(callback: T | undefined): T {\n  const callbackRef = React.useRef<AnyFunction | undefined>(callback);\n\n  // See https://github.com/webpack/webpack/issues/14814\n  if (typeof useReactInsertionEffect === 'function') {\n    useReactInsertionEffect(() => {\n      callbackRef.current = callback;\n    });\n  } else {\n    useLayoutEffect(() => {\n      callbackRef.current = callback;\n    });\n  }\n\n  // https://github.com/facebook/react/issues/19240\n  return React.useMemo(() => ((...args) => callbackRef.current?.(...args)) as T, []);\n}",
+    "usage": "<UseCallbackRef />",
+    "props": [
+      {
+        "name": "className",
+        "type": "string",
+        "default": "undefined",
+        "description": "Optional CSS class name override"
+      }
+    ],
+    "deps": [
+      "@radix-ui/react-primitive"
+    ],
+    "dependsOn": [],
+    "shared": [
+      "utils/cn"
+    ]
+  },
+  {
+    "id": "use-click-outside-demo-events",
+    "code": "import { useState } from 'react';\nimport { Button, Group, Paper } from '@mantine/core';\nimport { useClickOutside } from '@mantine/hooks';\nimport { MantineDemo } from '@mantinex/demo';\n\nconst code = `\nimport { useState } from 'react';\nimport { Paper, Button } from '@mantine/core';\nimport { useClickOutside } from '@mantine/hooks';\n\nfunction Demo() {\n  const [opened, setOpened] = useState(false);\n  const ref = useClickOutside(() => setOpened(false), ['mouseup', 'touchend']);\n\n  return (\n    <>\n      <Button onClick={() => setOpened(true)}>Open dropdown</Button>\n\n      {opened && (\n        <Paper ref={ref} shadow=\"sm\">\n          <span>Click outside to close</span>\n        </Paper>\n      )}\n    </>\n  );\n}\n`;\n\nfunction Demo() {\n  const [opened, setOpened] = useState(false);\n  const ref = useClickOutside(() => setOpened(false), ['mouseup', 'touchend']);\n\n  return (\n    <div style={{ position: 'relative' }}>\n      <Group justify=\"center\">\n        <Button onClick={() => setOpened(true)}>Open dropdown</Button>\n      </Group>\n\n      {opened && (\n        <Paper\n          ref={ref}\n          shadow=\"sm\"\n          style={{\n            width: 300,\n            height: 60,\n            position: 'absolute',\n            top: 0,\n            left: 'calc(50% - 150px)',\n            display: 'flex',\n            alignItems: 'center',\n            justifyContent: 'center',\n            zIndex: 1,\n          }}\n        >\n          <span>Click outside to close</span>\n        </Paper>\n      )}\n    </div>\n  );\n}\n\nexport const events: MantineDemo = {\n  type: 'code',\n  component: Demo,\n  code,\n  dimmed: true,\n};",
+    "usage": "<UseClickOutsideDemoEvents />",
+    "props": [
+      {
+        "name": "className",
+        "type": "string",
+        "default": "undefined",
+        "description": "Optional CSS class name override"
+      }
+    ],
+    "deps": [
+      "@mantine/core",
+      "@mantine/hooks"
+    ],
+    "dependsOn": [],
+    "shared": [
+      "utils/cn"
+    ]
+  },
+  {
+    "id": "use-click-outside-story",
+    "code": "import { useState } from 'react';\nimport { useClickOutside } from './use-click-outside';\n\nexport default { title: 'use-click-outside' };\n\nexport function Usage() {\n  const [visible, setVisible] = useState(false);\n  const ref = useClickOutside(() => console.log('clicked outside'));\n\n  return (\n    <div style={{ padding: 40 }}>\n      {visible && (\n        <div ref={ref} style={{ padding: 40, background: 'orange' }}>\n          Click outside\n        </div>\n      )}\n\n      <button onClick={() => setVisible((v) => !v)}>Toggle visible</button>\n    </div>\n  );\n}",
+    "usage": "<UseClickOutsideStory />",
+    "props": [
+      {
+        "name": "className",
+        "type": "string",
+        "default": "undefined",
+        "description": "Optional CSS class name override"
+      }
+    ],
+    "deps": [
+      "@mantine/core",
+      "@mantine/hooks"
+    ],
+    "dependsOn": [],
+    "shared": [
+      "utils/cn"
+    ]
+  },
+  {
+    "id": "use-click-outside-test",
+    "code": "import { useState } from 'react';\nimport { render, screen } from '@testing-library/react';\nimport userEvent from '@testing-library/user-event';\nimport { useClickOutside } from './use-click-outside';\n\ninterface UseClickOutsideProps {\n  handler: () => void;\n  events?: string[] | null;\n  nodes?: (HTMLElement | null)[];\n  enabled?: boolean;\n  capture?: boolean;\n}\n\nconst Target: React.FunctionComponent<UseClickOutsideProps> = ({\n  handler,\n  events,\n  nodes,\n  enabled,\n  capture,\n}) => {\n  const ref = useClickOutside(handler, events, nodes, enabled, capture);\n  return <div data-testid=\"target\" ref={ref} />;\n};\n\ndescribe('@mantine/hooks/use-click-outside', () => {\n  afterAll(() => {\n    jest.clearAllMocks();\n  });\n\n  it('calls `handler` function when clicked outside target (no `events` given)', async () => {\n    const handler = jest.fn();\n\n    render(\n      <>\n        <Target handler={handler} />\n        <div data-testid=\"outside-target\" />\n      </>\n    );\n\n    const target = screen.getByTestId('target');\n    const outsideTarget = screen.getByTestId('outside-target');\n\n    expect(handler).toHaveBeenCalledTimes(0);\n\n    await userEvent.click(target);\n    expect(handler).toHaveBeenCalledTimes(0);\n\n    await userEvent.click(outsideTarget);\n    expect(handler).toHaveBeenCalledTimes(1);\n\n    await userEvent.click(outsideTarget);\n    expect(handler).toHaveBeenCalledTimes(2);\n\n    await userEvent.click(target);\n    expect(handler).toHaveBeenCalledTimes(2);\n  });\n\n  it('calls `handler` only on given `events`', async () => {\n    const handler = jest.fn();\n    const events = ['keydown'];\n\n    render(\n      <>\n        <Target handler={handler} events={events} />\n        <div data-testid=\"outside-target\" />\n      </>\n    );\n\n    const target = screen.getByTestId('target');\n    const outsideTarget = screen.getByTestId('outside-target');\n\n    await userEvent.click(target);\n    await userEvent.click(outsideTarget);\n    expect(handler).toHaveBeenCalledTimes(0);\n\n    await userEvent.type(target, '{enter}');\n    await userEvent.type(outsideTarget, '{enter}');\n    expect(handler).toHaveBeenCalledTimes(2);\n  });\n\n  it('ignores clicks outside the given `nodes`', async () => {\n    const handler = jest.fn();\n\n    const Wrapper: React.FunctionComponent = () => {\n      const [ignore, setIgnore] = useState<HTMLDivElement | null>(null);\n      return (\n        <>\n          <Target handler={handler} nodes={[ignore]} />\n          <div data-testid=\"ignore-clicks\" ref={setIgnore} />\n        </>\n      );\n    };\n\n    render(\n      <div>\n        <Wrapper />\n      </div>\n    );\n\n    const ignoreClicks = screen.getByTestId('ignore-clicks');\n\n    await userEvent.click(ignoreClicks);\n    expect(handler).toHaveBeenCalledTimes(0);\n\n    const target = screen.getByTestId('target');\n    await userEvent.click(target);\n    expect(handler).toHaveBeenCalledTimes(1);\n  });\n\n  it('calls the latest handler after rerender (no stale closure)', async () => {\n    const first = jest.fn();\n    const second = jest.fn();\n\n    const { rerender } = render(\n      <>\n        <Target handler={first} />\n        <div data-testid=\"outside-target\" />\n      </>\n    );\n\n    rerender(\n      <>\n        <Target handler={second} />\n        <div data-testid=\"outside-target\" />\n      </>\n    );\n\n    await userEvent.click(screen.getByTestId('outside-target'));\n\n    expect(first).not.toHaveBeenCalled();\n    expect(second).toHaveBeenCalledTimes(1);\n  });\n\n  it('does not re-register listeners when handler identity changes', async () => {\n    const addSpy = jest.spyOn(document, 'addEventListener');\n    const removeSpy = jest.spyOn(document, 'removeEventListener');\n\n    const { rerender } = render(\n      <>\n        <Target handler={jest.fn()} />\n        <div data-testid=\"outside-target\" />\n      </>\n    );\n\n    const initialAdds = addSpy.mock.calls.filter(([t]) => t === 'mousedown').length;\n    const initialRemoves = removeSpy.mock.calls.filter(([t]) => t === 'mousedown').length;\n\n    rerender(\n      <>\n        <Target handler={jest.fn()} />\n        <div data-testid=\"outside-target\" />\n      </>\n    );\n\n    expect(addSpy.mock.calls.filter(([t]) => t === 'mousedown').length).toBe(initialAdds);\n    expect(removeSpy.mock.calls.filter(([t]) => t === 'mousedown').length).toBe(initialRemoves);\n\n    addSpy.mockRestore();\n    removeSpy.mockRestore();\n  });\n\n  it('does not call handler when enabled is false', async () => {\n    const handler = jest.fn();\n\n    render(\n      <>\n        <Target handler={handler} enabled={false} />\n        <div data-testid=\"outside-target\" />\n      </>\n    );\n\n    await userEvent.click(screen.getByTestId('outside-target'));\n    expect(handler).not.toHaveBeenCalled();\n  });\n\n  it('starts calling handler when enabled changes from false to true', async () => {\n    const handler = jest.fn();\n\n    const { rerender } = render(\n      <>\n        <Target handler={handler} enabled={false} />\n        <div data-testid=\"outside-target\" />\n      </>\n    );\n\n    await userEvent.click(screen.getByTestId('outside-target'));\n    expect(handler).not.toHaveBeenCalled();\n\n    rerender(\n      <>\n        <Target handler={handler} enabled />\n        <div data-testid=\"outside-target\" />\n      </>\n    );\n\n    await userEvent.click(screen.getByTestId('outside-target'));\n    expect(handler).toHaveBeenCalledTimes(1);\n  });\n\n  it('stops calling handler when enabled changes from true to false', async () => {\n    const handler = jest.fn();\n\n    const { rerender } = render(\n      <>\n        <Target handler={handler} enabled />\n        <div data-testid=\"outside-target\" />\n      </>\n    );\n\n    await userEvent.click(screen.getByTestId('outside-target'));\n    expect(handler).toHaveBeenCalledTimes(1);\n\n    rerender(\n      <>\n        <Target handler={handler} enabled={false} />\n        <div data-testid=\"outside-target\" />\n      </>\n    );\n\n    await userEvent.click(screen.getByTestId('outside-target'));\n    expect(handler).toHaveBeenCalledTimes(1);\n  });\n\n  it('propagates event to handler', async () => {\n    const handler = jest.fn();\n\n    render(\n      <>\n        <Target handler={handler} />\n        <div data-testid=\"outside-target\" />\n      </>\n    );\n\n    const outsideTarget = screen.getByTestId('outside-target');\n\n    await userEvent.click(outsideTarget);\n\n    expect(handler).toHaveBeenCalledTimes(1);\n    expect(handler).toHaveBeenCalledWith(expect.any(MouseEvent));\n\n    const event = handler.mock.calls[0][0];\n    expect(event).toHaveProperty('type', 'mousedown');\n    expect(event).toHaveProperty('target', outsideTarget);\n  });\n\n  it('does not call handler when outside element stops propagation in bubble phase', async () => {\n    const handler = jest.fn();\n\n    render(\n      <>\n        <Target handler={handler} />\n        <div\n          role=\"presentation\"\n          data-testid=\"outside-target\"\n          onMouseDown={(event) => event.stopPropagation()}\n        />\n      </>\n    );\n\n    await userEvent.click(screen.getByTestId('outside-target'));\n    expect(handler).not.toHaveBeenCalled();\n  });\n\n  it('calls handler when outside element stops propagation and capture is true', async () => {\n    const handler = jest.fn();\n\n    render(\n      <>\n        <Target handler={handler} capture />\n        <div data-testid=\"outside-target\" onMouseDownCapture={(event) => event.stopPropagation()} />\n      </>\n    );\n\n    await userEvent.click(screen.getByTestId('outside-target'));\n    expect(handler).toHaveBeenCalledTimes(1);\n\n    await userEvent.click(screen.getByTestId('target'));\n    expect(handler).toHaveBeenCalledTimes(1);\n  });\n\n  it('removes capture listeners on unmount', () => {\n    const spy = jest.spyOn(document, 'removeEventListener');\n    const { unmount } = render(<Target handler={jest.fn()} capture />);\n\n    unmount();\n    expect(spy).toHaveBeenCalledWith('mousedown', expect.any(Function), true);\n    expect(spy).toHaveBeenCalledWith('touchstart', expect.any(Function), true);\n    spy.mockRestore();\n  });\n});",
+    "usage": "<UseClickOutsideTest />",
+    "props": [
+      {
+        "name": "className",
+        "type": "string",
+        "default": "undefined",
+        "description": "Optional CSS class name override"
+      }
+    ],
+    "deps": [
+      "@mantine/core",
+      "@mantine/hooks"
+    ],
+    "dependsOn": [],
+    "shared": [
+      "utils/cn"
+    ]
+  },
+  {
+    "id": "use-clipboard-usage-demo",
+    "code": "import { Button } from '@mantine/core';\nimport { useClipboard } from '@mantine/hooks';\nimport { MantineDemo } from '@mantinex/demo';\n\nconst code = `\nimport { Button } from '@mantine/core';\nimport { useClipboard } from '@mantine/hooks';\n\nfunction Demo() {\n  const clipboard = useClipboard({ timeout: 500 });\n\n  return (\n    <Button\n      color={clipboard.copied ? 'teal' : 'blue'}\n      onClick={() => clipboard.copy('Hello, world!')}\n    >\n      {clipboard.copied ? 'Copied' : 'Copy'}\n    </Button>\n  );\n}`;\n\nfunction Demo() {\n  const clipboard = useClipboard({ timeout: 500 });\n\n  return (\n    <Button\n      color={clipboard.copied ? 'teal' : 'blue'}\n      onClick={() => clipboard.copy('Hello, world!')}\n    >\n      {clipboard.copied ? 'Copied' : 'Copy'}\n    </Button>\n  );\n}\n\nexport const usage: MantineDemo = {\n  type: 'code',\n  code,\n  component: Demo,\n  centered: true,\n};",
+    "usage": "<UseClipboardUsageDemo />",
+    "props": [
+      {
+        "name": "className",
+        "type": "string",
+        "default": "undefined",
+        "description": "Optional CSS class name override"
+      }
+    ],
+    "deps": [
+      "@mantine/core",
+      "@mantine/hooks"
+    ],
+    "dependsOn": [],
+    "shared": [
+      "utils/cn"
+    ]
+  },
+  {
+    "id": "use-collapse-story",
+    "code": "import { useState } from 'react';\nimport { useCollapse } from './use-collapse';\n\nexport default { title: 'useCollapse' };\n\nexport function Usage() {\n  const [expanded, setExpanded] = useState(false);\n  const { getCollapseProps, state } = useCollapse({ expanded });\n\n  return (\n    <div style={{ padding: 40 }}>\n      <button\n        onClick={() => setExpanded((v) => !v)}\n        style={{ padding: '8px 16px', cursor: 'pointer', marginBottom: 8 }}\n      >\n        {expanded ? 'Collapse' : 'Expand'} (state: {state})\n      </button>\n      <div {...getCollapseProps()}>\n        <div style={{ padding: 20, background: '#228be6', color: 'white', borderRadius: 8 }}>\n          <p>This content is collapsible.</p>\n          <p>It animates its height when toggled.</p>\n          <p>Third line of content for height.</p>\n        </div>\n      </div>\n    </div>\n  );\n}\n\nexport function InitiallyExpanded() {\n  const [expanded, setExpanded] = useState(true);\n  const { getCollapseProps, state } = useCollapse({ expanded });\n\n  return (\n    <div style={{ padding: 40 }}>\n      <button\n        onClick={() => setExpanded((v) => !v)}\n        style={{ padding: '8px 16px', cursor: 'pointer', marginBottom: 8 }}\n      >\n        {expanded ? 'Collapse' : 'Expand'} (state: {state})\n      </button>\n      <div {...getCollapseProps()}>\n        <div style={{ padding: 20, background: '#be4bdb', color: 'white', borderRadius: 8 }}>\n          <p>This starts expanded.</p>\n          <p>Click the button to collapse it.</p>\n        </div>\n      </div>\n    </div>\n  );\n}",
+    "usage": "<UseCollapseStory />",
+    "props": [
+      {
+        "name": "className",
+        "type": "string",
+        "default": "undefined",
+        "description": "Optional CSS class name override"
+      }
+    ],
+    "deps": [
+      "@mantine/core",
+      "@mantine/hooks"
+    ],
+    "dependsOn": [],
+    "shared": [
+      "utils/cn"
+    ]
+  },
+  {
+    "id": "use-collapse-test",
+    "code": "import { act, render, renderHook, screen, waitFor } from '@testing-library/react';\nimport { useCollapse, UseCollapseInput } from './use-collapse';\n\nfunction TestCollapse(props: UseCollapseInput) {\n  const collapse = useCollapse({ transitionDuration: 200, ...props });\n  return (\n    <div data-testid=\"target\" {...collapse.getCollapseProps()}>\n      {collapse.state}\n    </div>\n  );\n}\n\ndescribe('@mantine/hooks/use-collapse', () => {\n  it('starts in entered state when expanded=true', () => {\n    const { result } = renderHook(() => useCollapse({ expanded: true }));\n    expect(result.current.state).toBe('entered');\n  });\n\n  it('starts in exited state when expanded=false', () => {\n    const { result } = renderHook(() => useCollapse({ expanded: false }));\n    expect(result.current.state).toBe('exited');\n  });\n\n  it('calls onTransitionStart when expanded changes', () => {\n    const onTransitionStart = jest.fn();\n    const { rerender } = renderHook(\n      ({ expanded }) => useCollapse({ expanded, onTransitionStart }),\n      { initialProps: { expanded: false } }\n    );\n\n    expect(onTransitionStart).not.toHaveBeenCalled();\n\n    act(() => {\n      rerender({ expanded: true });\n    });\n\n    expect(onTransitionStart).toHaveBeenCalledTimes(1);\n  });\n\n  it('does not call onTransitionStart when only its identity changes (no stale re-run)', () => {\n    const first = jest.fn();\n    const second = jest.fn();\n\n    const { rerender } = renderHook(\n      ({ expanded, onTransitionStart }) => useCollapse({ expanded, onTransitionStart }),\n      { initialProps: { expanded: false, onTransitionStart: first } }\n    );\n\n    act(() => {\n      rerender({ expanded: false, onTransitionStart: second });\n    });\n\n    expect(first).not.toHaveBeenCalled();\n    expect(second).not.toHaveBeenCalled();\n  });\n\n  it('calls the latest onTransitionStart after callback identity changes', () => {\n    const first = jest.fn();\n    const second = jest.fn();\n\n    const { rerender } = renderHook(\n      ({ expanded, onTransitionStart }) => useCollapse({ expanded, onTransitionStart }),\n      { initialProps: { expanded: false, onTransitionStart: first } }\n    );\n\n    act(() => {\n      rerender({ expanded: false, onTransitionStart: second });\n    });\n\n    act(() => {\n      rerender({ expanded: true, onTransitionStart: second });\n    });\n\n    expect(first).not.toHaveBeenCalled();\n    expect(second).toHaveBeenCalledTimes(1);\n  });\n\n  it('settles in `entered` state when expanding an element that cannot be measured', async () => {\n    const onTransitionEnd = jest.fn();\n    const { rerender } = render(\n      <TestCollapse expanded={false} onTransitionEnd={onTransitionEnd} />\n    );\n\n    rerender(<TestCollapse expanded onTransitionEnd={onTransitionEnd} />);\n\n    await waitFor(() => expect(screen.getByTestId('target')).toHaveTextContent('entered'));\n    expect(screen.getByTestId('target')).not.toHaveStyle({ height: '0px', overflow: 'hidden' });\n    expect(onTransitionEnd).toHaveBeenCalledTimes(1);\n  });\n\n  it('settles in `exited` state when collapsing an element that cannot be measured', async () => {\n    const onTransitionEnd = jest.fn();\n    const { rerender } = render(<TestCollapse expanded onTransitionEnd={onTransitionEnd} />);\n\n    rerender(<TestCollapse expanded={false} onTransitionEnd={onTransitionEnd} />);\n\n    await waitFor(() => expect(screen.getByTestId('target')).toHaveTextContent('exited'));\n    expect(screen.getByTestId('target')).toHaveStyle({ height: '0px', overflow: 'hidden' });\n    expect(onTransitionEnd).toHaveBeenCalledTimes(1);\n  });\n\n  it('ignores frames from a transition that was superseded before it settled', async () => {\n    const onTransitionEnd = jest.fn();\n    const { rerender } = render(\n      <TestCollapse expanded={false} onTransitionEnd={onTransitionEnd} />\n    );\n\n    rerender(<TestCollapse expanded onTransitionEnd={onTransitionEnd} />);\n    rerender(<TestCollapse expanded={false} onTransitionEnd={onTransitionEnd} />);\n\n    await waitFor(() => expect(screen.getByTestId('target')).toHaveTextContent('exited'));\n    await act(() => new Promise((resolve) => setTimeout(resolve, 50)));\n\n    expect(screen.getByTestId('target')).toHaveTextContent('exited');\n    expect(screen.getByTestId('target')).toHaveStyle({ height: '0px', overflow: 'hidden' });\n    expect(onTransitionEnd).toHaveBeenCalledTimes(1);\n  });\n\n  it('does not call onTransitionEnd for a transition aborted by unmount', async () => {\n    const onTransitionEnd = jest.fn();\n    const { rerender, unmount } = render(\n      <TestCollapse expanded={false} onTransitionEnd={onTransitionEnd} />\n    );\n\n    rerender(<TestCollapse expanded onTransitionEnd={onTransitionEnd} />);\n    unmount();\n\n    await act(() => new Promise((resolve) => setTimeout(resolve, 50)));\n\n    expect(onTransitionEnd).not.toHaveBeenCalled();\n  });\n});",
+    "usage": "<UseCollapseTest />",
+    "props": [
+      {
+        "name": "className",
+        "type": "string",
+        "default": "undefined",
+        "description": "Optional CSS class name override"
+      }
+    ],
+    "deps": [
+      "@mantine/core",
+      "@mantine/hooks"
+    ],
+    "dependsOn": [],
+    "shared": [
+      "utils/cn"
+    ]
+  },
+  {
+    "id": "use-color-scheme-story",
+    "code": "import { useColorScheme } from './use-color-scheme';\n\nexport default { title: 'useColorScheme' };\n\nexport function Usage() {\n  const colorScheme = useColorScheme();\n\n  return (\n    <div\n      style={{\n        padding: 40,\n        background: colorScheme === 'dark' ? '#1a1a1a' : '#ffffff',\n        color: colorScheme === 'dark' ? '#ffffff' : '#000000',\n        minHeight: '100vh',\n      }}\n    >\n      <div style={{ fontFamily: 'monospace', fontSize: 24 }}>Color scheme: {colorScheme}</div>\n      <p style={{ marginTop: 16 }}>\n        Change your system color scheme preference to see this value update.\n      </p>\n    </div>\n  );\n}",
+    "usage": "<UseColorSchemeStory />",
+    "props": [
+      {
+        "name": "className",
+        "type": "string",
+        "default": "undefined",
+        "description": "Optional CSS class name override"
+      }
+    ],
+    "deps": [
+      "@mantine/core",
+      "@mantine/hooks"
+    ],
+    "dependsOn": [],
+    "shared": [
+      "utils/cn"
+    ]
+  },
+  {
+    "id": "use-color-scheme-test",
+    "code": "import { render } from '@testing-library/react';\nimport { useColorScheme } from './use-color-scheme';\n\ndescribe('@mantine/hooks/use-color-scheme', () => {\n  let trace = jest.fn<(colorScheme: string) => void, string[]>();\n  const mockMatchMedia = jest.fn().mockImplementation(() => ({\n    matches: true,\n    media: '',\n    onchange: null,\n    addListener: jest.fn(),\n    removeListener: jest.fn(),\n  }));\n  const retainMatchMedia = window.matchMedia;\n  beforeEach(() => {\n    trace = jest.fn();\n    window.matchMedia = retainMatchMedia;\n  });\n  function WrapperComponent({\n    initialValue,\n    getInitialValueInEffect = true,\n  }: {\n    initialValue?: 'light' | 'dark';\n    getInitialValueInEffect?: boolean;\n  }) {\n    const colorScheme = useColorScheme(initialValue, {\n      getInitialValueInEffect,\n    });\n    trace(colorScheme);\n    return colorScheme;\n  }\n\n  it('correctly returns initial dark state without useEffect', () => {\n    window.matchMedia = mockMatchMedia;\n    render(<WrapperComponent initialValue=\"dark\" getInitialValueInEffect={false} />);\n    expect(trace).toHaveBeenCalledTimes(1);\n    expect(trace.mock.calls[0][0]).toBe('dark');\n  });\n\n  it('correctly returns initial light state with useEffect', () => {\n    render(<WrapperComponent initialValue=\"dark\" getInitialValueInEffect />);\n    expect(trace).toHaveBeenCalledTimes(2);\n    expect(trace.mock.calls[0][0]).toBe('dark');\n    expect(trace.mock.calls[1][0]).toBe('light');\n  });\n  it('correctly returns initial dark state with useEffect', () => {\n    window.matchMedia = mockMatchMedia;\n    render(<WrapperComponent initialValue=\"dark\" getInitialValueInEffect />);\n    expect(trace).toHaveBeenCalledTimes(1);\n    expect(trace.mock.calls[0][0]).toBe('dark');\n  });\n  it('correctly returns initial light state with default props', () => {\n    render(<WrapperComponent />);\n    expect(trace).toHaveBeenCalledTimes(1);\n    expect(trace.mock.calls[0][0]).toBe('light');\n  });\n  it('correctly returns initial dark state with default props', () => {\n    window.matchMedia = mockMatchMedia;\n    render(<WrapperComponent />);\n    expect(trace).toHaveBeenCalledTimes(2);\n    expect(trace.mock.calls[0][0]).toBe('light');\n    expect(trace.mock.calls[1][0]).toBe('dark');\n  });\n});",
+    "usage": "<UseColorSchemeTest />",
+    "props": [
+      {
+        "name": "className",
+        "type": "string",
+        "default": "undefined",
+        "description": "Optional CSS class name override"
+      }
+    ],
+    "deps": [
+      "@mantine/core",
+      "@mantine/hooks"
+    ],
+    "dependsOn": [],
+    "shared": [
+      "utils/cn"
+    ]
+  },
+  {
+    "id": "use-controllable-state",
+    "code": "import * as React from 'react';\nimport { IS_DEVELOPMENT } from '@radix-ui/primitive/is-development';\nimport { useLayoutEffect } from '@radix-ui/react-use-layout-effect';\n\n// Prevent bundlers from trying to optimize the import\nconst useInsertionEffect: typeof useLayoutEffect =\n  (React as any)[' useInsertionEffect '.trim().toString()] || useLayoutEffect;\n\ntype ChangeHandler<T> = (state: T) => void;\ntype SetStateFn<T> = React.Dispatch<React.SetStateAction<T>>;\n\ninterface UseControllableStateParams<T> {\n  prop?: T | undefined;\n  defaultProp: T;\n  onChange?: ChangeHandler<T> | undefined;\n  caller?: string | undefined;\n}\n\nexport function useControllableState<T>({\n  prop,\n  defaultProp,\n  onChange = () => {},\n  caller,\n}: UseControllableStateParams<T>): [T, SetStateFn<T>] {\n  const [uncontrolledProp, setUncontrolledProp, onChangeRef] = useUncontrolledState({\n    defaultProp,\n    onChange,\n  });\n  const isControlled = prop !== undefined;\n  const value = isControlled ? prop : uncontrolledProp;\n\n  // OK to disable conditionally calling hooks here because they will always run\n  // consistently in the same environment. Bundlers should be able to remove the\n  // code block entirely in production.\n  /* eslint-disable react-hooks/rules-of-hooks */\n  if (IS_DEVELOPMENT) {\n    const isControlledRef = React.useRef(prop !== undefined);\n    React.useEffect(() => {\n      const wasControlled = isControlledRef.current;\n      if (wasControlled !== isControlled) {\n        const from = wasControlled ? 'controlled' : 'uncontrolled';\n        const to = isControlled ? 'controlled' : 'uncontrolled';\n        console.warn(\n          `${caller} is changing from ${from} to ${to}. Components should not switch from controlled to uncontrolled (or vice versa). Decide between using a controlled or uncontrolled value for the lifetime of the component.`,\n        );\n      }\n      isControlledRef.current = isControlled;\n    }, [isControlled, caller]);\n  }\n  /* eslint-enable react-hooks/rules-of-hooks */\n\n  const setValue = React.useCallback<SetStateFn<T>>(\n    (nextValue) => {\n      if (isControlled) {\n        const value = isFunction(nextValue) ? nextValue(prop) : nextValue;\n        if (value !== prop) {\n          onChangeRef.current?.(value);\n        }\n      } else {\n        setUncontrolledProp(nextValue);\n      }\n    },\n    [isControlled, prop, setUncontrolledProp, onChangeRef],\n  );\n\n  return [value, setValue];\n}\n\nfunction useUncontrolledState<T>({\n  defaultProp,\n  onChange,\n}: Omit<UseControllableStateParams<T>, 'prop'>): [\n  Value: T,\n  setValue: React.Dispatch<React.SetStateAction<T>>,\n  OnChangeRef: React.RefObject<ChangeHandler<T> | undefined>,\n] {\n  const [value, setValue] = React.useState(defaultProp);\n  const prevValueRef = React.useRef(value);\n\n  const onChangeRef = React.useRef(onChange);\n  useInsertionEffect(() => {\n    onChangeRef.current = onChange;\n  }, [onChange]);\n\n  React.useEffect(() => {\n    if (prevValueRef.current !== value) {\n      onChangeRef.current?.(value);\n      prevValueRef.current = value;\n    }\n  }, [value, prevValueRef]);\n\n  return [value, setValue, onChangeRef];\n}\n\nfunction isFunction(value: unknown): value is (...args: any[]) => any {\n  return typeof value === 'function';\n}",
+    "usage": "<UseControllableState />",
+    "props": [
+      {
+        "name": "className",
+        "type": "string",
+        "default": "undefined",
+        "description": "Optional CSS class name override"
+      }
+    ],
+    "deps": [
+      "@radix-ui/react-primitive"
+    ],
+    "dependsOn": [],
+    "shared": [
+      "utils/cn"
+    ]
+  },
+  {
+    "id": "use-controllable-state-reducer",
+    "code": "import * as React from 'react';\nimport { IS_DEVELOPMENT } from '@radix-ui/primitive/is-development';\nimport { useEffectEvent } from '@radix-ui/react-use-effect-event';\n\ntype ChangeHandler<T> = (state: T) => void;\n\ninterface UseControllableStateParams<T> {\n  prop: T | undefined;\n  defaultProp: T;\n  onChange: ChangeHandler<T> | undefined;\n  caller: string;\n}\n\ninterface AnyAction {\n  type: string;\n}\n\nconst SYNC_STATE = Symbol('RADIX:SYNC_STATE');\n\ninterface SyncStateAction<T> {\n  type: typeof SYNC_STATE;\n  state: T;\n}\n\nexport function useControllableStateReducer<T, S extends {}, A extends AnyAction>(\n  reducer: (prevState: S & { state: T }, action: A) => S & { state: T },\n  userArgs: UseControllableStateParams<T>,\n  initialState: S,\n): [S & { state: T }, React.Dispatch<A>];\n\nexport function useControllableStateReducer<T, S extends {}, I, A extends AnyAction>(\n  reducer: (prevState: S & { state: T }, action: A) => S & { state: T },\n  userArgs: UseControllableStateParams<T>,\n  initialArg: I,\n  init: (i: I & { state: T }) => S,\n): [S & { state: T }, React.Dispatch<A>];\n\nexport function useControllableStateReducer<T, S extends {}, A extends AnyAction>(\n  reducer: (prevState: S & { state: T }, action: A) => S & { state: T },\n  userArgs: UseControllableStateParams<T>,\n  initialArg: any,\n  init?: (i: any) => Omit<S, 'state'>,\n): [S & { state: T }, React.Dispatch<A>] {\n  const { prop: controlledState, defaultProp, onChange: onChangeProp, caller } = userArgs;\n  const isControlled = controlledState !== undefined;\n\n  const onChange = useEffectEvent(onChangeProp);\n\n  // OK to disable conditionally calling hooks here because they will always run\n  // consistently in the same environment. Bundlers should be able to remove the\n  // code block entirely in production.\n  /* eslint-disable react-hooks/rules-of-hooks */\n  if (IS_DEVELOPMENT) {\n    const isControlledRef = React.useRef(controlledState !== undefined);\n    React.useEffect(() => {\n      const wasControlled = isControlledRef.current;\n      if (wasControlled !== isControlled) {\n        const from = wasControlled ? 'controlled' : 'uncontrolled';\n        const to = isControlled ? 'controlled' : 'uncontrolled';\n        console.warn(\n          `${caller} is changing from ${from} to ${to}. Components should not switch from controlled to uncontrolled (or vice versa). Decide between using a controlled or uncontrolled value for the lifetime of the component.`,\n        );\n      }\n      isControlledRef.current = isControlled;\n    }, [isControlled, caller]);\n  }\n  /* eslint-enable react-hooks/rules-of-hooks */\n\n  type InternalState = S & { state: T };\n  const args: [InternalState] = [{ ...initialArg, state: defaultProp }];\n  if (init) {\n    // @ts-expect-error\n    args.push(init);\n  }\n\n  const [internalState, dispatch] = React.useReducer(\n    (state: InternalState, action: A | SyncStateAction<T>): InternalState => {\n      if (action.type === SYNC_STATE) {\n        return { ...state, state: action.state };\n      }\n\n      const next = reducer(state, action);\n      if (isControlled && !Object.is(next.state, state.state)) {\n        onChange(next.state);\n      }\n      return next;\n    },\n    ...args,\n  );\n\n  const uncontrolledState = internalState.state;\n  const prevValueRef = React.useRef(uncontrolledState);\n  React.useEffect(() => {\n    if (prevValueRef.current !== uncontrolledState) {\n      prevValueRef.current = uncontrolledState;\n      if (!isControlled) {\n        onChange(uncontrolledState);\n      }\n    }\n  }, [uncontrolledState, prevValueRef, isControlled]);\n\n  const state = React.useMemo(() => {\n    const isControlled = controlledState !== undefined;\n    if (isControlled) {\n      return { ...internalState, state: controlledState };\n    }\n\n    return internalState;\n  }, [internalState, controlledState]);\n\n  React.useEffect(() => {\n    // Sync internal state for controlled components so that reducer is called\n    // with the correct state values\n    if (isControlled && !Object.is(controlledState, internalState.state)) {\n      dispatch({ type: SYNC_STATE, state: controlledState });\n    }\n  }, [controlledState, internalState.state, isControlled]);\n\n  return [state, dispatch as React.Dispatch<A>];\n}",
+    "usage": "<UseControllableStateReducer />",
+    "props": [
+      {
+        "name": "className",
+        "type": "string",
+        "default": "undefined",
+        "description": "Optional CSS class name override"
+      }
+    ],
+    "deps": [
+      "@radix-ui/react-primitive"
+    ],
+    "dependsOn": [],
+    "shared": [
+      "utils/cn"
+    ]
+  },
+  {
+    "id": "use-controllable-state-test",
+    "code": "import * as React from 'react';\nimport { screen, cleanup, render, waitFor } from '@testing-library/react';\nimport { useControllableState } from './use-controllable-state';\nimport { afterEach, describe, it, expect, afterAll, vi } from 'vitest';\nimport userEvent from '@testing-library/user-event';\n\ndescribe('useControllableState', () => {\n  afterEach(cleanup);\n\n  describe('given a controlled value', () => {\n    it('should initially use the controlled value', () => {\n      render(<ControlledComponent />);\n      const checkbox = screen.getByRole('checkbox');\n      expect(checkbox).toHaveAttribute('aria-checked', 'false');\n    });\n\n    it('should update the value when set internally', async () => {\n      render(<ControlledComponent />);\n      const checkbox = screen.getByRole('checkbox');\n      userEvent.click(checkbox);\n      await waitFor(() => {\n        expect(checkbox).toHaveAttribute('aria-checked', 'true');\n      });\n    });\n\n    it('should update the value when set externally', async () => {\n      render(<ControlledComponent defaultChecked />);\n      const checkbox = screen.getByRole('checkbox');\n      const clearButton = screen.getByText('Clear value');\n      userEvent.click(clearButton);\n      await waitFor(() => {\n        expect(checkbox).toHaveAttribute('aria-checked', 'false');\n      });\n    });\n  });\n\n  describe('given a default value', () => {\n    it('should initially use the default value', () => {\n      render(<UncontrolledComponent defaultChecked />);\n      const checkbox = screen.getByRole('checkbox');\n      expect(checkbox).toHaveAttribute('aria-checked', 'true');\n    });\n\n    it('should update the value', async () => {\n      render(<UncontrolledComponent defaultChecked />);\n      const checkbox = screen.getByRole('checkbox');\n      userEvent.click(checkbox);\n      await waitFor(() => {\n        expect(checkbox).toHaveAttribute('aria-checked', 'false');\n      });\n    });\n  });\n\n  describe('switching between controlled and uncontrolled', () => {\n    const consoleMock = vi.spyOn(console, 'warn').mockImplementation(() => void 0);\n    afterAll(() => {\n      consoleMock.mockReset();\n    });\n\n    describe('controlled to uncontrolled', () => {\n      it('should warn', async () => {\n        render(<UnstableComponent defaultChecked />);\n        const clearButton = screen.getByText('Clear value');\n        userEvent.click(clearButton);\n        await waitFor(() => {\n          expect(consoleMock).toHaveBeenLastCalledWith(\n            'Checkbox is changing from controlled to uncontrolled. Components should not switch from controlled to uncontrolled (or vice versa). Decide between using a controlled or uncontrolled value for the lifetime of the component.',\n          );\n        });\n      });\n    });\n\n    describe('uncontrolled to controlled', () => {\n      it('should warn', async () => {\n        render(<UnstableComponent />);\n        const checkbox = screen.getByRole('checkbox');\n        userEvent.click(checkbox);\n        await waitFor(() => {\n          expect(consoleMock).toHaveBeenLastCalledWith(\n            'Checkbox is changing from uncontrolled to controlled. Components should not switch from controlled to uncontrolled (or vice versa). Decide between using a controlled or uncontrolled value for the lifetime of the component.',\n          );\n        });\n      });\n    });\n  });\n});\n\nfunction ControlledComponent({ defaultChecked }: { defaultChecked?: boolean | undefined }) {\n  const [checked, setChecked] = React.useState(defaultChecked ?? false);\n  return (\n    <div>\n      <Checkbox checked={checked} onChange={setChecked} />\n      <button type=\"button\" onClick={() => setChecked(false)}>\n        Clear value\n      </button>\n    </div>\n  );\n}\n\nfunction UncontrolledComponent({ defaultChecked }: { defaultChecked?: boolean | undefined }) {\n  return <Checkbox defaultChecked={defaultChecked} />;\n}\n\nfunction UnstableComponent({ defaultChecked }: { defaultChecked?: boolean | undefined }) {\n  const [checked, setChecked] = React.useState(defaultChecked);\n  return (\n    <div>\n      <Checkbox checked={checked} onChange={setChecked} />\n      <button type=\"button\" onClick={() => setChecked(undefined)}>\n        Clear value\n      </button>\n    </div>\n  );\n}\n\nfunction Checkbox(props: {\n  checked?: boolean | undefined;\n  defaultChecked?: boolean | undefined;\n  onChange?: ((value: boolean) => void) | undefined;\n}) {\n  const [checked, setChecked] = useControllableState({\n    defaultProp: props.defaultChecked ?? false,\n    prop: props.checked,\n    onChange: props.onChange,\n    caller: 'Checkbox',\n  });\n\n  return (\n    <button\n      type=\"button\"\n      role=\"checkbox\"\n      aria-checked={checked}\n      onKeyDown={(e) => void (e.key === 'Enter' && e.preventDefault())}\n      onClick={() => setChecked((c) => !c)}\n    />\n  );\n}",
+    "usage": "<UseControllableStateTest />",
+    "props": [
+      {
+        "name": "className",
+        "type": "string",
+        "default": "undefined",
+        "description": "Optional CSS class name override"
+      }
+    ],
+    "deps": [
+      "@radix-ui/react-primitive"
+    ],
+    "dependsOn": [],
+    "shared": [
+      "utils/cn"
+    ]
+  },
+  {
+    "id": "use-copy-to-clipboard-test",
+    "code": "import { Activity, version } from \"react\";\nimport { act, render, renderHook } from \"@testing-library/react\";\nimport { afterEach, beforeEach, describe, expect, it, vi } from \"vitest\";\nimport { useCopyToClipboard } from \"./use-copy-to-clipboard\";\n\nconst onReact18 = version.startsWith(\"18.\");\n\nconst stubClipboard = (writeText: (value: string) => Promise<void>) => {\n  vi.stubGlobal(\"navigator\", { ...navigator, clipboard: { writeText } });\n};\n\ndescribe(\"useCopyToClipboard\", () => {\n  beforeEach(() => {\n    vi.useFakeTimers();\n  });\n\n  afterEach(() => {\n    vi.useRealTimers();\n    vi.unstubAllGlobals();\n  });\n\n  it(\"keeps copy success visible for the full duration after copying again\", async () => {\n    const writeText = vi.fn().mockResolvedValue(undefined);\n    stubClipboard(writeText);\n    const { result } = renderHook(() =>\n      useCopyToClipboard({ copiedDuration: 1800 }),\n    );\n\n    await act(async () => {\n      result.current.copyToClipboard(\"first\");\n      await Promise.resolve();\n    });\n    await act(async () => {\n      await vi.advanceTimersByTimeAsync(1000);\n    });\n    await act(async () => {\n      result.current.copyToClipboard(\"second\");\n      await Promise.resolve();\n    });\n\n    expect(result.current.isCopied).toBe(true);\n    await act(async () => {\n      await vi.advanceTimersByTimeAsync(1799);\n    });\n    expect(result.current.isCopied).toBe(true);\n    await act(async () => {\n      await vi.advanceTimersByTimeAsync(1);\n    });\n    expect(result.current.isCopied).toBe(false);\n    expect(writeText).toHaveBeenNthCalledWith(1, \"first\");\n    expect(writeText).toHaveBeenNthCalledWith(2, \"second\");\n  });\n\n  it(\"does not show copied when the clipboard write fails\", async () => {\n    const writeText = vi\n      .fn()\n      .mockRejectedValue(new Error(\"clipboard permission denied\"));\n    stubClipboard(writeText);\n    const { result } = renderHook(() => useCopyToClipboard());\n\n    await act(async () => {\n      result.current.copyToClipboard(\"value\");\n      await Promise.resolve();\n    });\n\n    expect(result.current.isCopied).toBe(false);\n    expect(vi.getTimerCount()).toBe(0);\n    expect(writeText).toHaveBeenCalledWith(\"value\");\n  });\n\n  it(\"does not show copied when the clipboard is unavailable\", async () => {\n    vi.stubGlobal(\"navigator\", { ...navigator, clipboard: undefined });\n    const { result } = renderHook(() => useCopyToClipboard());\n\n    await act(async () => {\n      result.current.copyToClipboard(\"value\");\n      await Promise.resolve();\n    });\n\n    expect(result.current.isCopied).toBe(false);\n    expect(vi.getTimerCount()).toBe(0);\n  });\n\n  it(\"clears its timer on unmount\", async () => {\n    stubClipboard(vi.fn().mockResolvedValue(undefined));\n    const { result, unmount } = renderHook(() => useCopyToClipboard());\n\n    await act(async () => {\n      result.current.copyToClipboard(\"value\");\n      await Promise.resolve();\n    });\n    expect(vi.getTimerCount()).toBe(1);\n\n    unmount();\n\n    expect(vi.getTimerCount()).toBe(0);\n  });\n\n  it(\"ignores clipboard success after unmount\", async () => {\n    let resolveCopy!: () => void;\n    stubClipboard(\n      () =>\n        new Promise<void>((resolve) => {\n          resolveCopy = resolve;\n        }),\n    );\n    const { result, unmount } = renderHook(() => useCopyToClipboard());\n\n    result.current.copyToClipboard(\"value\");\n    unmount();\n    resolveCopy();\n    await act(async () => {\n      await Promise.resolve();\n    });\n\n    expect(vi.getTimerCount()).toBe(0);\n  });\n\n  // Activity is React 19 only.\n  it.skipIf(onReact18)(\n    \"resets the confirmation when a hidden Activity cancels its timer\",\n    async () => {\n      stubClipboard(vi.fn().mockResolvedValue(undefined));\n      let copy!: ReturnType<typeof useCopyToClipboard>;\n      const Probe = () => {\n        copy = useCopyToClipboard();\n        return null;\n      };\n      const App = ({ mode }: { mode: \"visible\" | \"hidden\" }) => (\n        <Activity mode={mode}>\n          <Probe />\n        </Activity>\n      );\n      const view = render(<App mode=\"visible\" />);\n\n      await act(async () => {\n        copy.copyToClipboard(\"first\");\n        await Promise.resolve();\n      });\n      expect(copy.isCopied).toBe(true);\n\n      view.rerender(<App mode=\"hidden\" />);\n      view.rerender(<App mode=\"visible\" />);\n\n      expect(copy.isCopied).toBe(false);\n      expect(vi.getTimerCount()).toBe(0);\n\n      await act(async () => {\n        copy.copyToClipboard(\"second\");\n        await Promise.resolve();\n      });\n      expect(copy.isCopied).toBe(true);\n    },\n  );\n});",
+    "usage": "<UseCopyToClipboardTest />",
+    "props": [
+      {
+        "name": "className",
+        "type": "string",
+        "default": "undefined",
+        "description": "Optional CSS class name override"
+      }
+    ],
+    "deps": [
+      "@assistant-ui/react"
+    ],
+    "dependsOn": [],
+    "shared": [
+      "utils/cn"
+    ]
+  },
+  {
+    "id": "use-cycle-test",
+    "code": "import { fireEvent } from \"@testing-library/react\"\nimport { useEffect } from \"react\"\nimport { click, render } from \"../../jest.setup\"\nimport { useCycle } from \"../use-cycle\"\n\ndescribe(\"useCycle\", () => {\n    test(\"cycles through given states\", () => {\n        const results: number[] = []\n\n        const Component = () => {\n            const [latest, cycle] = useCycle(1, 2, 3, 4)\n            useEffect(() => {\n                if (results[results.length - 1] !== latest) results.push(latest)\n            }, [latest])\n\n            return <div onClick={() => cycle()} />\n        }\n\n        const { container } = render(<Component />)\n\n        click(container.firstChild as Element)\n        click(container.firstChild as Element)\n        click(container.firstChild as Element)\n        click(container.firstChild as Element)\n\n        expect(results).toEqual([1, 2, 3, 4, 1])\n    })\n\n    test(\"jumps to a given index\", () => {\n        let result: number = 0\n\n        const Component = () => {\n            const [latest, cycle] = useCycle(1, 2, 3, 4)\n            result = latest\n            return <div onClick={() => cycle(2)} />\n        }\n\n        const { container } = render(<Component />)\n        fireEvent.click(container.firstChild as Element)\n\n        expect(result).toBe(3)\n    })\n\n    test(\"is not functionally bound by the render cycle\", () => {\n        let result: number = 0\n\n        const Component = () => {\n            const [latest, cycle] = useCycle(1, 2, 3, 4)\n            result = latest\n            return <div onClick={() => (cycle(), cycle())} />\n        }\n\n        const { container } = render(<Component />)\n        fireEvent.click(container.firstChild as Element)\n\n        expect(result).toBe(3)\n    })\n})\n\n// initial index\n// cycle(index)",
+    "usage": "<UseCycleTest />",
+    "props": [
+      {
+        "name": "className",
+        "type": "string",
+        "default": "undefined",
+        "description": "Optional CSS class name override"
+      }
+    ],
+    "deps": [
+      "motion",
+      "clsx",
+      "tailwind-merge"
+    ],
+    "dependsOn": [],
+    "shared": [
+      "utils/cn"
+    ]
+  },
+  {
+    "id": "use-dates-context-test",
+    "code": "import { renderHook } from '@testing-library/react';\nimport { DatesProvider } from './DatesProvider';\nimport { useDatesContext } from './use-dates-context';\n\ndescribe('@mantine/dates/use-dates-context', () => {\n  it('returns default values from context if hook is called without DatesProvider', () => {\n    const hook = renderHook(() => useDatesContext());\n    expect(hook.result.current.locale).toBe('en');\n    expect(hook.result.current.firstDayOfWeek).toBe(1);\n    expect(hook.result.current.weekendDays).toStrictEqual([0, 6]);\n\n    expect(hook.result.current.getLocale()).toBe('en');\n    expect(hook.result.current.getLocale('ru')).toBe('ru');\n\n    expect(hook.result.current.getFirstDayOfWeek()).toBe(1);\n    expect(hook.result.current.getFirstDayOfWeek(0)).toBe(0);\n    expect(hook.result.current.getFirstDayOfWeek(6)).toBe(6);\n\n    expect(hook.result.current.getWeekendDays()).toStrictEqual([0, 6]);\n    expect(hook.result.current.getWeekendDays([1, 5])).toStrictEqual([1, 5]);\n  });\n\n  it('returns correct values from DatesProvider context', () => {\n    const hook = renderHook(() => useDatesContext(), {\n      wrapper: ({ children }) => (\n        <DatesProvider settings={{ locale: 'ru', firstDayOfWeek: 0, weekendDays: [1, 2] }}>\n          {children}\n        </DatesProvider>\n      ),\n    });\n\n    expect(hook.result.current.locale).toBe('ru');\n    expect(hook.result.current.firstDayOfWeek).toBe(0);\n    expect(hook.result.current.weekendDays).toStrictEqual([1, 2]);\n\n    expect(hook.result.current.getLocale()).toBe('ru');\n    expect(hook.result.current.getLocale('en')).toBe('en');\n\n    expect(hook.result.current.getFirstDayOfWeek()).toBe(0);\n    expect(hook.result.current.getFirstDayOfWeek(1)).toBe(1);\n\n    expect(hook.result.current.getWeekendDays()).toStrictEqual([1, 2]);\n    expect(hook.result.current.getWeekendDays([1, 5])).toStrictEqual([1, 5]);\n  });\n});",
+    "usage": "<UseDatesContextTest />",
+    "props": [
+      {
+        "name": "className",
+        "type": "string",
+        "default": "undefined",
+        "description": "Optional CSS class name override"
+      }
+    ],
+    "deps": [
+      "@mantine/core",
+      "@mantine/hooks"
+    ],
+    "dependsOn": [],
+    "shared": [
+      "utils/cn"
+    ]
+  },
+  {
+    "id": "use-debounced-callback-demo-unmount",
+    "code": "import { useState } from 'react';\nimport { Button, Group, Stack, Text } from '@mantine/core';\nimport { useDebouncedCallback } from '@mantine/hooks';\nimport { MantineDemo } from '@mantinex/demo';\n\nconst code = `\nimport { useState } from 'react';\nimport { Button, Group, Stack, Text } from '@mantine/core';\nimport { useDebouncedCallback } from '@mantine/hooks';\n\nfunction InputWithDebounce({ onChange }) {\n  const [innerValue, setInnerValue] = useState('');\n  const debouncedCallback = useDebouncedCallback(\n    (newInnerValue) => {\n      onChange(newInnerValue);\n    },\n    { delay: 2000, flushOnUnmount: true }\n  );\n\n  const handleChange = (newInnerValue) => {\n    setInnerValue(newInnerValue);\n    debouncedCallback(newInnerValue);\n  };\n\n  return (\n    <input\n      aria-label=\"Enter text\"\n      placeholder=\"Enter text...\"\n      value={innerValue}\n      onChange={(event) => handleChange(event.target.value)}\n      style={{ padding: '8px', width: '100%' }}\n    />\n  );\n}\n\nfunction Demo() {\n  const [outerValue, setOuterValue] = useState('');\n  const [visible, setVisible] = useState(true);\n\n  return (\n    <Stack>\n      <Text fw={700}>Output value: {outerValue || '(none)'}</Text>\n\n      <Group>\n        <Button onClick={() => setVisible(!visible)}>\n          {visible ? 'Hide component' : 'Show component'}\n        </Button>\n      </Group>\n\n      {visible ? <InputWithDebounce onChange={setOuterValue} /> : null}\n\n      <Text size=\"sm\" c=\"dimmed\">\n        1. Type text and wait 2 seconds for the value to be transmitted.\n        2. Type text and immediately click the 'Hide component' button.\n           The value will be transmitted immediately due to the flushOnUnmount option.\n      </Text>\n    </Stack>\n  );\n}\n`;\n\nfunction InputWithDebounce({ onChange }: { onChange: (value: string) => void }) {\n  const [innerValue, setInnerValue] = useState('');\n  const debouncedCallback = useDebouncedCallback(\n    (newInnerValue: string) => {\n      onChange(newInnerValue);\n    },\n    { delay: 2000, flushOnUnmount: true }\n  );\n\n  const handleChange = (newInnerValue: string) => {\n    setInnerValue(newInnerValue);\n    debouncedCallback(newInnerValue);\n  };\n\n  return (\n    <input\n      aria-label=\"Enter text\"\n      placeholder=\"Enter text...\"\n      value={innerValue}\n      onChange={(event) => handleChange(event.target.value)}\n      style={{ padding: '8px', width: '100%' }}\n    />\n  );\n}\n\nfunction Demo() {\n  const [outerValue, setOuterValue] = useState('');\n  const [visible, setVisible] = useState(true);\n\n  return (\n    <Stack>\n      <Text fw={700}>Output value: {outerValue || '(none)'}</Text>\n\n      <Group>\n        <Button onClick={() => setVisible(!visible)}>\n          {visible ? 'Hide component' : 'Show component'}\n        </Button>\n      </Group>\n\n      {visible ? <InputWithDebounce onChange={setOuterValue} /> : null}\n\n      <Text size=\"sm\" c=\"dimmed\">\n        1. Type text and wait 2 seconds for the value to be transmitted. 2. Type text and\n        immediately click the 'Hide component' button. The value will be transmitted immediately due\n        to the flushOnUnmount option.\n      </Text>\n    </Stack>\n  );\n}\n\nexport const unmount: MantineDemo = {\n  type: 'code',\n  component: Demo,\n  code,\n  centered: true,\n  maxWidth: 500,\n};",
+    "usage": "<UseDebouncedCallbackDemoUnmount />",
+    "props": [
+      {
+        "name": "className",
+        "type": "string",
+        "default": "undefined",
+        "description": "Optional CSS class name override"
+      }
+    ],
+    "deps": [
+      "@mantine/core",
+      "@mantine/hooks"
+    ],
+    "dependsOn": [],
+    "shared": [
+      "utils/cn"
+    ]
+  }
+]

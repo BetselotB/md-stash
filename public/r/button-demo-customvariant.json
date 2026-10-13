@@ -1,0 +1,35 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "button-demo-customvariant",
+  "type": "registry:ui",
+  "title": "Button.demo.customVariant",
+  "description": "Button.demo.customVariant component harvested from mantine with css-modules styling.",
+  "dependencies": [
+    "@mantine/core",
+    "@mantine/hooks"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/button-demo-customvariant.tsx",
+      "content": "import { Button, createTheme, Group, MantineThemeProvider } from '@mantine/core';\nimport { MantineDemo } from '@mantinex/demo';\nimport classes from './Button.demo.customVariant.module.css';\n\nconst code = `\nimport { Group, Button, MantineProvider, createTheme } from '@mantine/core';\nimport classes from './Demo.module.css';\n\nconst theme = createTheme({\n  components: {\n    Button: Button.extend({\n      classNames: classes,\n    }),\n  },\n});\n\nfunction Demo() {\n  return (\n    <MantineProvider theme={theme}>\n      <Group>\n        <Button variant=\"danger\">Danger variant</Button>\n        <Button variant=\"primary\">Primary variant</Button>\n      </Group>\n    </MantineProvider>\n  );\n}\n`;\n\nconst cssCode = `\n.root {\n  &[data-variant='danger'] {\n    background-color: var(--mantine-color-red-9);\n    color: var(--mantine-color-red-0);\n  }\n\n  &[data-variant='primary'] {\n    background: linear-gradient(45deg, #4b6cb7 10%, #253b67 90%);\n    color: var(--mantine-color-white);\n    border-width: 0;\n  }\n}\n`;\n\nconst theme = createTheme({\n  components: {\n    Button: Button.extend({\n      classNames: classes,\n    }),\n  },\n});\n\nfunction Demo() {\n  return (\n    <MantineThemeProvider theme={theme}>\n      <Group>\n        <Button variant=\"danger\">Danger variant</Button>\n        <Button variant=\"primary\">Primary variant</Button>\n      </Group>\n    </MantineThemeProvider>\n  );\n}\n\nexport const customVariant: MantineDemo = {\n  type: 'code',\n  component: Demo,\n  centered: true,\n  code: [\n    { fileName: 'Demo.tsx', code, language: 'tsx' },\n    { fileName: 'Demo.module.css', code: cssCode, language: 'scss' },\n  ],\n};",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Mantine — MIT © 2020-present Vitaly Rtishchev (https://mantine.dev)",
+    "source": "mantine",
+    "styling": "css-modules",
+    "category": "buttons",
+    "previewStatus": "unsupported"
+  }
+}

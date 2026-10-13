@@ -1,0 +1,35 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "use-click-outside-story",
+  "type": "registry:hook",
+  "title": "Use Click Outside.story",
+  "description": "Use Click Outside.story component harvested from mantine with css-modules styling.",
+  "dependencies": [
+    "@mantine/core",
+    "@mantine/hooks"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "hooks/use-click-outside-story.ts",
+      "content": "import { useState } from 'react';\nimport { useClickOutside } from './use-click-outside';\n\nexport default { title: 'use-click-outside' };\n\nexport function Usage() {\n  const [visible, setVisible] = useState(false);\n  const ref = useClickOutside(() => console.log('clicked outside'));\n\n  return (\n    <div style={{ padding: 40 }}>\n      {visible && (\n        <div ref={ref} style={{ padding: 40, background: 'orange' }}>\n          Click outside\n        </div>\n      )}\n\n      <button onClick={() => setVisible((v) => !v)}>Toggle visible</button>\n    </div>\n  );\n}",
+      "type": "registry:hook"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Mantine — MIT © 2020-present Vitaly Rtishchev (https://mantine.dev)",
+    "source": "mantine",
+    "styling": "css-modules",
+    "category": "hooks",
+    "previewStatus": "primitive"
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "use-breakpoint-test",
+  "type": "registry:hook",
+  "title": "Use Breakpoint.test",
+  "description": "Use Breakpoint.test component harvested from chakra-ui with css-in-js styling.",
+  "dependencies": [
+    "@chakra-ui/react"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "hooks/use-breakpoint-test.ts",
+      "content": "import { renderHook } from \"@testing-library/react\"\nimport { ChakraProvider, defaultSystem, useBreakpoint } from \"../src\"\n\nconst wrapper = ({ children }: { children: React.ReactNode }) => (\n  <ChakraProvider value={defaultSystem}>{children}</ChakraProvider>\n)\n\n// the viewport is wide enough for `base`, `sm` and `md`, but not `lg` and up\nconst matching = [\n  \"(min-width: 0px)\",\n  \"(min-width: 30rem)\",\n  \"(min-width: 48rem)\",\n]\n\nconst mockMatchMedia = () =>\n  vi.fn().mockImplementation((query: string) => ({\n    matches: matching.includes(query),\n    media: query,\n    addEventListener: () => {},\n    removeEventListener: () => {},\n  }))\n\ndescribe(\"useBreakpoint\", () => {\n  let originalMatchMedia: typeof window.matchMedia\n\n  beforeEach(() => {\n    originalMatchMedia = window.matchMedia\n    window.matchMedia = mockMatchMedia() as any\n  })\n\n  afterEach(() => {\n    window.matchMedia = originalMatchMedia\n  })\n\n  test(\"should return the highest matching breakpoint when no breakpoints are listed\", () => {\n    const { result } = renderHook(() => useBreakpoint({ ssr: false }), {\n      wrapper,\n    })\n\n    expect(result.current).toBe(\"md\")\n  })\n\n  test(\"should return the highest matching breakpoint from the listed breakpoints\", () => {\n    const { result } = renderHook(\n      () => useBreakpoint({ ssr: false, breakpoints: [\"base\", \"sm\", \"md\"] }),\n      { wrapper },\n    )\n\n    expect(result.current).toBe(\"md\")\n  })\n\n  test(\"should not return a listed breakpoint that does not match\", () => {\n    const { result } = renderHook(\n      () => useBreakpoint({ ssr: false, breakpoints: [\"base\", \"lg\"] }),\n      { wrapper },\n    )\n\n    expect(result.current).toBe(\"base\")\n  })\n\n  test(\"should return the fallback when no breakpoint matches\", () => {\n    window.matchMedia = vi.fn().mockImplementation((query: string) => ({\n      matches: false,\n      media: query,\n      addEventListener: () => {},\n      removeEventListener: () => {},\n    })) as any\n\n    const { result } = renderHook(\n      () => useBreakpoint({ ssr: false, fallback: \"sm\" }),\n      { wrapper },\n    )\n\n    expect(result.current).toBe(\"sm\")\n  })\n})",
+      "type": "registry:hook"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Chakra UI — MIT © 2019-present Segun Adebayo (https://chakra-ui.com)",
+    "source": "chakra-ui",
+    "styling": "css-in-js",
+    "category": "hooks",
+    "previewStatus": "primitive"
+  }
+}

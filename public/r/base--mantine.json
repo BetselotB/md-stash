@@ -1,0 +1,35 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "base--mantine",
+  "type": "registry:ui",
+  "title": " Base",
+  "description": " Base component harvested from mantine with css-modules styling.",
+  "dependencies": [
+    "@mantine/core",
+    "@mantine/hooks"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/base--mantine.tsx",
+      "content": "import {\n  ChatCircleDotsIcon,\n  GitBranchIcon,\n  GitCommitIcon,\n  GitPullRequestIcon,\n} from '@phosphor-icons/react';\nimport { Text, Timeline, TimelineProps } from '@mantine/core';\n\nexport function TimelineBase({ noIcon, ...props }: Partial<TimelineProps> & { noIcon?: boolean }) {\n  const displayIcon = !noIcon;\n  return (\n    <Timeline active={1} bulletSize={24} lineWidth={2} {...props}>\n      <Timeline.Item bullet={displayIcon ? <GitBranchIcon size={13} /> : null} title=\"New branch\">\n        <Text c=\"dimmed\" size=\"sm\">\n          You&apos;ve created new branch{' '}\n          <Text variant=\"link\" component=\"span\" inherit>\n            fix-notifications\n          </Text>{' '}\n          from master\n        </Text>\n        <Text size=\"xs\" mt={4}>\n          2 hours ago\n        </Text>\n      </Timeline.Item>\n\n      <Timeline.Item bullet={displayIcon ? <GitCommitIcon size={13} /> : null} title=\"Commits\">\n        <Text c=\"dimmed\" size=\"sm\">\n          You&apos;ve pushed 23 commits to{' '}\n          <Text variant=\"link\" component=\"span\" inherit>\n            fix-notifications\n          </Text>{' '}\n          branch\n        </Text>\n        <Text size=\"xs\" mt={4}>\n          52 minutes ago\n        </Text>\n      </Timeline.Item>\n\n      <Timeline.Item\n        title=\"Pull request\"\n        bullet={displayIcon ? <GitPullRequestIcon size={13} /> : null}\n        lineVariant=\"dashed\"\n      >\n        <Text c=\"dimmed\" size=\"sm\">\n          You&apos;ve submitted a pull request{' '}\n          <Text variant=\"link\" component=\"span\" inherit>\n            Fix incorrect notification message (#187)\n          </Text>{' '}\n        </Text>\n        <Text size=\"xs\" mt={4}>\n          34 minutes ago\n        </Text>\n      </Timeline.Item>\n\n      <Timeline.Item\n        title=\"Code review\"\n        bullet={displayIcon ? <ChatCircleDotsIcon size={13} /> : null}\n      >\n        <Text c=\"dimmed\" size=\"sm\">\n          <Text variant=\"link\" component=\"span\" inherit>\n            Robert Gluesticker\n          </Text>{' '}\n          left a code review on your pull request\n        </Text>\n        <Text size=\"xs\" mt={4}>\n          12 minutes ago\n        </Text>\n      </Timeline.Item>\n    </Timeline>\n  );\n}",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Mantine — MIT © 2020-present Vitaly Rtishchev (https://mantine.dev)",
+    "source": "mantine",
+    "styling": "css-modules",
+    "category": "data-display",
+    "previewStatus": "unsupported"
+  }
+}

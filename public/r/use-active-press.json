@@ -1,0 +1,35 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "use-active-press",
+  "type": "registry:hook",
+  "title": "Use Active Press",
+  "description": "Use Active Press component harvested from headless-ui with tailwind styling.",
+  "dependencies": [
+    "clsx",
+    "tailwind-merge"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "hooks/use-active-press.ts",
+      "content": "import { useRef, useState } from 'react'\nimport { getOwnerDocument } from '../utils/owner'\nimport { useDisposables } from './use-disposables'\nimport { useEvent } from './use-event'\n\n// Only the necessary props from a DOMRect\ntype Rect = { left: number; right: number; top: number; bottom: number }\n\nfunction pointerRectFromPointerEvent(event: PointerEvent): Rect {\n  // Center of the pointer geometry\n  let offsetX = event.width / 2\n  let offsetY = event.height / 2\n\n  return {\n    top: event.clientY - offsetY,\n    right: event.clientX + offsetX,\n    bottom: event.clientY + offsetY,\n    left: event.clientX - offsetX,\n  }\n}\n\nfunction areRectsOverlapping(a: Rect | null, b: Rect | null) {\n  if (!a || !b) {\n    return false\n  }\n\n  if (a.right < b.left || a.left > b.right) {\n    return false\n  }\n\n  if (a.bottom < b.top || a.top > b.bottom) {\n    return false\n  }\n\n  return true\n}\n\nexport function useActivePress({ disabled = false }: Partial<{ disabled: boolean }> = {}) {\n  let target = useRef<HTMLElement | null>(null)\n  let [pressed, setPressed] = useState(false)\n\n  let d = useDisposables()\n\n  let reset = useEvent(() => {\n    target.current = null\n    setPressed(false)\n    d.dispose()\n  })\n\n  let handlePointerDown = useEvent((event: PointerEvent) => {\n    d.dispose() // Cancel any scheduled tasks\n\n    if (target.current !== null) return\n\n    // Keep track of the current element\n    target.current = event.currentTarget as HTMLElement\n\n    // We are definitely pressing the element now\n    setPressed(true)\n\n    // Setup global handlers to catch events on elements that are not the current element\n    {\n      let owner = getOwnerDocument(event.currentTarget as Element)!\n\n      // `pointerup` on any element means that we are no longer pressing the current element\n      d.addEventListener(owner, 'pointerup', reset, false)\n\n      // `pointerleave` isn't called consistently (if at all) on iOS Safari, so we use `pointermove` instead\n      // to determine if we are still \"pressing\". We also compare the pointer position to the target element\n      // so that we can tell if the pointer is still over the element or not.\n      d.addEventListener(\n        owner,\n        'pointermove',\n        (event: PointerEvent) => {\n          if (target.current) {\n            let pointerRect = pointerRectFromPointerEvent(event)\n            setPressed(areRectsOverlapping(pointerRect, target.current.getBoundingClientRect()))\n          }\n        },\n        false\n      )\n\n      // Whenever the browser decides to fire a `pointercancel` event, we should abort\n      d.addEventListener(owner, 'pointercancel', reset, false)\n    }\n  })\n\n  return {\n    pressed,\n    pressProps: disabled\n      ? {}\n      : {\n          onPointerDown: handlePointerDown,\n          onPointerUp: reset,\n          onClick: reset,\n        },\n  }\n}",
+      "type": "registry:hook"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Headless UI — MIT © Tailwind Labs, Inc. (https://headlessui.com)",
+    "source": "headless-ui",
+    "styling": "tailwind",
+    "category": "hooks",
+    "previewStatus": "primitive"
+  }
+}

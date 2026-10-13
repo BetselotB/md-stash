@@ -1,0 +1,34 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "accordionpanel",
+  "type": "registry:ui",
+  "title": "AccordionPanel",
+  "description": "AccordionPanel component harvested from base-ui with unstyled styling.",
+  "dependencies": [
+    "@base-ui-components/react"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/accordionpanel.tsx",
+      "content": "'use client';\nimport * as React from 'react';\nimport { useIsoLayoutEffect } from '@base-ui/utils/useIsoLayoutEffect';\nimport { warn } from '@base-ui/utils/warn';\nimport type { BaseUIComponentProps } from '../../internals/types';\nimport { resolveStyle } from '../../utils/resolveStyle';\nimport { useCollapsibleRootContext } from '../../collapsible/root/CollapsibleRootContext';\nimport { useCollapsiblePanel } from '../../collapsible/panel/useCollapsiblePanel';\nimport { useAccordionRootContext } from '../root/AccordionRootContext';\nimport type { AccordionRoot } from '../root/AccordionRoot';\nimport type { AccordionItemState } from '../item/AccordionItem';\nimport { useAccordionItemContext } from '../item/AccordionItemContext';\nimport { accordionStateAttributesMapping } from '../item/stateAttributesMapping';\nimport * as AccordionPanelCssVars from './AccordionPanelCssVars';\nimport { useRenderElement } from '../../internals/useRenderElement';\nimport type { TransitionStatus } from '../../internals/useTransitionStatus';\n\n/**\n * A collapsible panel with the accordion item contents.\n * Renders a `<div>` element.\n *\n * Documentation: [Base UI Accordion](https://base-ui.com/react/components/accordion)\n */\nexport const AccordionPanel = React.forwardRef(function AccordionPanel(\n  componentProps: AccordionPanel.Props,\n  forwardedRef: React.ForwardedRef<HTMLDivElement>,\n) {\n  const {\n    className,\n    hiddenUntilFound: hiddenUntilFoundProp,\n    keepMounted: keepMountedProp,\n    id: idProp,\n    render,\n    style,\n    ...elementProps\n  } = componentProps;\n\n  const { hiddenUntilFound: contextHiddenUntilFound, keepMounted: contextKeepMounted } =\n    useAccordionRootContext();\n\n  const {\n    defaultPanelId,\n    mounted,\n    onOpenChange,\n    open,\n    setMounted,\n    setOpen,\n    setPanelIdState,\n    transitionStatus,\n  } = useCollapsibleRootContext();\n\n  const hiddenUntilFound = hiddenUntilFoundProp ?? contextHiddenUntilFound;\n  const keepMounted = keepMountedProp ?? contextKeepMounted;\n  const registeredId = idProp || undefined;\n  const id = idProp ?? defaultPanelId;\n\n  /* istanbul ignore else -- `process.env.NODE_ENV` is a build-time constant under test */\n  if (process.env.NODE_ENV !== 'production') {\n    // eslint-disable-next-line react-hooks/rules-of-hooks\n    React.useEffect(() => {\n      if (keepMountedProp === false && hiddenUntilFound) {\n        warn(\n          'The `keepMounted={false}` prop on an `Accordion.Panel` is ignored when `hiddenUntilFound` is enabled on the panel or root, since the panel must remain mounted while closed.',\n        );\n      }\n    }, [hiddenUntilFound, keepMountedProp]);\n  }\n\n  useIsoLayoutEffect(() => {\n    setPanelIdState((currentId) => registeredId ?? (currentId === null ? undefined : currentId));\n    return () => {\n      setPanelIdState((currentId) => (currentId === registeredId ? null : currentId));\n    };\n  }, [registeredId, setPanelIdState]);\n\n  const {\n    height,\n    props,\n    ref,\n    shouldPreventOpenAnimation,\n    shouldRender,\n    transitionStatus: panelTransitionStatus,\n    width,\n  } = useCollapsiblePanel({\n    externalRef: forwardedRef,\n    hiddenUntilFound,\n    id,\n    keepMounted,\n    mounted,\n    onOpenChange,\n    open,\n    setMounted,\n    setOpen,\n    transitionStatus,\n  });\n\n  const { state, triggerId } = useAccordionItemContext();\n\n  const panelState: AccordionPanelState = {\n    ...state,\n    transitionStatus: panelTransitionStatus,\n  };\n  const resolvedStyle = resolveStyle(style, panelState);\n\n  const element = useRenderElement(\n    'div',\n    {\n      ...componentProps,\n      style: undefined,\n    },\n    {\n      state: panelState,\n      ref,\n      props: [\n        props,\n        {\n          'aria-labelledby': triggerId,\n          role: 'region',\n          style: {\n            [AccordionPanelCssVars.accordionPanelHeight as string]:\n              height === undefined ? 'auto' : `${height}px`,\n            [AccordionPanelCssVars.accordionPanelWidth as string]:\n              width === undefined ? 'auto' : `${width}px`,\n          },\n        },\n        elementProps,\n        resolvedStyle ? { style: resolvedStyle } : undefined,\n        // Resolve the public `style` prop so temporary `animationName: 'none'`\n        // can still win after user's inline styles have been merged.\n        shouldPreventOpenAnimation ? { style: { animationName: 'none' } } : undefined,\n      ],\n      stateAttributesMapping: accordionStateAttributesMapping,\n    },\n  );\n\n  if (!shouldRender) {\n    return null;\n  }\n\n  return element;\n});\n\nexport interface AccordionPanelState extends AccordionItemState {\n  /**\n   * The transition status of the component.\n   */\n  transitionStatus: TransitionStatus;\n}\n\nexport interface AccordionPanelProps\n  extends\n    BaseUIComponentProps<'div', AccordionPanelState>,\n    Pick<AccordionRoot.Props, 'hiddenUntilFound' | 'keepMounted'> {}\n\nexport namespace AccordionPanel {\n  export type State = AccordionPanelState;\n  export type Props = AccordionPanelProps;\n}",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Base UI — MIT © 2020-present MUI (https://base-ui.com)",
+    "source": "base-ui",
+    "styling": "unstyled",
+    "category": "data-display",
+    "previewStatus": "needs-demo"
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "use-dates-context-test",
+  "type": "registry:hook",
+  "title": "Use Dates Context.test",
+  "description": "Use Dates Context.test component harvested from mantine with css-modules styling.",
+  "dependencies": [
+    "@mantine/core",
+    "@mantine/hooks"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "hooks/use-dates-context-test.ts",
+      "content": "import { renderHook } from '@testing-library/react';\nimport { DatesProvider } from './DatesProvider';\nimport { useDatesContext } from './use-dates-context';\n\ndescribe('@mantine/dates/use-dates-context', () => {\n  it('returns default values from context if hook is called without DatesProvider', () => {\n    const hook = renderHook(() => useDatesContext());\n    expect(hook.result.current.locale).toBe('en');\n    expect(hook.result.current.firstDayOfWeek).toBe(1);\n    expect(hook.result.current.weekendDays).toStrictEqual([0, 6]);\n\n    expect(hook.result.current.getLocale()).toBe('en');\n    expect(hook.result.current.getLocale('ru')).toBe('ru');\n\n    expect(hook.result.current.getFirstDayOfWeek()).toBe(1);\n    expect(hook.result.current.getFirstDayOfWeek(0)).toBe(0);\n    expect(hook.result.current.getFirstDayOfWeek(6)).toBe(6);\n\n    expect(hook.result.current.getWeekendDays()).toStrictEqual([0, 6]);\n    expect(hook.result.current.getWeekendDays([1, 5])).toStrictEqual([1, 5]);\n  });\n\n  it('returns correct values from DatesProvider context', () => {\n    const hook = renderHook(() => useDatesContext(), {\n      wrapper: ({ children }) => (\n        <DatesProvider settings={{ locale: 'ru', firstDayOfWeek: 0, weekendDays: [1, 2] }}>\n          {children}\n        </DatesProvider>\n      ),\n    });\n\n    expect(hook.result.current.locale).toBe('ru');\n    expect(hook.result.current.firstDayOfWeek).toBe(0);\n    expect(hook.result.current.weekendDays).toStrictEqual([1, 2]);\n\n    expect(hook.result.current.getLocale()).toBe('ru');\n    expect(hook.result.current.getLocale('en')).toBe('en');\n\n    expect(hook.result.current.getFirstDayOfWeek()).toBe(0);\n    expect(hook.result.current.getFirstDayOfWeek(1)).toBe(1);\n\n    expect(hook.result.current.getWeekendDays()).toStrictEqual([1, 2]);\n    expect(hook.result.current.getWeekendDays([1, 5])).toStrictEqual([1, 5]);\n  });\n});",
+      "type": "registry:hook"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Mantine — MIT © 2020-present Vitaly Rtishchev (https://mantine.dev)",
+    "source": "mantine",
+    "styling": "css-modules",
+    "category": "hooks",
+    "previewStatus": "primitive"
+  }
+}

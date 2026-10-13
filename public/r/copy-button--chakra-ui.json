@@ -1,0 +1,34 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "copy-button--chakra-ui",
+  "type": "registry:ui",
+  "title": "Copy Button",
+  "description": "Copy Button component harvested from chakra-ui with css-in-js styling.",
+  "dependencies": [
+    "@chakra-ui/react"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/copy-button--chakra-ui.tsx",
+      "content": "import { Clipboard } from \"@ark-ui/react/clipboard\"\nimport { IconButton } from \"@chakra-ui/react\"\nimport { LuCheck, LuCopy } from \"react-icons/lu\"\n\ninterface Props {\n  value: string\n}\n\nexport const CopyButton = (props: Props) => {\n  const { value } = props\n  return (\n    <Clipboard.Root className=\"dark\" value={value}>\n      <Clipboard.Trigger asChild>\n        <IconButton colorPalette=\"gray\" variant=\"ghost\" size=\"sm\">\n          <Clipboard.Indicator copied={<LuCheck />}>\n            <LuCopy />\n          </Clipboard.Indicator>\n        </IconButton>\n      </Clipboard.Trigger>\n    </Clipboard.Root>\n  )\n}",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Chakra UI — MIT © 2019-present Segun Adebayo (https://chakra-ui.com)",
+    "source": "chakra-ui",
+    "styling": "css-in-js",
+    "category": "buttons",
+    "previewStatus": "unsupported"
+  }
+}

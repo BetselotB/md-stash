@@ -1,0 +1,36 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "controlledaccordions",
+  "type": "registry:ui",
+  "title": "ControlledAccordions",
+  "description": "ControlledAccordions component harvested from mui with css-in-js styling.",
+  "dependencies": [
+    "@mui/material",
+    "@emotion/react",
+    "@emotion/styled"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/controlledaccordions.tsx",
+      "content": "import * as React from 'react';\nimport Accordion from '@mui/material/Accordion';\nimport AccordionDetails from '@mui/material/AccordionDetails';\nimport AccordionSummary from '@mui/material/AccordionSummary';\nimport Typography from '@mui/material/Typography';\nimport ExpandMoreIcon from '@mui/icons-material/ExpandMore';\n\nexport default function ControlledAccordions() {\n  // @focus-start @padding 1\n  const [expanded, setExpanded] = React.useState<string | false>(false);\n\n  const handleChange =\n    (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {\n      setExpanded(isExpanded ? panel : false);\n    };\n\n  return (\n    <div>\n      <Accordion expanded={expanded === 'panel1'} onChange={handleChange('panel1')}>\n        <AccordionSummary\n          expandIcon={<ExpandMoreIcon />}\n          aria-controls=\"panel1bh-content\"\n          id=\"panel1bh-header\"\n        >\n          <Typography component=\"span\" sx={{ width: '33%', flexShrink: 0 }}>\n            General settings\n          </Typography>\n          <Typography component=\"span\" sx={{ color: 'text.secondary' }}>\n            I am an accordion\n          </Typography>\n        </AccordionSummary>\n        <AccordionDetails>\n          <Typography>\n            Nulla facilisi. Phasellus sollicitudin nulla et quam mattis feugiat.\n            Aliquam eget maximus est, id dignissim quam.\n          </Typography>\n        </AccordionDetails>\n      </Accordion>\n      <Accordion expanded={expanded === 'panel2'} onChange={handleChange('panel2')}>\n        <AccordionSummary\n          expandIcon={<ExpandMoreIcon />}\n          aria-controls=\"panel2bh-content\"\n          id=\"panel2bh-header\"\n        >\n          <Typography component=\"span\" sx={{ width: '33%', flexShrink: 0 }}>\n            Users\n          </Typography>\n          <Typography component=\"span\" sx={{ color: 'text.secondary' }}>\n            You are currently not an owner\n          </Typography>\n        </AccordionSummary>\n        <AccordionDetails>\n          <Typography>\n            Donec placerat, lectus sed mattis semper, neque lectus feugiat lectus,\n            varius pulvinar diam eros in elit. Pellentesque convallis laoreet\n            laoreet.\n          </Typography>\n        </AccordionDetails>\n      </Accordion>\n      <Accordion expanded={expanded === 'panel3'} onChange={handleChange('panel3')}>\n        <AccordionSummary\n          expandIcon={<ExpandMoreIcon />}\n          aria-controls=\"panel3bh-content\"\n          id=\"panel3bh-header\"\n        >\n          <Typography component=\"span\" sx={{ width: '33%', flexShrink: 0 }}>\n            Advanced settings\n          </Typography>\n          <Typography component=\"span\" sx={{ color: 'text.secondary' }}>\n            Filtering has been entirely disabled for whole web server\n          </Typography>\n        </AccordionSummary>\n        <AccordionDetails>\n          <Typography>\n            Nunc vitae orci ultricies, auctor nunc in, volutpat nisl. Integer sit\n            amet egestas eros, vitae egestas augue. Duis vel est augue.\n          </Typography>\n        </AccordionDetails>\n      </Accordion>\n      <Accordion expanded={expanded === 'panel4'} onChange={handleChange('panel4')}>\n        <AccordionSummary\n          expandIcon={<ExpandMoreIcon />}\n          aria-controls=\"panel4bh-content\"\n          id=\"panel4bh-header\"\n        >\n          <Typography component=\"span\" sx={{ width: '33%', flexShrink: 0 }}>\n            Personal data\n          </Typography>\n        </AccordionSummary>\n        <AccordionDetails>\n          <Typography>\n            Nunc vitae orci ultricies, auctor nunc in, volutpat nisl. Integer sit\n            amet egestas eros, vitae egestas augue. Duis vel est augue.\n          </Typography>\n        </AccordionDetails>\n      </Accordion>\n    </div>\n  );\n  // @focus-end\n}",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Material UI — MIT © 2014-present Call-Em-All / Material-UI (https://mui.com)",
+    "source": "mui",
+    "styling": "css-in-js",
+    "category": "data-display",
+    "previewStatus": "unsupported"
+  }
+}

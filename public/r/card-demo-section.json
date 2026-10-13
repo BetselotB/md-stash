@@ -1,0 +1,35 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "card-demo-section",
+  "type": "registry:block",
+  "title": "Card.demo.section",
+  "description": "Card.demo.section component harvested from mantine with css-modules styling.",
+  "dependencies": [
+    "@mantine/core",
+    "@mantine/hooks"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/card-demo-section.tsx",
+      "content": "import { DotsThreeIcon, EyeIcon, FileZipIcon, TrashIcon } from '@phosphor-icons/react';\nimport { ActionIcon, Card, Group, Image, Menu, SimpleGrid, Text } from '@mantine/core';\nimport { MantineDemo } from '@mantinex/demo';\n\nconst code = `\nimport { ActionIcon, Card, Group, Image, Menu, SimpleGrid, Text } from '@mantine/core';\nimport { DotsThreeIcon, EyeIcon, FileZipIcon, TrashIcon } from '@phosphor-icons/react';\n\nconst images = [\n  'https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-1.png',\n  'https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-2.png',\n  'https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-3.png',\n];\n\nfunction Demo() {\n  return (\n    <Card withBorder shadow=\"sm\">\n      <Card.Section withBorder inheritPadding py=\"xs\">\n        <Group justify=\"space-between\">\n          <Text fw={500}>Review pictures</Text>\n          <Menu withinPortal position=\"bottom-end\" shadow=\"sm\">\n            <Menu.Target>\n              <ActionIcon variant=\"subtle\" color=\"gray\">\n                <DotsThreeIcon size={16} />\n              </ActionIcon>\n            </Menu.Target>\n\n            <Menu.Dropdown>\n              <Menu.Item leftSection={<FileZipIcon size={14} />}>\n                Download zip\n              </Menu.Item>\n              <Menu.Item leftSection={<EyeIcon size={14} />}>\n                Preview all\n              </Menu.Item>\n              <Menu.Item\n                leftSection={<TrashIcon size={14} />}\n                color=\"red\"\n              >\n                Delete all\n              </Menu.Item>\n            </Menu.Dropdown>\n          </Menu>\n        </Group>\n      </Card.Section>\n\n      <Text mt=\"sm\" c=\"dimmed\" size=\"sm\">\n        <Text span inherit c=\"var(--mantine-color-anchor)\">\n          200+ images uploaded\n        </Text>{' '}\n        since last visit, review them to select which one should be added to your gallery\n      </Text>\n\n      <Card.Section mt=\"sm\">\n        <Image src=\"https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-4.png\" />\n      </Card.Section>\n\n      <Card.Section inheritPadding mt=\"sm\" pb=\"md\">\n        <SimpleGrid cols={3}>\n          {images.map((image) => (\n            <Image src={image} key={image} radius=\"sm\" />\n          ))}\n        </SimpleGrid>\n      </Card.Section>\n    </Card>\n  );\n}\n`;\n\nconst images = [\n  'https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-1.png',\n  'https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-2.png',\n  'https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-3.png',\n];\n\nfunction Demo() {\n  return (\n    <Card withBorder shadow=\"sm\">\n      <Card.Section withBorder inheritPadding py=\"xs\">\n        <Group justify=\"space-between\">\n          <Text fw={500}>Review pictures</Text>\n          <Menu withinPortal position=\"bottom-end\" shadow=\"sm\">\n            <Menu.Target>\n              <ActionIcon variant=\"subtle\" color=\"gray\">\n                <DotsThreeIcon size={16} />\n              </ActionIcon>\n            </Menu.Target>\n\n            <Menu.Dropdown>\n              <Menu.Item leftSection={<FileZipIcon size={14} />}>Download zip</Menu.Item>\n              <Menu.Item leftSection={<EyeIcon size={14} />}>Preview all</Menu.Item>\n              <Menu.Item leftSection={<TrashIcon size={14} />} color=\"red\">\n                Delete all\n              </Menu.Item>\n            </Menu.Dropdown>\n          </Menu>\n        </Group>\n      </Card.Section>\n\n      <Text mt=\"sm\" c=\"dimmed\" size=\"sm\">\n        <Text span inherit c=\"var(--mantine-color-anchor)\">\n          200+ images uploaded\n        </Text>{' '}\n        since last visit, review them to select which one should be added to your gallery\n      </Text>\n\n      <Card.Section mt=\"sm\">\n        <Image src=\"https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-4.png\" />\n      </Card.Section>\n\n      <Card.Section inheritPadding mt=\"sm\" pb=\"md\">\n        <SimpleGrid cols={3}>\n          {images.map((image) => (\n            <Image src={image} key={image} radius=\"sm\" />\n          ))}\n        </SimpleGrid>\n      </Card.Section>\n    </Card>\n  );\n}\n\nexport const section: MantineDemo = {\n  type: 'code',\n  component: Demo,\n  code,\n  centered: true,\n  maxWidth: 340,\n  dimmed: true,\n};",
+      "type": "registry:block"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Mantine — MIT © 2020-present Vitaly Rtishchev (https://mantine.dev)",
+    "source": "mantine",
+    "styling": "css-modules",
+    "category": "data-display",
+    "previewStatus": "unsupported"
+  }
+}

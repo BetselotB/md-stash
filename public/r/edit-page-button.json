@@ -1,0 +1,34 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "edit-page-button",
+  "type": "registry:ui",
+  "title": "Edit Page Button",
+  "description": "Edit Page Button component harvested from chakra-ui with css-in-js styling.",
+  "dependencies": [
+    "@chakra-ui/react"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/edit-page-button.tsx",
+      "content": "import { HStack, Span } from \"@chakra-ui/react\"\nimport Link from \"next/link\"\nimport { LiaGithub } from \"react-icons/lia\"\nimport { LuArrowUpRight } from \"react-icons/lu\"\n\ninterface Props {\n  href: string\n}\n\nexport const EditPageButton = (props: Props) => {\n  const { href } = props\n  return (\n    <HStack\n      asChild\n      focusRing=\"inside\"\n      focusRingWidth=\"2px\"\n      rounded=\"sm\"\n      color=\"fg.muted\"\n      css={{ \"& svg\": { fontSize: \"lg\" } }}\n    >\n      <Link href={href}>\n        <LiaGithub />\n        <Span fontSize=\"0.8em\">Edit page on GitHub</Span>\n        <LuArrowUpRight />\n      </Link>\n    </HStack>\n  )\n}",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Chakra UI — MIT © 2019-present Segun Adebayo (https://chakra-ui.com)",
+    "source": "chakra-ui",
+    "styling": "css-in-js",
+    "category": "buttons",
+    "previewStatus": "unsupported"
+  }
+}

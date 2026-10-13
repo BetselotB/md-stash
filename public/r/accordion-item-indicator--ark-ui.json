@@ -1,0 +1,34 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "accordion-item-indicator--ark-ui",
+  "type": "registry:ui",
+  "title": "Accordion Item Indicator",
+  "description": "Accordion Item Indicator component harvested from ark-ui with unstyled styling.",
+  "dependencies": [
+    "@ark-ui/react"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/accordion-item-indicator--ark-ui.tsx",
+      "content": "import { mergeProps } from '@zag-js/solid'\nimport { type HTMLProps, type PolymorphicProps, ark } from '../factory.tsx'\nimport { useAccordionContext } from './use-accordion-context.ts'\nimport { useAccordionItemPropsContext } from './use-accordion-item-props-context.ts'\n\nexport interface AccordionItemIndicatorBaseProps extends PolymorphicProps<'div'> {}\nexport interface AccordionItemIndicatorProps extends HTMLProps<'div'>, AccordionItemIndicatorBaseProps {}\n\nexport const AccordionItemIndicator = (props: AccordionItemIndicatorProps) => {\n  const accordion = useAccordionContext()\n  const itemProps = useAccordionItemPropsContext()\n  const mergedProps = mergeProps(() => accordion().getItemIndicatorProps(itemProps), props)\n\n  return <ark.div {...mergedProps} />\n}",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Ark UI — MIT © 2022-present Chakra Systems GmbH (https://ark-ui.com)",
+    "source": "ark-ui",
+    "styling": "unstyled",
+    "category": "data-display",
+    "previewStatus": "primitive"
+  }
+}

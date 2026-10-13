@@ -28,3 +28,6 @@ dist-ssr
 reference/
 public/qa-screenshots/
 scripts/out/
+
+# Raw harvested corpus (10k+ local files, compiled into catalog and packs)
+corpus/

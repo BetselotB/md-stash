@@ -4,6 +4,7 @@ import { Sidebar } from './Sidebar';
 import { Topbar } from './Topbar';
 import { DropOverlay } from '../library/DropOverlay';
 import { BundleTray } from '../bundle/BundleTray';
+import { KitTray } from '../bundle/KitTray';
 import { ToastContainer } from '../ui/Toast';
 import { QuickAddModal } from '../library/QuickAddModal';
 import { CollectionModal } from '../collections/CollectionModal';
@@ -147,8 +148,9 @@ export const Shell: React.FC = () => {
         collectionName={getRouteCollectionId() ? collections.find((c) => c.id === getRouteCollectionId())?.name : undefined}
       />
 
-      {/* Bottom Bundle Tray */}
+      {/* Bottom Trays */}
       <BundleTray />
+      <KitTray />
 
       {/* Live Toast Container */}
       <ToastContainer />

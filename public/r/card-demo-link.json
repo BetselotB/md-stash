@@ -1,0 +1,35 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "card-demo-link",
+  "type": "registry:ui",
+  "title": "Card.demo.link",
+  "description": "Card.demo.link component harvested from mantine with css-modules styling.",
+  "dependencies": [
+    "@mantine/core",
+    "@mantine/hooks"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/card-demo-link.tsx",
+      "content": "import { Card, Image, Text } from '@mantine/core';\nimport { MantineDemo } from '@mantinex/demo';\n\nconst code = `\nimport { Card, Image, Text } from '@mantine/core';\n\nfunction Demo() {\n  return (\n    <Card\n      shadow=\"sm\"\n      padding=\"xl\"\n      component=\"a\"\n      href=\"https://www.youtube.com/watch?v=dQw4w9WgXcQ\"\n      target=\"_blank\"\n    >\n      <Card.Section>\n        <Image\n          src=\"https://images.unsplash.com/photo-1579227114347-15d08fc37cae?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=2550&q=80\"\n          h={160}\n          alt=\"No way!\"\n        />\n      </Card.Section>\n\n      <Text fw={500} size=\"lg\" mt=\"md\">\n        You&apos;ve won a million dollars in cash!\n      </Text>\n\n      <Text mt=\"xs\" c=\"dimmed\" size=\"sm\">\n        Please click anywhere on this card to claim your reward, this is not a fraud, trust us\n      </Text>\n    </Card>\n  );\n}\n`;\n\nfunction Demo() {\n  return (\n    <Card\n      shadow=\"sm\"\n      padding=\"lg\"\n      component=\"a\"\n      href=\"https://www.youtube.com/watch?v=dQw4w9WgXcQ\"\n      target=\"_blank\"\n    >\n      <Card.Section>\n        <Image\n          src=\"https://images.unsplash.com/photo-1579227114347-15d08fc37cae?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=2550&q=80\"\n          h={160}\n          alt=\"No way!\"\n        />\n      </Card.Section>\n\n      <Text fw={500} size=\"lg\" mt=\"md\">\n        You&apos;ve won a million dollars in cash!\n      </Text>\n\n      <Text mt=\"xs\" c=\"dimmed\" size=\"sm\">\n        Please click anywhere on this card to claim your reward, this is not a fraud, trust us\n      </Text>\n    </Card>\n  );\n}\n\nexport const link: MantineDemo = {\n  type: 'code',\n  code,\n  component: Demo,\n  centered: true,\n  maxWidth: 340,\n  dimmed: true,\n};",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Mantine — MIT © 2020-present Vitaly Rtishchev (https://mantine.dev)",
+    "source": "mantine",
+    "styling": "css-modules",
+    "category": "data-display",
+    "previewStatus": "unsupported"
+  }
+}

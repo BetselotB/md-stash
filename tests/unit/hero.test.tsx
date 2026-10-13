@@ -23,7 +23,7 @@ describe('HeroSection Component', () => {
 
     expect(screen.getByRole('heading', { level: 1 })).toHaveAttribute(
       'aria-label',
-      'Your markdown, stashed, sorted, ready to drop.'
+      'Your components, stashed, sorted, ready for any agent.'
     );
     expect(screen.getByText('stashed, sorted,')).toBeInTheDocument();
   });

@@ -1,0 +1,34 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "use-callback-ref",
+  "type": "registry:hook",
+  "title": "Use Callback Ref",
+  "description": "Use Callback Ref component harvested from radix-ui with unstyled styling.",
+  "dependencies": [
+    "@radix-ui/react-primitive"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "hooks/use-callback-ref.ts",
+      "content": "/* eslint-disable react-hooks/rules-of-hooks */\nimport { useLayoutEffect } from '@radix-ui/react-use-layout-effect';\nimport * as React from 'react';\n\ntype AnyFunction = (...args: any[]) => any;\n\n// See https://github.com/webpack/webpack/issues/14814\nconst useReactInsertionEffect = (React as any)[' useInsertionEffect '.trim().toString()];\n\n/**\n * A custom hook that converts a callback to a ref to avoid triggering\n * re-renders when passed as a prop or avoid re-executing effects when passed as\n * a dependency.\n */\nexport function useCallbackRef<T extends AnyFunction>(callback: T | undefined): T {\n  const callbackRef = React.useRef<AnyFunction | undefined>(callback);\n\n  // See https://github.com/webpack/webpack/issues/14814\n  if (typeof useReactInsertionEffect === 'function') {\n    useReactInsertionEffect(() => {\n      callbackRef.current = callback;\n    });\n  } else {\n    useLayoutEffect(() => {\n      callbackRef.current = callback;\n    });\n  }\n\n  // https://github.com/facebook/react/issues/19240\n  return React.useMemo(() => ((...args) => callbackRef.current?.(...args)) as T, []);\n}",
+      "type": "registry:hook"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Radix Primitives — MIT © 2022 WorkOS (https://radix-ui.com)",
+    "source": "radix-ui",
+    "styling": "unstyled",
+    "category": "hooks",
+    "previewStatus": "primitive"
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "backgroundletteravatars",
+  "type": "registry:ui",
+  "title": "BackgroundLetterAvatars",
+  "description": "BackgroundLetterAvatars component harvested from mui with css-in-js styling.",
+  "dependencies": [
+    "@mui/material",
+    "@emotion/react",
+    "@emotion/styled"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/backgroundletteravatars.tsx",
+      "content": "import Avatar from '@mui/material/Avatar';\nimport Stack from '@mui/material/Stack';\n\nfunction stringToColor(string: string) {\n  let hash = 0;\n  let i;\n\n  /* eslint-disable no-bitwise */\n  for (i = 0; i < string.length; i += 1) {\n    hash = string.charCodeAt(i) + ((hash << 5) - hash);\n  }\n\n  let color = '#';\n\n  for (i = 0; i < 3; i += 1) {\n    const value = (hash >> (i * 8)) & 0xff;\n    color += `00${value.toString(16)}`.slice(-2);\n  }\n  /* eslint-enable no-bitwise */\n\n  return color;\n}\n\nfunction stringAvatar(name: string) {\n  return {\n    sx: {\n      bgcolor: stringToColor(name),\n    },\n    children: `${name.split(' ')[0][0]}${name.split(' ')[1][0]}`,\n  };\n}\n\nexport default function BackgroundLetterAvatars() {\n  return (\n    <Stack direction=\"row\" spacing={2}>\n      {/* @focus-start */}\n      <Avatar {...stringAvatar('Kent Dodds')} />\n      <Avatar {...stringAvatar('Jed Watson')} />\n      <Avatar {...stringAvatar('Tim Neutkens')} />\n      {/* @focus-end */}\n    </Stack>\n  );\n}",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Material UI — MIT © 2014-present Call-Em-All / Material-UI (https://mui.com)",
+    "source": "mui",
+    "styling": "css-in-js",
+    "category": "backgrounds",
+    "previewStatus": "unsupported"
+  }
+}

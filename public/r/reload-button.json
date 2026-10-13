@@ -1,0 +1,35 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "reload-button",
+  "type": "registry:ui",
+  "title": "Reload Button",
+  "description": "Reload Button component harvested from animata with tailwind styling.",
+  "dependencies": [
+    "clsx",
+    "tailwind-merge"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/reload-button.tsx",
+      "content": "\"use client\";\n\nimport { RotateCwIcon } from \"lucide-react\";\n\nimport { Button, type ButtonProps } from \"ui/button\";\nimport { cn } from \"utils/cn\";\n\nexport function ReloadButton({ className, variant = \"secondary\", ...props }: ButtonProps) {\n  return (\n    <Button\n      size=\"icon\"\n      variant={variant}\n      className={cn(\"relative z-10 h-6 w-6 active:bg-zinc-200 [&_svg]:size-3\", className)}\n      {...props}\n    >\n      <span className=\"sr-only\">Reload</span>\n      <RotateCwIcon />\n    </Button>\n  );\n}",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Animata — MIT © Animata (https://animata.design)",
+    "source": "animata",
+    "styling": "tailwind",
+    "category": "buttons",
+    "previewStatus": "ready"
+  }
+}

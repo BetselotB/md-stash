@@ -1,0 +1,36 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "loadingbuttongroup",
+  "type": "registry:ui",
+  "title": "LoadingButtonGroup",
+  "description": "LoadingButtonGroup component harvested from mui with css-in-js styling.",
+  "dependencies": [
+    "@mui/material",
+    "@emotion/react",
+    "@emotion/styled"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/loadingbuttongroup.tsx",
+      "content": "import ButtonGroup from '@mui/material/ButtonGroup';\nimport Button from '@mui/material/Button';\nimport SaveIcon from '@mui/icons-material/Save';\n\nexport default function LoadingButtonGroup() {\n  return (\n    // @focus-start @padding 2\n    <ButtonGroup variant=\"outlined\" aria-label=\"Loading button group\">\n      <Button>Submit</Button>\n      <Button>Fetch data</Button>\n      <Button loading loadingPosition=\"start\" startIcon={<SaveIcon />}>\n        Save\n      </Button>\n    </ButtonGroup>\n    // @focus-end\n  );\n}",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Material UI — MIT © 2014-present Call-Em-All / Material-UI (https://mui.com)",
+    "source": "mui",
+    "styling": "css-in-js",
+    "category": "buttons",
+    "previewStatus": "unsupported"
+  }
+}

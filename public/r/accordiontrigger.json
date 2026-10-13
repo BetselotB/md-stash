@@ -1,0 +1,34 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "accordiontrigger",
+  "type": "registry:ui",
+  "title": "AccordionTrigger",
+  "description": "AccordionTrigger component harvested from base-ui with unstyled styling.",
+  "dependencies": [
+    "@base-ui-components/react"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/accordiontrigger.tsx",
+      "content": "'use client';\nimport * as React from 'react';\nimport { useIsoLayoutEffect } from '@base-ui/utils/useIsoLayoutEffect';\nimport { triggerOpenStateMapping } from '../../utils/collapsibleOpenStateMapping';\nimport type { BaseUIComponentProps, NativeButtonProps } from '../../internals/types';\nimport { useButton } from '../../internals/use-button';\nimport { useCollapsibleRootContext } from '../../collapsible/root/CollapsibleRootContext';\nimport type { StateAttributesMapping } from '../../internals/getStateAttributesProps';\nimport type { AccordionItemState } from '../item/AccordionItem';\nimport { useAccordionItemContext } from '../item/AccordionItemContext';\nimport { accordionStateAttributesMapping } from '../item/stateAttributesMapping';\nimport { useRenderElement } from '../../internals/useRenderElement';\n\nconst stateAttributesMapping: StateAttributesMapping<AccordionItemState> = {\n  ...accordionStateAttributesMapping,\n  ...triggerOpenStateMapping,\n};\n\n/**\n * A button that opens and closes the corresponding panel.\n * Renders a `<button>` element.\n *\n * Documentation: [Base UI Accordion](https://base-ui.com/react/components/accordion)\n */\n\nexport const AccordionTrigger = React.forwardRef(function AccordionTrigger(\n  componentProps: AccordionTrigger.Props,\n  forwardedRef: React.ForwardedRef<HTMLElement>,\n) {\n  const {\n    disabled: disabledProp,\n    className,\n    id: idProp,\n    render,\n    nativeButton = true,\n    style,\n    ...elementProps\n  } = componentProps;\n\n  const { panelId, open, handleTrigger, disabled: contextDisabled } = useCollapsibleRootContext();\n\n  const disabled = disabledProp || contextDisabled;\n\n  const { getButtonProps, buttonRef } = useButton({\n    disabled,\n    native: nativeButton,\n  });\n\n  const { defaultTriggerId, state, setTriggerId } = useAccordionItemContext();\n  const registeredId = idProp || undefined;\n  const id = registeredId ?? defaultTriggerId;\n\n  useIsoLayoutEffect(() => {\n    setTriggerId((currentId) => registeredId ?? (currentId === null ? undefined : currentId));\n    return () => {\n      setTriggerId((currentId) => (currentId === registeredId ? null : currentId));\n    };\n  }, [registeredId, setTriggerId]);\n\n  const props = {\n    'aria-controls': open ? panelId : undefined,\n    'aria-expanded': open,\n    id,\n    onClick: handleTrigger,\n  };\n\n  const element = useRenderElement('button', componentProps, {\n    state,\n    ref: [forwardedRef, buttonRef],\n    props: [props, elementProps, getButtonProps],\n    stateAttributesMapping,\n  });\n\n  return element;\n});\n\nexport interface AccordionTriggerState extends AccordionItemState {}\n\nexport interface AccordionTriggerProps\n  extends NativeButtonProps, BaseUIComponentProps<'button', AccordionTriggerState> {}\n\nexport namespace AccordionTrigger {\n  export type State = AccordionTriggerState;\n  export type Props = AccordionTriggerProps;\n}",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Base UI — MIT © 2020-present MUI (https://base-ui.com)",
+    "source": "base-ui",
+    "styling": "unstyled",
+    "category": "data-display",
+    "previewStatus": "primitive"
+  }
+}

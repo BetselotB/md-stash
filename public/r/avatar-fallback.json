@@ -1,0 +1,34 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "avatar-fallback",
+  "type": "registry:ui",
+  "title": "Avatar Fallback",
+  "description": "Avatar Fallback component harvested from ark-ui with unstyled styling.",
+  "dependencies": [
+    "@ark-ui/react"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/avatar-fallback.tsx",
+      "content": "'use client'\n\nimport { mergeProps } from '@zag-js/react'\nimport { forwardRef } from 'react'\nimport { type HTMLProps, type PolymorphicProps, ark } from '../factory.ts'\nimport { useAvatarContext } from './use-avatar-context.ts'\n\nexport interface AvatarFallbackBaseProps extends PolymorphicProps {}\nexport interface AvatarFallbackProps extends HTMLProps<'span'>, AvatarFallbackBaseProps {}\n\nexport const AvatarFallback = forwardRef<HTMLSpanElement, AvatarFallbackProps>((props, ref) => {\n  const avatar = useAvatarContext()\n  const mergedProps = mergeProps(avatar.getFallbackProps(), props)\n\n  return <ark.span {...mergedProps} ref={ref} />\n})\n\nAvatarFallback.displayName = 'AvatarFallback'",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Ark UI — MIT © 2022-present Chakra Systems GmbH (https://ark-ui.com)",
+    "source": "ark-ui",
+    "styling": "unstyled",
+    "category": "data-display",
+    "previewStatus": "needs-demo"
+  }
+}

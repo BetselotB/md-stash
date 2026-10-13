@@ -1,0 +1,34 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "api-table",
+  "type": "registry:ui",
+  "title": "Api Table",
+  "description": "Api Table component harvested from ark-ui with unstyled styling.",
+  "dependencies": [
+    "@ark-ui/react"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/api-table.tsx",
+      "content": "import { Box, Stack } from 'styled-system/jsx'\nimport { Code } from '~/components/ui/code'\nimport { Table } from '~/components/ui/table'\nimport { Text } from '~/components/ui/text'\n\ninterface Props {\n  api: Record<\n    string,\n    {\n      type: string\n      description: string\n    }\n  >\n}\n\nexport const ApiTable = (props: Props) => {\n  const { api } = props\n\n  return (\n    <Box borderWidth=\"1px\" borderRadius=\"lg\" overflowX=\"auto\" className=\"not-prose\" my=\"8\">\n      <Table.Root variant=\"outline\" size=\"sm\" border={0}>\n        <Table.Head>\n          <Table.Row>\n            <Table.Header px=\"4\" bg=\"gray.2\" h=\"10\">\n              Property\n            </Table.Header>\n            <Table.Header px=\"4\" bg=\"gray.2\" h=\"10\">\n              Type\n            </Table.Header>\n          </Table.Row>\n        </Table.Head>\n        <Table.Body>\n          {Object.entries(api).map(([name, property]) => (\n            <Table.Row key={name}>\n              <Table.Cell width=\"36\" px=\"4\" py=\"2\" verticalAlign=\"top\">\n                <Code size=\"sm\" color=\"colorPalette.default\">\n                  {name}\n                </Code>\n              </Table.Cell>\n              <Table.Cell px=\"4\" py=\"2\" verticalAlign=\"top\">\n                <Stack gap=\"1\" align=\"start\">\n                  <Code size=\"sm\">{property.type}</Code>\n                  <Text>{property.description}</Text>\n                </Stack>\n              </Table.Cell>\n            </Table.Row>\n          ))}\n        </Table.Body>\n      </Table.Root>\n    </Box>\n  )\n}",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Ark UI — MIT © 2022-present Chakra Systems GmbH (https://ark-ui.com)",
+    "source": "ark-ui",
+    "styling": "unstyled",
+    "category": "data-display",
+    "previewStatus": "needs-demo"
+  }
+}

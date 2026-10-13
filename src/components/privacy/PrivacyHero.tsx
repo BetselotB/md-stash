@@ -136,7 +136,7 @@ export const PrivacyHero: React.FC = () => {
 
         {/* One-line subtext */}
         <p className="text-cream-dim text-base sm:text-lg md:text-xl font-sans max-w-2xl mx-auto leading-relaxed">
-          MDstash is engineered so that your notes, tags, and collections never travel across a network wire.
+          MDstash is engineered so that your components, notes, and kits stay local in your browser’s IndexedDB. When pairing with AI agents via local MCP or the edge API, access is strictly token-authenticated and controlled by you.
         </p>
       </div>
     </section>

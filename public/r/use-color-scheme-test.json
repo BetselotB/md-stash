@@ -1,0 +1,35 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "use-color-scheme-test",
+  "type": "registry:hook",
+  "title": "Use Color Scheme.test",
+  "description": "Use Color Scheme.test component harvested from mantine with css-modules styling.",
+  "dependencies": [
+    "@mantine/core",
+    "@mantine/hooks"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "hooks/use-color-scheme-test.ts",
+      "content": "import { render } from '@testing-library/react';\nimport { useColorScheme } from './use-color-scheme';\n\ndescribe('@mantine/hooks/use-color-scheme', () => {\n  let trace = jest.fn<(colorScheme: string) => void, string[]>();\n  const mockMatchMedia = jest.fn().mockImplementation(() => ({\n    matches: true,\n    media: '',\n    onchange: null,\n    addListener: jest.fn(),\n    removeListener: jest.fn(),\n  }));\n  const retainMatchMedia = window.matchMedia;\n  beforeEach(() => {\n    trace = jest.fn();\n    window.matchMedia = retainMatchMedia;\n  });\n  function WrapperComponent({\n    initialValue,\n    getInitialValueInEffect = true,\n  }: {\n    initialValue?: 'light' | 'dark';\n    getInitialValueInEffect?: boolean;\n  }) {\n    const colorScheme = useColorScheme(initialValue, {\n      getInitialValueInEffect,\n    });\n    trace(colorScheme);\n    return colorScheme;\n  }\n\n  it('correctly returns initial dark state without useEffect', () => {\n    window.matchMedia = mockMatchMedia;\n    render(<WrapperComponent initialValue=\"dark\" getInitialValueInEffect={false} />);\n    expect(trace).toHaveBeenCalledTimes(1);\n    expect(trace.mock.calls[0][0]).toBe('dark');\n  });\n\n  it('correctly returns initial light state with useEffect', () => {\n    render(<WrapperComponent initialValue=\"dark\" getInitialValueInEffect />);\n    expect(trace).toHaveBeenCalledTimes(2);\n    expect(trace.mock.calls[0][0]).toBe('dark');\n    expect(trace.mock.calls[1][0]).toBe('light');\n  });\n  it('correctly returns initial dark state with useEffect', () => {\n    window.matchMedia = mockMatchMedia;\n    render(<WrapperComponent initialValue=\"dark\" getInitialValueInEffect />);\n    expect(trace).toHaveBeenCalledTimes(1);\n    expect(trace.mock.calls[0][0]).toBe('dark');\n  });\n  it('correctly returns initial light state with default props', () => {\n    render(<WrapperComponent />);\n    expect(trace).toHaveBeenCalledTimes(1);\n    expect(trace.mock.calls[0][0]).toBe('light');\n  });\n  it('correctly returns initial dark state with default props', () => {\n    window.matchMedia = mockMatchMedia;\n    render(<WrapperComponent />);\n    expect(trace).toHaveBeenCalledTimes(2);\n    expect(trace.mock.calls[0][0]).toBe('light');\n    expect(trace.mock.calls[1][0]).toBe('dark');\n  });\n});",
+      "type": "registry:hook"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Mantine — MIT © 2020-present Vitaly Rtishchev (https://mantine.dev)",
+    "source": "mantine",
+    "styling": "css-modules",
+    "category": "hooks",
+    "previewStatus": "primitive"
+  }
+}

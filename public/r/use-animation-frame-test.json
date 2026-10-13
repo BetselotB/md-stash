@@ -1,0 +1,36 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "use-animation-frame-test",
+  "type": "registry:hook",
+  "title": "Use Animation Frame.test",
+  "description": "Use Animation Frame.test component harvested from motion with tailwind styling.",
+  "dependencies": [
+    "motion",
+    "clsx",
+    "tailwind-merge"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "hooks/use-animation-frame-test.ts",
+      "content": "import { render } from \"../../jest.setup\"\nimport { useAnimationFrame } from \"../use-animation-frame\"\n\ndescribe(\"useAnimationFrame\", () => {\n    test(\"Fires every animation frame\", async () => {\n        const totalFrameCount = await new Promise((resolve) => {\n            let frameCount = 0\n            const Component = () => {\n                useAnimationFrame((timeSinceStart) => {\n                    frameCount++\n                    if (frameCount > 2) resolve(timeSinceStart)\n                })\n\n                return null\n            }\n            const { rerender } = render(<Component />)\n            rerender(<Component />)\n        })\n        expect(totalFrameCount).toBeGreaterThan(25)\n        expect(totalFrameCount).toBeLessThan(50)\n    })\n\n    test(\"Updates callback\", async () => {\n        const totalOutput = await new Promise<number[]>((resolve) => {\n            const output: number[] = [0]\n            const Component = ({ increment }: any) => {\n                useAnimationFrame(() => {\n                    output.push(output[output.length - 1] + increment)\n                    if (output[output.length - 1] > 4) resolve(output)\n                })\n\n                return null\n            }\n            const { rerender } = render(<Component increment={1} />)\n            rerender(<Component increment={2} />)\n        })\n\n        expect(totalOutput).toEqual([0, 2, 4, 6])\n    })\n})",
+      "type": "registry:hook"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Motion — MIT © 2018-present Framer B.V. (https://motion.dev)",
+    "source": "motion",
+    "styling": "tailwind",
+    "category": "hooks",
+    "previewStatus": "primitive"
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "avatar-demo-group",
+  "type": "registry:ui",
+  "title": "Avatar.demo.group",
+  "description": "Avatar.demo.group component harvested from mantine with css-modules styling.",
+  "dependencies": [
+    "@mantine/core",
+    "@mantine/hooks"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/avatar-demo-group.tsx",
+      "content": "import { Avatar } from '@mantine/core';\nimport { MantineDemo } from '@mantinex/demo';\nimport { avatars } from './_mockdata';\n\nconst code = `\nimport { Avatar } from '@mantine/core';\n\nfunction Demo() {\n  return (\n    <Avatar.Group>\n      <Avatar src=\"image.png\" />\n      <Avatar src=\"image.png\" />\n      <Avatar src=\"image.png\" />\n      <Avatar>+5</Avatar>\n    </Avatar.Group>\n  );\n}\n`;\n\nfunction Demo() {\n  return (\n    <Avatar.Group>\n      <Avatar src={avatars[0]} />\n      <Avatar src={avatars[1]} />\n      <Avatar src={avatars[2]} />\n      <Avatar>+5</Avatar>\n    </Avatar.Group>\n  );\n}\n\nexport const group: MantineDemo = {\n  type: 'code',\n  centered: true,\n  code,\n  component: Demo,\n};",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Mantine — MIT © 2020-present Vitaly Rtishchev (https://mantine.dev)",
+    "source": "mantine",
+    "styling": "css-modules",
+    "category": "data-display",
+    "previewStatus": "unsupported"
+  }
+}

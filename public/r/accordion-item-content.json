@@ -1,0 +1,34 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "accordion-item-content",
+  "type": "registry:ui",
+  "title": "Accordion Item Content",
+  "description": "Accordion Item Content component harvested from ark-ui with unstyled styling.",
+  "dependencies": [
+    "@ark-ui/react"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/accordion-item-content.tsx",
+      "content": "import { mergeProps } from '@zag-js/solid'\nimport { createMemo } from 'solid-js'\nimport { createSplitProps } from '../../utils/create-split-props.ts'\nimport { Collapsible } from '../collapsible/index.tsx'\nimport type { HTMLProps, PolymorphicProps } from '../factory.tsx'\nimport { useAccordionContext } from './use-accordion-context.ts'\nimport { useAccordionItemPropsContext } from './use-accordion-item-props-context.ts'\n\nexport interface AccordionItemContentBaseProps extends PolymorphicProps<'div'> {}\nexport interface AccordionItemContentProps extends HTMLProps<'div'>, AccordionItemContentBaseProps {}\n\ninterface VisibilityProps {\n  hidden?: boolean\n  'data-state'?: string\n}\n\nconst splitVisibilityProps = createSplitProps<VisibilityProps>()\n\nexport const AccordionItemContent = (props: AccordionItemContentProps) => {\n  const accordion = useAccordionContext()\n  const itemProps = useAccordionItemPropsContext()\n\n  const itemContentProps = createMemo(() => {\n    const contentProps = accordion().getItemContentProps(itemProps)\n    const [, ownProps] = splitVisibilityProps(contentProps as VisibilityProps, ['hidden', 'data-state'])\n    return ownProps\n  })\n  const mergedProps = mergeProps(() => itemContentProps(), props)\n\n  return <Collapsible.Content {...mergedProps} />\n}",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Ark UI — MIT © 2022-present Chakra Systems GmbH (https://ark-ui.com)",
+    "source": "ark-ui",
+    "styling": "unstyled",
+    "category": "data-display",
+    "previewStatus": "primitive"
+  }
+}

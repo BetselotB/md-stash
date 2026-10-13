@@ -1,0 +1,35 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "rainbow-button-demo-2",
+  "type": "registry:ui",
+  "title": "Rainbow Button Demo 2",
+  "description": "Rainbow Button Demo 2 component harvested from magic-ui with tailwind styling.",
+  "dependencies": [
+    "clsx",
+    "tailwind-merge"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/rainbow-button-demo-2.tsx",
+      "content": "import { RainbowButton } from \"@/registry/magicui/rainbow-button\"\n\nexport default function RainbowButtonDemo() {\n  return <RainbowButton variant=\"outline\">Get Unlimited Access</RainbowButton>\n}",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Magic UI — MIT © 2023-present Dillion Verma (https://magicui.design)",
+    "source": "magic-ui",
+    "styling": "tailwind",
+    "category": "buttons",
+    "previewStatus": "ready"
+  }
+}

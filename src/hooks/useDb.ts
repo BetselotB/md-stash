@@ -1,6 +1,7 @@
 import { useLiveQuery } from 'dexie-react-hooks';
 import { db } from '../db/schema';
 import { StashFile, Collection, Version } from '../domain/types';
+import { ComponentMetadata } from '../domain/componentTypes';
 
 export function useFiles(collectionId?: string | null) {
   return useLiveQuery(
@@ -83,3 +84,41 @@ export function useAllTags() {
     [] as string[]
   );
 }
+
+export function useComponents(category?: string | null) {
+  return useLiveQuery(
+    async () => {
+      let items: ComponentMetadata[];
+      if (!category || category === 'all') {
+        items = await db.components.toArray();
+      } else {
+        items = await db.components.where('category').equals(category).toArray();
+      }
+      return items.sort((a, b) => a.name.localeCompare(b.name));
+    },
+    [category],
+    [] as ComponentMetadata[]
+  );
+}
+
+export function useComponent(id?: string) {
+  return useLiveQuery(
+    async () => {
+      if (!id) return undefined;
+      return await db.components.get(id);
+    },
+    [id],
+    undefined
+  );
+}
+
+export function useFavoriteComponents() {
+  return useLiveQuery(
+    async () => {
+      return await db.components.filter((c) => c.favorite).toArray();
+    },
+    [],
+    []
+  );
+}
+

@@ -1,0 +1,36 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "card-spec",
+  "type": "registry:ui",
+  "title": "Card.spec",
+  "description": "Card.spec component harvested from mui with css-in-js styling.",
+  "dependencies": [
+    "@mui/material",
+    "@emotion/react",
+    "@emotion/styled"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/card-spec.tsx",
+      "content": "import * as React from 'react';\nimport { expectType } from '@mui/types';\nimport Card from '@mui/material/Card';\n\nconst CustomComponent: React.FC<{ stringProp: string; numberProp: number }> =\n  function CustomComponent() {\n    return <div />;\n  };\n\nfunction CardTest() {\n  return (\n    <div>\n      <Card />\n      <Card elevation={4} />\n      <Card\n        onClick={(event) => {\n          expectType<React.MouseEvent<HTMLDivElement, MouseEvent>, typeof event>(event);\n        }}\n      />\n      <Card\n        component=\"a\"\n        href=\"test\"\n        onClick={(event) => {\n          expectType<React.MouseEvent<HTMLAnchorElement, MouseEvent>, typeof event>(event);\n        }}\n      />\n      <Card component=\"a\" href=\"test\" />\n\n      <Card component={CustomComponent} stringProp=\"test\" numberProp={0} />\n      {/* @ts-expect-error missing stringProp and numberProp */}\n      <Card component={CustomComponent} />\n    </div>\n  );\n}",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Material UI — MIT © 2014-present Call-Em-All / Material-UI (https://mui.com)",
+    "source": "mui",
+    "styling": "css-in-js",
+    "category": "data-display",
+    "previewStatus": "unsupported"
+  }
+}

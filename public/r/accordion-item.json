@@ -1,0 +1,34 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "accordion-item",
+  "type": "registry:ui",
+  "title": "Accordion Item",
+  "description": "Accordion Item component harvested from ark-ui with unstyled styling.",
+  "dependencies": [
+    "@ark-ui/react"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/accordion-item.tsx",
+      "content": "'use client'\n\nimport type { ItemProps } from '@zag-js/accordion'\nimport { mergeProps } from '@zag-js/react'\nimport { forwardRef } from 'react'\nimport { Collapsible } from '../../components/index.ts'\nimport { createSplitProps } from '../../utils/create-split-props.ts'\nimport { useRenderStrategyPropsContext } from '../../utils/render-strategy.ts'\nimport type { HTMLProps, PolymorphicProps } from '../factory.ts'\nimport { useAccordionContext } from './use-accordion-context.ts'\nimport { AccordionItemProvider } from './use-accordion-item-context.ts'\nimport { AccordionItemPropsProvider } from './use-accordion-item-props-context.ts'\n\nexport interface AccordionItemBaseProps extends ItemProps, PolymorphicProps {}\nexport interface AccordionItemProps extends HTMLProps<'div'>, AccordionItemBaseProps {}\n\nconst splitItemProps = createSplitProps<ItemProps>()\n\nexport const AccordionItem = forwardRef<HTMLDivElement, AccordionItemProps>((props, ref) => {\n  const [itemProps, localProps] = splitItemProps(props, ['value', 'disabled'])\n  const accordion = useAccordionContext()\n  const renderStrategy = useRenderStrategyPropsContext()\n  const mergedProps = mergeProps(accordion.getItemProps(itemProps), localProps)\n  const item = accordion.getItemState(itemProps)\n  const itemContentProps = accordion.getItemContentProps(itemProps)\n\n  return (\n    <AccordionItemPropsProvider value={itemProps}>\n      <AccordionItemProvider value={item}>\n        <Collapsible.Root\n          ref={ref}\n          open={item.expanded}\n          ids={{ content: itemContentProps.id }}\n          {...renderStrategy}\n          {...mergedProps}\n        />\n      </AccordionItemProvider>\n    </AccordionItemPropsProvider>\n  )\n})\n\nAccordionItem.displayName = 'AccordionItem'",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Ark UI — MIT © 2022-present Chakra Systems GmbH (https://ark-ui.com)",
+    "source": "ark-ui",
+    "styling": "unstyled",
+    "category": "data-display",
+    "previewStatus": "primitive"
+  }
+}

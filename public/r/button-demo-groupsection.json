@@ -1,0 +1,35 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "button-demo-groupsection",
+  "type": "registry:block",
+  "title": "Button.demo.groupSection",
+  "description": "Button.demo.groupSection component harvested from mantine with css-modules styling.",
+  "dependencies": [
+    "@mantine/core",
+    "@mantine/hooks"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/button-demo-groupsection.tsx",
+      "content": "import { CaretDownIcon, CaretUpIcon } from '@phosphor-icons/react';\nimport { Button } from '@mantine/core';\nimport { useCounter } from '@mantine/hooks';\nimport { MantineDemo } from '@mantinex/demo';\n\nconst code = `\nimport { CaretDownIcon, CaretUpIcon } from '@phosphor-icons/react';\nimport { Button } from '@mantine/core';\nimport { useCounter } from '@mantine/hooks';\n\nfunction Demo() {\n  const [value, { increment, decrement }] = useCounter(135, { min: 0 });\n\n  return (\n    <Button.Group>\n      <Button variant=\"default\" onClick={decrement}>\n        <CaretDownIcon color=\"var(--mantine-color-red-text)\" />\n      </Button>\n      <Button.GroupSection variant=\"default\" bg=\"var(--mantine-color-body)\" miw={80}>\n        {value}\n      </Button.GroupSection>\n      <Button variant=\"default\" onClick={increment}>\n        <CaretUpIcon color=\"var(--mantine-color-teal-text)\" />\n      </Button>\n    </Button.Group>\n  );\n}\n`;\n\nfunction Demo() {\n  const [value, { increment, decrement }] = useCounter(135, { min: 0 });\n\n  return (\n    <Button.Group>\n      <Button variant=\"default\" onClick={decrement}>\n        <CaretDownIcon color=\"var(--mantine-color-red-text)\" />\n      </Button>\n      <Button.GroupSection variant=\"default\" bg=\"var(--mantine-color-body)\" miw={80}>\n        {value}\n      </Button.GroupSection>\n      <Button variant=\"default\" onClick={increment}>\n        <CaretUpIcon color=\"var(--mantine-color-teal-text)\" />\n      </Button>\n    </Button.Group>\n  );\n}\n\nexport const groupSection: MantineDemo = {\n  type: 'code',\n  component: Demo,\n  code,\n  centered: true,\n};",
+      "type": "registry:block"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Mantine — MIT © 2020-present Vitaly Rtishchev (https://mantine.dev)",
+    "source": "mantine",
+    "styling": "css-modules",
+    "category": "buttons",
+    "previewStatus": "unsupported"
+  }
+}

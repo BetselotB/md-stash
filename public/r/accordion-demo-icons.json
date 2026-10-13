@@ -1,0 +1,35 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "accordion-demo-icons",
+  "type": "registry:ui",
+  "title": "Accordion.demo.icons",
+  "description": "Accordion.demo.icons component harvested from mantine with css-modules styling.",
+  "dependencies": [
+    "@mantine/core",
+    "@mantine/hooks"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/accordion-demo-icons.tsx",
+      "content": "import { CameraIcon, ImageIcon, PrinterIcon } from '@phosphor-icons/react';\nimport { Accordion } from '@mantine/core';\nimport { MantineDemo } from '@mantinex/demo';\n\nconst code = `\nimport { ImageIcon, PrinterIcon, CameraIcon } from '@phosphor-icons/react';\nimport { Accordion } from '@mantine/core';\n\nfunction Demo() {\n  return (\n    <Accordion variant=\"filled\" defaultValue=\"photos\" order={3}>\n      <Accordion.Item value=\"photos\">\n        <Accordion.Control\n          icon={<ImageIcon size={22} color=\"var(--mantine-color-dimmed)\" />}\n        >\n          Recent photos\n        </Accordion.Control>\n        <Accordion.Panel>Content</Accordion.Panel>\n      </Accordion.Item>\n\n      <Accordion.Item value=\"print\">\n        <Accordion.Control\n          icon={<PrinterIcon size={22} color=\"var(--mantine-color-dimmed)\" />}\n        >\n          Print photos\n        </Accordion.Control>\n        <Accordion.Panel>Content</Accordion.Panel>\n      </Accordion.Item>\n\n      <Accordion.Item value=\"camera\">\n        <Accordion.Control\n          icon={<CameraIcon size={22} color=\"var(--mantine-color-dimmed)\" />}\n        >\n          CameraIcon settings\n        </Accordion.Control>\n        <Accordion.Panel>Content</Accordion.Panel>\n      </Accordion.Item>\n    </Accordion>\n  );\n}\n`;\n\nfunction Demo() {\n  return (\n    <Accordion variant=\"filled\" defaultValue=\"photos\" order={3} mih={200}>\n      <Accordion.Item value=\"photos\">\n        <Accordion.Control icon={<ImageIcon size={22} color=\"var(--mantine-color-dimmed)\" />}>\n          Recent photos\n        </Accordion.Control>\n        <Accordion.Panel>Content</Accordion.Panel>\n      </Accordion.Item>\n\n      <Accordion.Item value=\"print\">\n        <Accordion.Control icon={<PrinterIcon size={22} color=\"var(--mantine-color-dimmed)\" />}>\n          Print photos\n        </Accordion.Control>\n        <Accordion.Panel>Content</Accordion.Panel>\n      </Accordion.Item>\n\n      <Accordion.Item value=\"camera\">\n        <Accordion.Control icon={<CameraIcon size={22} color=\"var(--mantine-color-dimmed)\" />}>\n          CameraIcon settings\n        </Accordion.Control>\n        <Accordion.Panel>Content</Accordion.Panel>\n      </Accordion.Item>\n    </Accordion>\n  );\n}\n\nexport const icons: MantineDemo = {\n  type: 'code',\n  component: Demo,\n  code,\n  maxWidth: 400,\n  centered: true,\n  defaultExpanded: false,\n};",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Mantine — MIT © 2020-present Vitaly Rtishchev (https://mantine.dev)",
+    "source": "mantine",
+    "styling": "css-modules",
+    "category": "data-display",
+    "previewStatus": "unsupported"
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "button--ark-ui",
+  "type": "registry:ui",
+  "title": "Button",
+  "description": "Button component harvested from ark-ui with unstyled styling.",
+  "dependencies": [
+    "@ark-ui/react"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/button--ark-ui.tsx",
+      "content": "import { forwardRef } from 'react'\nimport { Center, styled } from 'styled-system/jsx'\nimport { Button as StyledButton, type ButtonProps as StyledButtonProps } from './primitives/button'\nimport { Spinner } from './spinner'\n\ninterface ButtonLoadingProps {\n  loading?: boolean\n  loadingText?: React.ReactNode\n}\n\nexport interface ButtonProps extends StyledButtonProps, ButtonLoadingProps {}\n\nexport const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {\n  const { loading, disabled, loadingText, children, ...rest } = props\n\n  const trulyDisabled = loading || disabled\n\n  return (\n    <StyledButton disabled={trulyDisabled} ref={ref} {...rest}>\n      {loading && !loadingText ? (\n        <>\n          <ButtonSpinner />\n          <styled.span opacity={0}>{children}</styled.span>\n        </>\n      ) : loadingText ? (\n        loadingText\n      ) : (\n        children\n      )}\n    </StyledButton>\n  )\n})\n\nButton.displayName = 'Button'\n\nconst ButtonSpinner = () => (\n  <Center inline position=\"absolute\" transform=\"translate(-50%, -50%)\" top=\"50%\" insetStart=\"50%\">\n    <Spinner colorPalette=\"gray\" />\n  </Center>\n)",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Ark UI — MIT © 2022-present Chakra Systems GmbH (https://ark-ui.com)",
+    "source": "ark-ui",
+    "styling": "unstyled",
+    "category": "buttons",
+    "previewStatus": "needs-demo"
+  }
+}

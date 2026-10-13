@@ -1,0 +1,35 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "cardsection-test",
+  "type": "registry:ui",
+  "title": "CardSection.test",
+  "description": "CardSection.test component harvested from mantine with css-modules styling.",
+  "dependencies": [
+    "@mantine/core",
+    "@mantine/hooks"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/cardsection-test.tsx",
+      "content": "import { createContextContainer, render, tests } from '@mantine-tests/core';\nimport { Card } from '../Card';\nimport { CardSection, CardSectionProps, CardSectionStylesNames } from './CardSection';\n\nconst TestContainer = createContextContainer<any>(CardSection, Card, {});\n\nconst defaultProps: CardSectionProps = {};\n\ndescribe('@mantine/core/CardSection', () => {\n  tests.itSupportsSystemProps<any, CardSectionStylesNames>({\n    component: TestContainer,\n    props: defaultProps,\n    polymorphic: true,\n    children: true,\n    displayName: '@mantine/core/CardSection',\n    stylesApiSelectors: ['section'],\n    compound: true,\n    providerName: 'Card',\n    selector: '.mantine-Card-section',\n    providerStylesApi: false,\n  });\n\n  it('sets data-with-border based on withBorder prop', () => {\n    const { container, rerender } = render(<TestContainer withBorder />);\n    expect(container.querySelector('.mantine-Card-section')).toHaveAttribute('data-with-border');\n\n    rerender(<TestContainer withBorder={false} />);\n    expect(container.querySelector('.mantine-Card-section')).not.toHaveAttribute(\n      'data-with-border'\n    );\n  });\n\n  it('sets data-inherit-padding based on inheritPadding prop', () => {\n    const { container, rerender } = render(<TestContainer inheritPadding />);\n    expect(container.querySelector('.mantine-Card-section')).toHaveAttribute(\n      'data-inherit-padding'\n    );\n\n    rerender(<TestContainer inheritPadding={false} />);\n    expect(container.querySelector('.mantine-Card-section')).not.toHaveAttribute(\n      'data-inherit-padding'\n    );\n  });\n});",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Mantine — MIT © 2020-present Vitaly Rtishchev (https://mantine.dev)",
+    "source": "mantine",
+    "styling": "css-modules",
+    "category": "data-display",
+    "previewStatus": "primitive"
+  }
+}

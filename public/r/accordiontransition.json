@@ -1,0 +1,36 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "accordiontransition",
+  "type": "registry:ui",
+  "title": "AccordionTransition",
+  "description": "AccordionTransition component harvested from mui with css-in-js styling.",
+  "dependencies": [
+    "@mui/material",
+    "@emotion/react",
+    "@emotion/styled"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/accordiontransition.tsx",
+      "content": "import * as React from 'react';\nimport Accordion, { accordionClasses } from '@mui/material/Accordion';\nimport type { AccordionSlots } from '@mui/material/Accordion';\nimport AccordionSummary from '@mui/material/AccordionSummary';\nimport AccordionDetails, {\n  accordionDetailsClasses,\n} from '@mui/material/AccordionDetails';\nimport Typography from '@mui/material/Typography';\nimport ExpandMoreIcon from '@mui/icons-material/ExpandMore';\nimport Fade from '@mui/material/Fade';\n\nexport default function AccordionTransition() {\n  // @focus-start @padding 1\n  const id = React.useId();\n  const [expanded, setExpanded] = React.useState(false);\n\n  const handleExpansion = () => {\n    setExpanded((prevExpanded) => !prevExpanded);\n  };\n\n  return (\n    <div>\n      <Accordion\n        expanded={expanded}\n        onChange={handleExpansion}\n        slots={{ transition: Fade as AccordionSlots['transition'] }}\n        slotProps={{ transition: { timeout: 400 } }}\n        sx={[\n          expanded\n            ? {\n                [`& .${accordionClasses.region}`]: {\n                  height: 'auto',\n                },\n                [`& .${accordionDetailsClasses.root}`]: {\n                  display: 'block',\n                },\n              }\n            : {\n                [`& .${accordionClasses.region}`]: {\n                  height: 0,\n                },\n                [`& .${accordionDetailsClasses.root}`]: {\n                  display: 'none',\n                },\n              },\n        ]}\n      >\n        <AccordionSummary\n          expandIcon={<ExpandMoreIcon />}\n          aria-controls={`${id}-panel1-content`}\n          id={`${id}-panel1-header`}\n        >\n          <Typography component=\"span\">Custom transition using Fade</Typography>\n        </AccordionSummary>\n        <AccordionDetails>\n          <Typography>\n            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse\n            malesuada lacus ex, sit amet blandit leo lobortis eget.\n          </Typography>\n        </AccordionDetails>\n      </Accordion>\n      <Accordion>\n        <AccordionSummary\n          expandIcon={<ExpandMoreIcon />}\n          aria-controls={`${id}-panel2-content`}\n          id={`${id}-panel2-header`}\n        >\n          <Typography component=\"span\">Default transition using Collapse</Typography>\n        </AccordionSummary>\n        <AccordionDetails>\n          <Typography>\n            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse\n            malesuada lacus ex, sit amet blandit leo lobortis eget.\n          </Typography>\n        </AccordionDetails>\n      </Accordion>\n    </div>\n  );\n  // @focus-end\n}",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Material UI — MIT © 2014-present Call-Em-All / Material-UI (https://mui.com)",
+    "source": "mui",
+    "styling": "css-in-js",
+    "category": "data-display",
+    "previewStatus": "unsupported"
+  }
+}

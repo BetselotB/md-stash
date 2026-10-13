@@ -1,0 +1,34 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "stackblitz-button",
+  "type": "registry:ui",
+  "title": "Stackblitz Button",
+  "description": "Stackblitz Button component harvested from chakra-ui with css-in-js styling.",
+  "dependencies": [
+    "@chakra-ui/react"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/stackblitz-button.tsx",
+      "content": "\"use client\"\n\nimport { openInStackblitzReact } from \"lib/stackblitz\"\nimport { Button } from \"@chakra-ui/react\"\nimport { StackblitzIcon } from \"./framework-icon\"\n\nexport const StackblitzButton = ({ exampleId }: { exampleId: string }) => {\n  const handleClick = () => {\n    const id = exampleId.split(\"/\").slice(-1).join(\"/\")\n    openInStackblitzReact(id)\n  }\n  return (\n    <Button\n      size=\"sm\"\n      colorPalette=\"gray\"\n      variant=\"ghost\"\n      aria-label=\"Open in Stackblitz\"\n      onClick={handleClick}\n    >\n      <StackblitzIcon />\n      Stackblitz\n    </Button>\n  )\n}",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Chakra UI — MIT © 2019-present Segun Adebayo (https://chakra-ui.com)",
+    "source": "chakra-ui",
+    "styling": "css-in-js",
+    "category": "buttons",
+    "previewStatus": "unsupported"
+  }
+}

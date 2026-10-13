@@ -1,0 +1,35 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "accordion-demo-transitions",
+  "type": "registry:ui",
+  "title": "Accordion.demo.transitions",
+  "description": "Accordion.demo.transitions component harvested from mantine with css-modules styling.",
+  "dependencies": [
+    "@mantine/core",
+    "@mantine/hooks"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/accordion-demo-transitions.tsx",
+      "content": "import { MantineDemo } from '@mantinex/demo';\nimport { BaseDemo } from './_base';\n\nconst getCode = (prop: string) => `\nimport { Accordion } from '@mantine/core';\n\nfunction Demo() {\n  return (\n    <Accordion order={3} ${prop}>\n      {/* ...content */}\n    </Accordion>\n  )\n}\n`;\n\nexport const disableTransitions: MantineDemo = {\n  type: 'code',\n  component: () => <BaseDemo transitionDuration={0} />,\n  code: getCode('transitionDuration={0}'),\n  maxWidth: 380,\n  centered: true,\n};\n\nexport const customTransitions: MantineDemo = {\n  type: 'code',\n  component: () => <BaseDemo transitionDuration={1000} />,\n  code: getCode('transitionDuration={1000}'),\n  maxWidth: 380,\n  centered: true,\n};",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Mantine — MIT © 2020-present Vitaly Rtishchev (https://mantine.dev)",
+    "source": "mantine",
+    "styling": "css-modules",
+    "category": "data-display",
+    "previewStatus": "unsupported"
+  }
+}

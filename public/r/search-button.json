@@ -1,0 +1,34 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "search-button",
+  "type": "registry:ui",
+  "title": "Search Button",
+  "description": "Search Button component harvested from chakra-ui with css-in-js styling.",
+  "dependencies": [
+    "@chakra-ui/react"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/search-button.tsx",
+      "content": "import {\n  Button,\n  ButtonProps,\n  Icon,\n  IconButton,\n  Kbd,\n  Span,\n} from \"@chakra-ui/react\"\nimport { forwardRef } from \"react\"\nimport { LuSearch } from \"react-icons/lu\"\n\nexport const SearchButton = forwardRef<HTMLButtonElement, ButtonProps>(\n  function SearchButton(props, ref) {\n    return (\n      <Button variant=\"subtle\" color=\"fg.muted!\" ref={ref} {...props}>\n        <Icon ms=\"-1\">\n          <LuSearch />\n        </Icon>\n        <Span\n          ms=\"1\"\n          fontWeight=\"normal\"\n          flex=\"1\"\n          minW=\"0\"\n          textAlign=\"start\"\n          textOverflow=\"ellipsis\"\n          overflow=\"hidden\"\n        >\n          Search...\n        </Span>\n        <Kbd\n          variant=\"outline\"\n          bg=\"bg\"\n          fontSize=\"0.8em\"\n          letterSpacing=\"widest\"\n          me=\"-1\"\n        >\n          ⌘K\n        </Kbd>\n      </Button>\n    )\n  },\n)\n\nexport const MobileSearchButton = forwardRef<HTMLButtonElement, ButtonProps>(\n  function SearchButton(props, ref) {\n    return (\n      <IconButton variant=\"ghost\" size=\"sm\" ref={ref} {...props}>\n        <LuSearch />\n      </IconButton>\n    )\n  },\n)",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Chakra UI — MIT © 2019-present Segun Adebayo (https://chakra-ui.com)",
+    "source": "chakra-ui",
+    "styling": "css-in-js",
+    "category": "buttons",
+    "previewStatus": "unsupported"
+  }
+}

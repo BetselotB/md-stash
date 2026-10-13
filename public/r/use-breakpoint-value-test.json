@@ -1,0 +1,34 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "use-breakpoint-value-test",
+  "type": "registry:hook",
+  "title": "Use Breakpoint Value.test",
+  "description": "Use Breakpoint Value.test component harvested from chakra-ui with css-in-js styling.",
+  "dependencies": [
+    "@chakra-ui/react"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "hooks/use-breakpoint-value-test.ts",
+      "content": "import { renderHook } from \"@testing-library/react\"\nimport { ChakraProvider, defaultSystem, useBreakpointValue } from \"../src\"\n\nconst wrapper = ({ children }: { children: React.ReactNode }) => (\n  <ChakraProvider value={defaultSystem}>{children}</ChakraProvider>\n)\n\ndescribe(\"useBreakpointValue\", () => {\n  test(\"should return base value during SSR\", () => {\n    const { result } = renderHook(\n      () => useBreakpointValue({ base: 1, sm: 2 }),\n      { wrapper },\n    )\n    // In SSR mode (jsdom), the base value should be returned\n    expect(result.current).toBe(1)\n  })\n\n  test(\"should return fallback breakpoint value when specified\", () => {\n    const { result } = renderHook(\n      () => useBreakpointValue({ base: 1, sm: 2 }, { fallback: \"sm\" }),\n      { wrapper },\n    )\n    // When fallback is \"sm\", it should return the sm value during SSR\n    expect(result.current).toBe(2)\n  })\n\n  test(\"should return matched breakpoint value in CSR based on window size\", () => {\n    // Mock matchMedia to simulate a screen width >= 480px (sm breakpoint)\n    const listeners: Array<(e: MediaQueryListEvent) => void> = []\n    const mockMatchMedia = vi.fn().mockImplementation((query: string) => ({\n      matches: query === \"(min-width: 0px)\" || query === \"(min-width: 30rem)\",\n      media: query,\n      addEventListener: (_: string, cb: (e: MediaQueryListEvent) => void) => {\n        listeners.push(cb)\n      },\n      removeEventListener: () => {},\n    }))\n\n    const originalMatchMedia = window.matchMedia\n    window.matchMedia = mockMatchMedia\n\n    try {\n      const { result } = renderHook(\n        () => useBreakpointValue({ base: 1, sm: 2, md: 3 }, { ssr: false }),\n        { wrapper },\n      )\n      // With ssr: false, it should use matchMedia and return sm value (2)\n      // since we mocked sm (30rem = 480px) to match\n      expect(result.current).toBe(2)\n    } finally {\n      window.matchMedia = originalMatchMedia\n    }\n  })\n\n  test(\"should evaluate media queries against the window from getWindow\", () => {\n    const createMatchMedia = (matching: string[]) => (query: string) => ({\n      matches: matching.includes(query),\n      media: query,\n      addEventListener: () => {},\n      removeEventListener: () => {},\n    })\n\n    // the ambient window reports `md`, the injected one only reports `sm`\n    const originalMatchMedia = window.matchMedia\n    window.matchMedia = vi\n      .fn()\n      .mockImplementation(\n        createMatchMedia([\n          \"(min-width: 0px)\",\n          \"(min-width: 30rem)\",\n          \"(min-width: 48rem)\",\n        ]),\n      ) as any\n\n    const iframeWindow = {\n      matchMedia: createMatchMedia([\"(min-width: 0px)\", \"(min-width: 30rem)\"]),\n    } as unknown as typeof window\n\n    try {\n      const { result } = renderHook(\n        () =>\n          useBreakpointValue(\n            { base: 1, sm: 2, md: 3 },\n            { ssr: false, getWindow: () => iframeWindow },\n          ),\n        { wrapper },\n      )\n      expect(result.current).toBe(2)\n    } finally {\n      window.matchMedia = originalMatchMedia\n    }\n  })\n})",
+      "type": "registry:hook"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Chakra UI — MIT © 2019-present Segun Adebayo (https://chakra-ui.com)",
+    "source": "chakra-ui",
+    "styling": "css-in-js",
+    "category": "hooks",
+    "previewStatus": "primitive"
+  }
+}

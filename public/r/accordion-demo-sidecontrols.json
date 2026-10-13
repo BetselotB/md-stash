@@ -1,0 +1,35 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "accordion-demo-sidecontrols",
+  "type": "registry:ui",
+  "title": "Accordion.demo.sideControls",
+  "description": "Accordion.demo.sideControls component harvested from mantine with css-modules styling.",
+  "dependencies": [
+    "@mantine/core",
+    "@mantine/hooks"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/accordion-demo-sidecontrols.tsx",
+      "content": "import { DotsThreeIcon } from '@phosphor-icons/react';\nimport { Accordion, AccordionControlProps, ActionIcon, Center } from '@mantine/core';\nimport { MantineDemo } from '@mantinex/demo';\n\nconst code = `\nimport { Accordion, ActionIcon, AccordionControlProps, Center } from '@mantine/core';\nimport { DotsThreeIcon } from '@phosphor-icons/react';\n\nfunction AccordionControl(props: AccordionControlProps) {\n  return (\n    <Center>\n      <Accordion.Control {...props} />\n      <ActionIcon size=\"lg\" variant=\"subtle\" color=\"gray\" aria-label=\"More options\">\n        <DotsThreeIcon size={20} />\n      </ActionIcon>\n    </Center>\n  );\n}\n\nfunction Demo() {\n  return (\n    <Accordion chevronPosition=\"left\" order={3}>\n      <Accordion.Item value=\"item-1\">\n        <AccordionControl>Control 1</AccordionControl>\n        <Accordion.Panel>Panel 1</Accordion.Panel>\n      </Accordion.Item>\n\n      <Accordion.Item value=\"item-2\">\n        <AccordionControl>Control 2</AccordionControl>\n        <Accordion.Panel>Panel 2</Accordion.Panel>\n      </Accordion.Item>\n\n      <Accordion.Item value=\"item-3\">\n        <AccordionControl>Control 3</AccordionControl>\n        <Accordion.Panel>Panel 3</Accordion.Panel>\n      </Accordion.Item>\n    </Accordion>\n  );\n}\n`;\n\nfunction AccordionControl(props: AccordionControlProps) {\n  return (\n    <Center>\n      <Accordion.Control {...props} />\n      <ActionIcon size=\"lg\" variant=\"subtle\" color=\"gray\" aria-label=\"More options\">\n        <DotsThreeIcon size={20} />\n      </ActionIcon>\n    </Center>\n  );\n}\n\nfunction Demo() {\n  return (\n    <Accordion chevronPosition=\"left\" order={3}>\n      <Accordion.Item value=\"item-1\">\n        <AccordionControl>Control 1</AccordionControl>\n        <Accordion.Panel>Panel 1</Accordion.Panel>\n      </Accordion.Item>\n\n      <Accordion.Item value=\"item-2\">\n        <AccordionControl>Control 2</AccordionControl>\n        <Accordion.Panel>Panel 2</Accordion.Panel>\n      </Accordion.Item>\n\n      <Accordion.Item value=\"item-3\">\n        <AccordionControl>Control 3</AccordionControl>\n        <Accordion.Panel>Panel 3</Accordion.Panel>\n      </Accordion.Item>\n    </Accordion>\n  );\n}\n\nexport const sideControls: MantineDemo = {\n  type: 'code',\n  component: Demo,\n  code,\n  centered: true,\n  maxWidth: 400,\n};",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Mantine — MIT © 2020-present Vitaly Rtishchev (https://mantine.dev)",
+    "source": "mantine",
+    "styling": "css-modules",
+    "category": "data-display",
+    "previewStatus": "unsupported"
+  }
+}

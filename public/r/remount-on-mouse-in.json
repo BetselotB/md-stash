@@ -1,0 +1,35 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "remount-on-mouse-in",
+  "type": "registry:hook",
+  "title": "Remount On Mouse In",
+  "description": "Remount On Mouse In component harvested from animata with tailwind styling.",
+  "dependencies": [
+    "clsx",
+    "tailwind-merge"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "hooks/remount-on-mouse-in.ts",
+      "content": "import { Fragment, type KeyboardEvent, type ReactNode, useRef, useState } from \"react\";\n\nexport default function RemountOnMouseIn({\n  children,\n  className,\n  duration,\n}: {\n  children: ReactNode;\n  className?: string;\n  /**\n   * Duration in milliseconds to wait before allowing a remount\n   */\n  duration?: number;\n}) {\n  const [key, setKey] = useState(0);\n  const lastUpdate = useRef(0);\n\n  const update = () => {\n    const now = Date.now();\n    if (lastUpdate.current === 0) {\n      lastUpdate.current = now;\n    }\n    if (now - lastUpdate.current > (duration ?? 1000)) {\n      setKey((prev) => prev + 1);\n      lastUpdate.current = now;\n    }\n  };\n\n  const handleKeyDown = (event: KeyboardEvent<HTMLButtonElement>) => {\n    if (event.key === \"Enter\" || event.key === \" \") {\n      event.preventDefault();\n      update();\n    }\n  };\n\n  return (\n    <button\n      type=\"button\"\n      className={className}\n      onClick={update}\n      onMouseEnter={update}\n      onKeyDown={handleKeyDown}\n    >\n      <Fragment key={`force-${key}`}>{children}</Fragment>\n    </button>\n  );\n}",
+      "type": "registry:hook"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {}
+      }
+    }
+  },
+  "cssVars": {},
+  "meta": {
+    "license": "MIT",
+    "attribution": "Animata — MIT © Animata (https://animata.design)",
+    "source": "animata",
+    "styling": "tailwind",
+    "category": "hooks",
+    "previewStatus": "primitive"
+  }
+}
